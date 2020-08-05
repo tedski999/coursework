@@ -1,0 +1,1 @@
+My programming-related coursework for TR033 - Integrated Computer Science. This is certainly not exahustive or even up-to-date, nor should it be used as the basis of further work. Proceed with caution.
