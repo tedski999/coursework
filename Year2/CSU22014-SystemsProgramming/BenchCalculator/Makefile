@@ -70,7 +70,7 @@ run_test_postfix_%:
 	echo "\e[0m"
 	./calc postfix `cat test_files/test_inputs/test_postfix_$*.txt` > /dev/null \
   && a=1 || a=0;\
-	./calc postfix `cat test_files/test_inputs/test_postfix_$*.txt` | tail -n 1 > test_files/build/test_postfix_output_$*.txt \
+	./calc postfix `cat test_files/test_inputs/test_postfix_$*.txt` | tail -n 1 > test_files/build/test_postfix_output_$*.txt ;\
   diff -eq test_files/test_outputs/test_postfix_$*.txt test_files/build/test_postfix_output_$*.txt > /dev/null \
   && b=1 || b=0;\
 	echo -n "\e[40m\e[K\e[1m" ;\
@@ -98,7 +98,7 @@ run_test_infix_%:
 	echo "\e[0m"
 	./calc infix `cat test_files/test_inputs/test_infix_$*.txt` > /dev/null \
   && a=1 || a=0;\
-	./calc infix `cat test_files/test_inputs/test_infix_$*.txt` | tail -n 1 > test_files/build/test_infix_output_$*.txt \
+	./calc infix `cat test_files/test_inputs/test_infix_$*.txt` | tail -n 1 > test_files/build/test_infix_output_$*.txt ;\
   diff -eq test_files/test_outputs/test_infix_$*.txt test_files/build/test_infix_output_$*.txt > /dev/null \
   && b=1 || b=0;\
 	echo -n "\e[40m\e[K\e[1m" ;\

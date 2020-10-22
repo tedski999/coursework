@@ -93,7 +93,11 @@ bench-calc
    printf("The number of command line parameters is stored in argc: %d\n", argc); 
    printf("The value of argc counts the name of the program itself as a parameter\n"); 
    printf("The name of the program is stored in argv[0]: %s\n", argv[0]); 
-   printf("The parameters are:\n"); for ( i = 1; i < argc; i++ ) { printf("%s\n", argv[i]); } return 0; 
+   printf("The parameters are:\n");
+   for ( i = 1; i < argc; i++ ) {
+     printf("%s\n", argv[i]);
+   }
+   return 0; 
   } // end of main 
   ```
 
