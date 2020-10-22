@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 // find smallest element between start and end of array
 int find_min(int a[], int size, int start) {
