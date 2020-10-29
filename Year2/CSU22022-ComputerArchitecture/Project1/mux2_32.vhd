@@ -13,8 +13,8 @@ begin
 	process(s, in0, in1)
 	begin
 		case s is
-			when '0' => o <= in0;
-			when '1' => o <= in1;
+			when '0' => o <= in0 after 1 ns;
+			when '1' => o <= in1 after 1 ns;
 			when others => o <= in0;
 		end case;
 	end process;

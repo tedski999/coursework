@@ -14,7 +14,7 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			if load='1' then
-				o <= d after 5 ns;
+				o <= d after 1 ns;
 			end if;
 		end if;
 	end process;

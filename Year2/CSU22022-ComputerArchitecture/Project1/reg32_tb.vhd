@@ -18,28 +18,29 @@ architecture Behavior of reg32_tb is
 begin
 	uut: reg32 port map(load => load, clk => clk, d => d, o => o);
 	
+	-- 100 MHz clock
 	process
 	begin
-		clk <= not clk after 10 ns;
-		wait for 10 ns;
+		clk <= not clk after 5 ns;
+		wait for 5 ns;
 	end process;
 	
 	stim_proc: process
 	begin
-		wait for 10 ns;
+		wait for 20 ns;
 		d <= x"12345678";
-		wait for 10 ns;
+		wait for 20 ns;
 		load <= '1';
 		wait for 20 ns;
 		assert o = x"12345678";
 		wait for 20 ns;
 		load <= '0';
-		wait for 10 ns;
+		wait for 20 ns;
 		d <= x"87654321";
-		wait for 10 ns;
+		wait for 20 ns;
 		assert o = x"12345678";
 		load <= '1';
-		wait for 10 ns;
+		wait for 20 ns;
 		assert o = x"87654321";
 	end process;
 end;
