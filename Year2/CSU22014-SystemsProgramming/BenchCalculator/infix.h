@@ -1,5 +1,5 @@
-#ifndef __INFIX_H__
-#define __INFIX_H__
+#ifndef BC_INFIX_H
+#define BC_INFIX_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +9,6 @@
 #include "stack.h"
 #include "postfix.h"
 
-double evaluate_infix_expression(char ** expr, int nterms);
+double evaluate_infix_expression(char **expr, int nterms);
 
 #endif

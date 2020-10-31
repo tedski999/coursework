@@ -2,34 +2,51 @@
 
 // create a new empty stack
 struct double_stack *double_stack_new(int max_size) {
-	struct double_stack *this = malloc(sizeof *this);
-	if (!this)
-		return NULL;
+	if (max_size < 0) {
+		puts("Invalid stack size!");
+		exit(1);
+	}
 
-	this->top = 0;
-	this->max_size = max_size;
-	this->items = malloc(sizeof (double) * this->max_size);
-	if (!this->items) {
-		free(this);
-		return NULL;
+	struct double_stack *stack = malloc(sizeof *stack);
+	if (!stack) {
+		puts("Memory alloc error!");
+		exit(1);
+	}
+
+	stack->top = 0;
+	stack->max_size = max_size;
+	stack->items = malloc(sizeof (double) * stack->max_size);
+	if (!stack->items) {
+		puts("Memory alloc error!");
+		exit(1);
 	}
 	
-	return this;
+	return stack;
 }
 
 // push a value onto the stack
-void double_stack_push(struct double_stack *this, double value) {
-	if (this->top >= this->max_size)
-		return;
+void double_stack_push(struct double_stack *stack, double value) {
+	if (stack->top >= stack->max_size) {
+		puts("Stack overflow!");
+		exit(1);
+	}
 
-	this->items[this->top++] = value;
+	stack->items[stack->top++] = value;
 }
 
 // pop a value from the stack
-double double_stack_pop(struct double_stack *this) {
-	if (this->top <= 0)
-		return 0;
+double double_stack_pop(struct double_stack *stack) {
+	if (stack->top <= 0) {
+		puts("Not enough items to operate on!");
+		exit(1);
+	}
 
-	return this->items[--this->top];
+	return stack->items[--stack->top];
+}
+
+// deallocates memory used by stack
+void double_stack_destroy(struct double_stack *stack) {
+	free(stack->items);
+	free(stack);
 }
 

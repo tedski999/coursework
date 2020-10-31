@@ -1,5 +1,5 @@
-#ifndef __POSTFIX_H__
-#define __POSTFIX_H__
+#ifndef BC_POSTFIX_H
+#define BC_POSTFIX_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +8,6 @@
 #include <math.h>
 #include "stack.h"
 
-
-double evaluate_postfix_expression(char ** expr, int nterms);
+double evaluate_postfix_expression(char **expr, int nterms);
 
 #endif
