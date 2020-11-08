@@ -174,6 +174,9 @@ begin
 		s <= "11111";
 		wait for 10 ns;
 		assert o = x"0000001f";
+		
+		wait for 1000 ns;
+		
 	end process;
 end;
 

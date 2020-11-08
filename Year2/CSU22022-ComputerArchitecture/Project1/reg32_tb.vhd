@@ -27,7 +27,8 @@ begin
 	
 	stim_proc: process
 	begin
-		wait for 20 ns;
+		d <= x"00000000";
+		wait for 50 ns;
 		d <= x"12345678";
 		wait for 20 ns;
 		load <= '1';
@@ -42,6 +43,9 @@ begin
 		load <= '1';
 		wait for 20 ns;
 		assert o = x"87654321";
+		
+		wait for 1000 ns;
+		
 	end process;
 end;
 

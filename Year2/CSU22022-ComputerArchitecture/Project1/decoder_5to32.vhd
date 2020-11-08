@@ -11,7 +11,6 @@ architecture Behavioral of decoder_5to32 is
 begin
 	process(s)
 	begin
-		o <= x"00000000";
 		o(0) <= ((not s(0)) and (not s(1)) and (not s(2)) and (not s(3)) and (not s(4))) after 1 ns;
 		o(1) <= (s(0)       and (not s(1)) and (not s(2)) and (not s(3)) and (not s(4))) after 1 ns;
 		o(2) <= ((not s(0)) and s(1)       and (not s(2)) and (not s(3)) and (not s(4))) after 1 ns;

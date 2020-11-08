@@ -57,7 +57,7 @@ begin
 
 		src_reg <= "00000";
 		dst_reg <= "00000";
-		wait for 5 ns;
+		wait for 50 ns;
 
 		-- Loading HEX values into the 32 registers
 		load <= '1';
@@ -94,7 +94,7 @@ begin
 		dst_reg <= "11110"; input <= x"012709a4"; wait for 10 ns;    
 		dst_reg <= "11111"; input <= x"012709a3"; wait for 10 ns;
 
-		-- Transfering register 00 to 01, 01 to 02, 02 to 03, etc...
+		-- Transfering register 00 to 01, 01 to 02, 02 to 03, etc... for 10 examples
 		load <= '0';
 		src_reg <= "00000"; dst_reg <= "00001"; wait for 10 ns;
 		src_reg <= "00001"; dst_reg <= "00010"; wait for 10 ns;
@@ -106,27 +106,8 @@ begin
 		src_reg <= "00111"; dst_reg <= "01000"; wait for 10 ns;
 		src_reg <= "01000"; dst_reg <= "01001"; wait for 10 ns;
 		src_reg <= "01001"; dst_reg <= "01010"; wait for 10 ns;
-		src_reg <= "01010"; dst_reg <= "01011"; wait for 10 ns;
-		src_reg <= "01011"; dst_reg <= "01100"; wait for 10 ns;
-		src_reg <= "01100"; dst_reg <= "01101"; wait for 10 ns;
-		src_reg <= "01101"; dst_reg <= "01110"; wait for 10 ns;
-		src_reg <= "01110"; dst_reg <= "01111"; wait for 10 ns;
-		src_reg <= "01111"; dst_reg <= "10000"; wait for 10 ns;
-		src_reg <= "10000"; dst_reg <= "10001"; wait for 10 ns;
-		src_reg <= "10001"; dst_reg <= "10010"; wait for 10 ns;
-		src_reg <= "10010"; dst_reg <= "10011"; wait for 10 ns;
-		src_reg <= "10011"; dst_reg <= "10100"; wait for 10 ns;
-		src_reg <= "10100"; dst_reg <= "10101"; wait for 10 ns;
-		src_reg <= "10101"; dst_reg <= "10110"; wait for 10 ns;
-		src_reg <= "10110"; dst_reg <= "10111"; wait for 10 ns;
-		src_reg <= "10111"; dst_reg <= "11000"; wait for 10 ns;
-		src_reg <= "11000"; dst_reg <= "11001"; wait for 10 ns;
-		src_reg <= "11001"; dst_reg <= "11010"; wait for 10 ns;
-		src_reg <= "11010"; dst_reg <= "11011"; wait for 10 ns;
-		src_reg <= "11011"; dst_reg <= "11100"; wait for 10 ns;
-		src_reg <= "11100"; dst_reg <= "11101"; wait for 10 ns;
-		src_reg <= "11101"; dst_reg <= "11110"; wait for 10 ns;
-		src_reg <= "11110"; dst_reg <= "11111"; wait for 10 ns;
+		
+		wait for 1000 ns;
 		
 	end process;
 end;

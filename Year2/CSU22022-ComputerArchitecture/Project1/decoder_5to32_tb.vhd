@@ -114,6 +114,9 @@ begin
 		s <= "11111";
 		wait for 10 ns;
 		assert o = "10000000000000000000000000000000";
+		
+		wait for 1000 ns;
+		
 	end process;
 end;
 

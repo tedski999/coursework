@@ -29,6 +29,10 @@ begin
 		s <= '1';
 		wait for 10 ns;
 		assert o = x"ffffffff";
+		s <= '0';
+		wait for 10 ns;
+		assert o = x"00000000";
+		wait for 1000 ns;
 	end process;
 end;
 
