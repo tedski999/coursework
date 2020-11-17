@@ -1,0 +1,311 @@
+\documentclass[12pt]{article}
+
+\usepackage{fancyhdr}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{15pt}
+\lhead{\textbf{MAU22C00} Discrete Mathematics}
+\rhead{Ted Johnson ‑ 19335618}
+\rfoot{\thepage}
+
+\newcommand{\qedsymbol}{\rule{0.7em}{0.7em}}
+
+\urlstyle{same}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\begin{document}
+
+\section*{Assignment 2}
+
+I have read and I understand the plagiarism provisions in the General Regulations of the University Calendar for the current year, found at \href{http://www.tcd.ie/calendar}{here}.
+I have also completed the Online Tutorial on avoiding plagiarism ‘Ready Steady Write’, located \href{http://tcd-ie.libguides.com/plagiarism/ready-steady-write}{here}.
+
+\subsection*{Exercise 1}
+
+Let $A = \mathbb{R}^n = \{ (x_1,\ \ldots,\ x_n)\ |\ x_i \in \mathbb{R},\ 1 \leq i \leq n \}$.\\
+For $x,y \in A,\ x = (x_1,\ \ldots,\ x_n)$ and $y = (y_1,\ \ldots,\ y_n)$,
+$xQy$ if and only if $\forall i,\ 1 \leq i \leq n,\ x_i = y_i$
+or $\exists i$ with $1 \leq i \leq n$ such that $x_i < y_i$ and $x_j = y_j \forall j,\ j < i$.
+Determine:
+\begin{enumerate}[label = (\roman*)]
+	\itemsep0em
+	\item Whether or not the relation $Q$ is \textit{reflexive};
+	\item Whether or not the relation $Q$ is \textit{symmetric};
+	\item Whether or not the relation $Q$ is \textit{anti-symmetric};
+	\item Whether or not the relation $Q$ is \textit{transitive};
+	\item Whether or not the relation $Q$ is an \textit{equivalence relation};
+	\item Whether or not the relation $Q$ is a \textit{partial order}.
+\end{enumerate}
+
+\subsubsection*{Solution}
+
+There are two conditions in relation $Q$ we will label (a) and (b):
+\begin{enumerate}[label = (\alph*)]
+	\itemsep0em
+	\item $\forall i,\ 1 \leq i \leq n,\ x_i = y_i$ \label{cond_a} or
+	\item $\exists i$ with $1 \leq i \leq n$ such that $x_i < y_i$ and $x_j = y_j \forall j,\ j < i$ \label{cond_b}
+\end{enumerate}
+If either conditions are valid for a case, the relation holds for that case.
+We must prove each relevant case for each property to show $Q$ has that property.
+
+\begin{enumerate}[label = \textbf{(\roman*)}]
+	\item
+		Relation $Q$ is reflexive iff $\forall a \in A,\ aQa$.\\
+		In condition \ref{cond_a}, $a_i = a_i$ always holds, so relation $Q$ must be reflexive.
+
+	\item
+		Relation $Q$ is symmetric iff $\forall a,b \in A,\ aQb \Rightarrow bQa$.\\
+		In the case that $a = b$, condition \ref{cond_a} always holds.\\
+		However, when $a \neq b$, condition \ref{cond_b} is not symmetric:\\
+		$a_i < b_i \land a_j = b_j$ does not imply $b_i < a_i \land a_j = b_j$ as $a_i < b_i \not\equiv b_i < a_i$\\
+		$\therefore$ Relation $Q$ is \textit{not} symmetric.
+
+	\item
+		Relation $Q$ is anti-symmetric iff $\forall a,b \in A,\ aQb \land bQa \Rightarrow a = b$.\\
+		In the case that \ref{cond_a} holds, then $a = b$ must hold.\\
+		In a case where \ref{cond_a} does not hold, \ref{cond_b} will never hold as
+		$a_i < b_i$ and $b_i < a_i$ cannot both be true, thus $a \neq b$.\\
+		$\therefore$ $aQb \land bQa \Rightarrow a = b$, so relation $Q$ is anti-symmetric.
+
+	\item
+		Relation $Q$ is transitive iff $\forall a,b,c \in A,\ aQb \land bQc \Rightarrow aQc$.\\
+		There are four cases for the conditions in $aQb \land bQc$ to hold:
+		\begin{enumerate}[label = \arabic*.]
+			\itemsep0em
+			\item \ref{cond_a} and \ref{cond_a} held: $a_i = b_i$ and $b_i = c_i$
+			\item \ref{cond_a} and \ref{cond_b} held: $a_i = b_i$ and $b_i < c_i \land b_j = c_j$
+			\item \ref{cond_b} and \ref{cond_a} held: $a_i < b_i \land a_j = b_j$ and $b_i = c_i$
+			\item \ref{cond_b} and \ref{cond_b} held: $a_i < b_i \land a_j = b_j$ and $b_i < c_i \land b_j = c_j$
+		\end{enumerate}
+		For $aQb \land bQc \Rightarrow aQc$ to be valid, each case must be able to prove $aQc$.
+		\begin{enumerate}[label = \arabic*.]
+			\itemsep0em
+			\item
+				If $\forall i,\ a_i = b_i$ and $\forall i,\ b_i = c_i$, then it follows that $a = b = c$.\\
+				$\therefore aQc$ must hold according to condition \ref{cond_a}.
+			\item
+				If $\forall i,\ a_i = b_i$ and $\exists i,\ b_i < c_i \land b_j = c_j\ \forall j$, then we can substitute $b_i$ for $a_i$ in $b_i < c_i \land b_j = c_j$, that is $a_i < c_i \land a_j = c_j$.\\
+				This exactly fulfills the condition \ref{cond_b} for $aQc$. $\therefore aQc$ holds.
+			\item
+				If $\exists i,\ a_i < b_i \land a_j = b_j\ \forall j$ and $\forall i,\ b_i = c_i$, then we can substitute $c_i$ for $b_i$ in $a_i < b_i \land a_j = b_j$, that is $a_i < c_i \land a_j = c_j$.\\
+				This, again, exactly fulfills the condition \ref{cond_b} for $aQc$. $\therefore aQc$ holds.
+			\item
+				If $\exists i,\ a_i < b_i \land a_j = b_j\ \forall j$ and $\exists i,\ b_i < c_i \land b_j = c_j\ \forall j$, then it follows that $a_i < b_i < c_i$ and $a_j = b_j = c_j$.\\
+				Then it is clear that $a_i < c_i$ and $a_j = c_j$, which is simply the condition \ref{cond_b} for $aQc$. $\therefore aQc$ holds.
+		\end{enumerate}
+		As $aQc$ holds for all four of the possible cases, we can conclude relation $Q$ is transitive.
+
+	\item Relation $Q$ is \textit{not} an equivalence relation as it does not exhibit \textit{symmetry} as proven above.
+	\item Relation $Q$ is a partial order as it exhibits \textit{reflexivity}, \textit{anti-symmetry} and \textit{transitivity} as proven above.
+
+\end{enumerate}
+\pagebreak
+
+\subsection*{Exercise 2}
+
+Use mathematical induction to prove that for all $n \geq 7$, $n! > 3^n$.
+
+\subsubsection*{Solution}
+
+\textbf{Base case:} Prove true for $n = 7$
+\begin{align*}
+	& n! > 3^n \\
+	& 7! > 3^7 \\
+	& 5040 > 2187 \tag*{$\therefore$ true for $n = 7$}
+\end{align*}
+\\
+\textbf{Inductive step:} Assume true for $n = k$, prove true for $n = k + 1$.
+\begin{align*}
+	& (k + 1)! > 3^{(k + 1)} \\
+	& (k + 1)(k!) > (3^k)(3^1) \\
+	\intertext{Because we assumed $n = k$ (i.e. $k! > 3^k$) is true, if we substitute $3^k$ for $k!$ in the LHS, then the resulting expression must have a smaller value, that is:}
+	& (k + 1)(k!) > (k + 1)(3^k) \\
+	\intertext{Now we can take this smaller expression and see if it is \textit{still} greater than the RHS of our original statement:}
+	& (k + 1)(3^k) > (3^k)(3^1) \\
+	& (k + 1) > 3 \tag*{...dividing by $3^k$ as $k$ is always positive} \\
+	& k > 2 \tag*{$\therefore$ true for $n = k + 1$ as $n \geq 7$} \\
+	\intertext{As our smaller expression has been proven to still be greater than the RHS, it follows that the initial LHS (which is even greater) must also be greater than the RHS, thus proving $n! > 3^n$ is true for $n = k + 1$.}
+\end{align*}
+As $n! > 3^n$ is true for $n = 7$ and $n = k + 1$, it follows that $n! > 3^n$ must be true for $n \geq 7$.
+\\\null\hfill\qedsymbol
+\pagebreak
+
+\subsection*{Exercise 3}
+
+\subsubsection*{Part (a)}
+
+Let $\{ C_n \}_{n=1,2,\ldots} = \{ C_1,\ C_2,\ \ldots \}$ be a sequence of sets satisfying that $C_n \subseteq C_{n+1}\ \forall n \geq 1$.
+Prove by mathematical induction that $C_m \subseteq C_n$ whenever $m < n$.
+
+\subsubsection*{Solution}
+
+\textbf{Base case:} Prove true for $n = m + 1$.
+\begin{align*}
+	& C_m \subseteq C_n \\
+	& C_m \subseteq C_{(m+1)} \tag*{...substituting $m+1$ for $n$} \\
+	& C_m \subseteq C_{m+1} \tag*{$\therefore$ true for $n = m + 1$ as $C_n \subseteq C_{n+1}$}
+\end{align*}
+\\
+\textbf{Inductive step:} Assume true for $n = k$, prove true for $n = k + 1$.
+\begin{align*}
+	& C_m \subseteq C_n \\
+	& C_m \subseteq C_{(k)} \tag*{...our assumption $n = k$ it true} \\
+	& C_m \subseteq C_{k+1} \tag*{$C_m$ is a subset of $C_k$} \\
+	\intertext{Then, if we substitute $m$ for $k$ in our base case, we get:}
+	& C_k \subseteq C_{k+1} \tag*{$C_k$ is a subset of $C_{k+1}$}
+	\intertext{As $C_m$ is a subset of $C_k$ and $C_k$ is a subset of $C_{k+1}$, we can apply the transitivity of $\subseteq$:}
+	& C_m \subseteq C_k \subseteq C_{k+1} \\
+	& C_m \subseteq C_{k+1} \tag*{$\therefore$ true for $n = k + 1$} \\
+\end{align*}
+As $C_m \subseteq C_n$ is true for $n = m + 1$ and $n = k + 1$, it follows that $C_m \subseteq C_n$ must be true for all $n < m$.
+\\\null\hfill\qedsymbol
+
+\subsubsection*{Part (b)}
+
+Recall that the graph of a function $f : A \rightarrow B$ is given by
+\[
+	\Gamma(f) = \{ (x,y)\ |\ x \in A \text{ and } y = f(x) \} \subseteq A \times B
+\]
+
+Let $Funct(A, B)$ the set of all functions $f : \tilde{A} \rightarrow \tilde{B}$ such that $\tilde{A} \subseteq A$ and $\tilde{B} \subseteq B$. We define a relation on $Funct(A, B)$ as follows:
+\[
+	\forall f,g \in Funct(A, B)\ f \subseteq g \text{ iff } \Gamma(f) \subseteq \Gamma(g)
+\]
+Prove that this relation is a partial order on $Funct(A, B)$.
+
+\subsubsection*{Solution}
+
+For relation $\subseteq$ to be a partial order, it must have the properties \textit{reflexivity}, \textit{anti-symmetry} and \textit{transitivity}.
+\begin{enumerate}[label = \textbf{(\roman*)}]
+	\item
+		$\subseteq$ is reflexive iff $\forall f \in Funct(A,B),\ f \subseteq f$.\\
+		That is, $\Gamma(f) \subseteq \Gamma(f)$, which clearly holds as $\Gamma(f) = \Gamma(f)$.
+
+	\item
+		$\subseteq$ is anti-symmetric iff $\forall f,g \in Funct(A,B),\ f \subseteq g \land g \subseteq f \Rightarrow f = g$.\\
+		That is, $\Gamma(f) \subseteq \Gamma(g) \land \Gamma(g) \subseteq \Gamma(f)$ implies $\Gamma(f) = \Gamma(g)$.
+		For $\Gamma(f)$ to be a subset of $\Gamma(g)$ while $\Gamma(g)$ is also a subset of $\Gamma(f)$, it must hold that $\Gamma(f) = \Gamma(g)$.
+		$\therefore f = g$.
+
+	\item
+		$\subseteq$ is transitive iff $\forall f,g,h \in Funct(A,B),\ f \subseteq g \land g \subseteq h \Rightarrow f \subseteq h$.\\
+		That is, $\Gamma(f) \subseteq \Gamma(g) \land \Gamma(g) \subseteq \Gamma(h)$ implies $\Gamma(f) \subseteq \Gamma(h)$.
+		If $\Gamma(f)$ is a subset of $\Gamma(g)$ and $\Gamma(g)$ is a subset of $\Gamma(h)$, then it follows that $\Gamma(f)$ is a subset of $\Gamma(h)$.
+		$\therefore f \subseteq h$.
+
+\end{enumerate}
+$\therefore$ As relation $\subseteq$ exhibits all three of these properties, it is a partial order.
+
+\subsubsection*{Part (c)}
+
+Let $\{ f_n \}_{n=1,2,\ldots} = \{f_1,\ f_2,\ \ldots \}$ be a sequence of functions in $Funct(A, B)$ satisfying that $f_n \subseteq f_{n+1}$ for every $n \geq 1$.
+Since functions are in one-to-one correspondence with their graphs, we identify $\bigcup\limits_{n \in \mathbb{N}} f_n$ with $\bigcup\limits_{n \in \mathbb{N}} \Gamma (f_n)$.
+Using part (a), prove that $\bigcup\limits_{n \in \mathbb{N}} f_n$ is a function and $\bigcup\limits_{n \in \mathbb{N}} f_n \in Funct(A, B)$.
+
+\subsubsection*{Solution}
+
+To prove that $\bigcup\limits_{n \in \mathbb{N}} f_n$ is a function, we must show that each element $x \in A$ corresponds with exactly one element $y \in B$ for $\Gamma(\bigcup\limits_{n \in \mathbb{N}} f_n)$.
+By assuming $\bigcup\limits_{n \in \mathbb{N}} f_n$ is not a function, that is, assume there exists an element $x$ which maps to both $y_1$ and $y_2$, then we should be able to prove via a contradiction.\\
+\null\newline
+Our assumption, where $(x,y)\ s.t\ y = f_i(x)$, entails that $(x, y_1),(x, y_2) \in \Gamma(\bigcup\limits_{n \in \mathbb{N}} f_n)$.
+If that is the case, then $(x,y_1) \in \Gamma(f_{i1})$ and $(x,y_2) \in \Gamma(f_{i2})$, where $f_{i1} : A_1 \rightarrow B_1$ and $f_{i2} : A_2 \rightarrow B_2$, with $A_1 \subseteq A_2 \subseteq A$ and $B_1 \subseteq B_2 \subseteq B$ as $f_n \subseteq f_{n+1}$.\\
+\null\newline
+For $\bigcup\limits_{n \in \mathbb{N}} f_n$ to not be a function, it must hold that $y_1 \neq y_2$ as then $x$ would have two different outputs. Let's consider the three cases for $i1$ and $i_2$:
+\begin{enumerate}[label = \textbf{(\roman*)}]
+	\item If $i_1 = i_2$, that is, $f_{i1} = f_{i2}$, then it must be that $y_1 = y_2$ as inputting $x$ to the equal functions $f_{i1}$ and $f_{i2}$ must be mapped to a single corresponding output.
+	\item If $i_1 < i_2$, then $f_{i1} \subseteq f_{i2}$ and $B_1 \subseteq B_2$. $\therefore y_1 \in B_2$, so the input $x$ into functions $f_{i1}$ and $f_{i2}$ have equal outputs, thus $y_1 = y_2$.
+	\item Similarly, if $i_1 > i_2$, then $f_{i2} \subseteq f_{i1}$ and $B_2 \subseteq B_1$. $\therefore y_2 \in B_1$, so the input $x$ into functions $f_{i1}$ and $f_{i2}$ have equal outputs, thus $y_1 = y_2$.
+\end{enumerate}
+As we have seen for all three cases, we have proven $y_1 = y_2$, which contradicts our initial assumption. $\therefore \bigcup\limits_{n \in \mathbb{N}} f_n$ must be a function.\\
+\null\newline
+To show that $\bigcup\limits_{n \in \mathbb{N}} f_n \in Funct(A,B)$, we must prove that it is a function with domain $\tilde{A}$ and codomain $\tilde{B}$ where $\tilde{A} \in A$ and $\tilde{B} \in B$.\\
+\null\newline
+The domain of $\bigcup\limits_{n \in \mathbb{N}} f_n$ is $d_1 \cup d_2 \cup \ldots \cup d_n$ where $d_i$ is the domain of $f_i$. The union of these sets is still within $A$ as each set $d_i$ is a subset of $\tilde{A}$, therefore the domain of $\bigcup\limits_{n \in \mathbb{N}} f_n \in A$.\\
+\null\newline
+Similarly, the sub-domain of $\bigcup\limits_{n \in \mathbb{N}} f_n$ is $s_1 \cup s_2 \cup \ldots \cup s_n$ where $s_i$ is the sub-domain of $f_i$. The union of these sets is still within $B$ as each set $s_i$ is a subset of $\tilde{B}$, therefore the sub-domain of $\bigcup\limits_{n \in \mathbb{N}} f_n \in B$.\\
+\null\newline
+As the domain and codomain of the function $\bigcup\limits_{n \in \mathbb{N}} f_n$ are subsets of $A$ and $B$, it is shown that $\bigcup\limits_{n \in \mathbb{N}} f_n \in Funct(A,B)$.
+
+\subsubsection*{Part (d)}
+
+For every $f \in Funct(A, B)$, let $Dom(f)$ be the domain of $f$, namely if $f : \tilde{A} \rightarrow \tilde{B}$ with $\tilde{A} \subseteq A$ and $\tilde{B} \subseteq B$, $Dom(f) = \tilde{A}$.
+Prove that $Dom(\bigcup\limits_{n \in \mathbb{N}} f_n) = \bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$ for every sequence of the functions $\{ f_n \}_{n=1,2,\ldots} = \{ f_1,\ f_2,\ \ldots \}$ in $Funct(A, B)$ satisfying that $f_n \subseteq f_{n+1}$ for every $n \geq 1$.
+
+\subsubsection*{Solution}
+
+To prove $Dom(\bigcup\limits_{n \in \mathbb{N}} f_n) = \bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$ via double inclusion, we will show $Dom(\bigcup\limits_{n \in \mathbb{N}} f_n) \subseteq \bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$ and $Dom(\bigcup\limits_{n \in \mathbb{N}} f_n) \supseteq \bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$.
+\begin{itemize}
+	\item
+		$Dom(\bigcup\limits_{n \in \mathbb{N}} f_n) \subseteq \bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$\\
+		As we have seen, the domain of $\bigcup\limits_{n \in \mathbb{N}} f_n$, called $A_1$, is a subset of $A$.\\
+		$\bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$ would be $\tilde{A_1} \cup \tilde{A_2} \cup \ldots \cup \tilde{A_n}$, called $A_2$, which is also a subset of $A$.\\
+		\ldots
+	\item
+		$Dom(\bigcup\limits_{n \in \mathbb{N}} f_n) \supseteq \bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$\\
+		\ldots
+\end{itemize}
+By proving inclusion in both directions, it holds that $Dom(\bigcup\limits_{n \in \mathbb{N}} f_n) = \bigcup\limits_{n \in \mathbb{N}} Dom(f_n)$.
+
+\pagebreak
+\subsection*{Exercise 4}
+
+Let $\mathbb{R}[x]$ be the set of all polynomials in variable $x$ with coefficients $\mathbb{R}$. In other words,
+\[
+	\mathbb{R}[x] = \{ a_nx^n + a_{n-1}x^{n-1} + \ldots + a_1x + a_0\ |\ n \in \mathbb{N} \text{ and } a_0,\ \ldots,\ a_n \in \mathbb{R} \}
+\]
+
+\subsubsection*{Part a}
+
+Give three examples of $\mathbb{R}[x]$.
+
+\subsubsection*{Solution}
+
+\begin{itemize}
+	\itemsep0em
+	\item $5x^3 + 0.3x^2 - 97x + 0.2$
+	\item $4$
+	\item $x^8$
+\end{itemize}
+
+\subsubsection*{Part b}
+
+Prove that $(\mathbb{R}[x], +)$, $\mathbb{R}[x]$ with addition as the operator, is a semi-group.
+
+\subsubsection*{Solution}
+
+A semigroup is a set with an associative binary operator applied to it. Here, we must prove that the addition of $\mathbb{R}[x]$ is
+both a binary operations and associative.\\
+\null\newline
+Addition of $\mathbb{R}[x]$ is a binary operation as $\forall a,b \in \mathbb{R}[x],\ a + b \in \mathbb{R}[x]$ because the sum of any two real numbers is itself a real number.\\
+Addition of $\mathbb{R}[x]$ is also associative as $(a + b) + c = a + (b + c)$ is valid because addition of any two real numbers is associative.\\
+\null\newline
+$\therefore$ $(\mathbb{R}[x], +)$, $\mathbb{R}[x]$ is a semi-group.
+
+\pagebreak
+\subsubsection*{Part c}
+
+Is $(\mathbb{R}[x], +)$ a monoid? Justify your answer.
+
+\subsubsection*{Solution}
+
+For the semi-group $(\mathbb{R}[x], +)$ to be a monoid, the set $\mathbb{R}[x]$ must contain the identity element $e$ to $(\mathbb{R}[x], +)$.
+The identify of addition with $\mathbb{R}[x]$ is $0$, as the sum of any real number $a$ and $0$ is $a$.
+Additionally, $0$ is an element of $\mathbb{R}[x]$, thus $(\mathbb{R}[x], +)$ is a monoid, where $e = 0$.
+
+\subsubsection*{Part d}
+
+Does $(\mathbb{R}[x], +)$ have invertable elements? If so, which of its elements are invertable? Justify your answer.
+
+\subsubsection*{Solution}
+
+The inverse element $a^{-1}$ of any element $a$ in $(\mathbb{R}[x], +)$ is such that $a + a^{-1} = e$. It follows that $a^{-1} = e - a$.
+In the case of $(\mathbb{R}[x], +)$, we have found $e = 0$. Thus, any element $a \in \mathbb{R}[x]$ has an inverse element $a^{-1} = -a$.
+
+\pagebreak
+
+\end{document}
