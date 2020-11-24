@@ -12,10 +12,11 @@ architecture Behavioral of mux2_32bit is
 begin
 	process(line_select, line0, line1)
 	begin
+		-- Set the output to the approptiate input line
 		case line_select is
-			when '0' => output <= line0 after 1 ns;
-			when '1' => output <= line1 after 1 ns;
-			when others => output <= line0 after 1 ns;
+			when '0' => output <= line0 after 5 ns;
+			when '1' => output <= line1 after 5 ns;
+			when others => output <= line0 after 5 ns;
 		end case;
 	end process;
 end Behavioral;
