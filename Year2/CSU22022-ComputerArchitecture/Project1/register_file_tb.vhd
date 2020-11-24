@@ -8,107 +8,71 @@ end register_file_tb;
 architecture Behavior of register_file_tb is
 	component register_file
 		port(
-			clk, load        : in std_logic;
-			src_reg, dst_reg : in std_logic_vector(4 downto 0);
-			input            : in std_logic_vector(31 downto 0);
-			output00, output01, output02, output03 : inout std_logic_vector(31 downto 0);
-			output04, output05, output06, output07 : inout std_logic_vector(31 downto 0);
-			output08, output09, output0a, output0b : inout std_logic_vector(31 downto 0);
-			output0c, output0d, output0e, output0f : inout std_logic_vector(31 downto 0);
-			output10, output11, output12, output13 : inout std_logic_vector(31 downto 0);
-			output14, output15, output16, output17 : inout std_logic_vector(31 downto 0);
-			output18, output19, output1a, output1b : inout std_logic_vector(31 downto 0);
-			output1c, output1d, output1e, output1f : inout std_logic_vector(31 downto 0));
+			load_enable                    : in std_logic;
+			dst_select, a_select, b_select : in std_logic_vector(4 downto 0);
+			input_data                     : in std_logic_vector(31 downto 0);
+			a_output_data, b_output_data   : out std_logic_vector(31 downto 0));
 	end component;
 
-	signal clk, load        : std_logic := '0';
-	signal src_reg, dst_reg : std_logic_vector(4 downto 0) := (others => '0');
-	signal input            : std_logic_vector(31 downto 0) := (others => '0');
-	signal output00, output01, output02, output03 : std_logic_vector(31 downto 0) := (others => '0');
-	signal output04, output05, output06, output07 : std_logic_vector(31 downto 0) := (others => '0');
-	signal output08, output09, output0a, output0b : std_logic_vector(31 downto 0) := (others => '0');
-	signal output0c, output0d, output0e, output0f : std_logic_vector(31 downto 0) := (others => '0');
-	signal output10, output11, output12, output13 : std_logic_vector(31 downto 0) := (others => '0');
-	signal output14, output15, output16, output17 : std_logic_vector(31 downto 0) := (others => '0');
-	signal output18, output19, output1a, output1b : std_logic_vector(31 downto 0) := (others => '0');
-	signal output1c, output1d, output1e, output1f : std_logic_vector(31 downto 0) := (others => '0');
+	signal load_enable : std_logic;
+	signal dst_select, a_select, b_select : std_logic_vector(4 downto 0);
+	signal input_data                     : std_logic_vector(31 downto 0);
+	signal a_output_data, b_output_data   : std_logic_vector(31 downto 0);
 
 begin
 	uut: register_file port map(
-		clk => clk, load => load, src_reg => src_reg, dst_reg => dst_reg, input => input,
-		output00 => output00, output01 => output01, output02 => output02, output03 => output03,
-		output04 => output04, output05 => output05, output06 => output06, output07 => output07,
-		output08 => output08, output09 => output09, output0a => output0a, output0b => output0b,
-		output0c => output0c, output0d => output0d, output0e => output0e, output0f => output0f,
-		output10 => output10, output11 => output11, output12 => output12, output13 => output13,
-		output14 => output14, output15 => output15, output16 => output16, output17 => output17,
-		output18 => output18, output19 => output19, output1a => output1a, output1b => output1b,
-		output1c => output1c, output1d => output1d, output1e => output1e, output1f => output1f);
-	
-	-- 100 MHz clock
-	process
-	begin
-		clk <= not clk after 5 ns;
-		wait for 5 ns;
-	end process;
-	
+		load_enable => load_enable,
+		dst_select => dst_select, a_select => a_select, b_select => b_select,
+		input_data => input_data,
+		a_output_data => a_output_data, b_output_data => b_output_data);
 	stim_proc: process
 	begin
 
-		src_reg <= "00000";
-		dst_reg <= "00000";
+		-- all register start uninitialized, so there output is also undefined
+		load_enable <= '0';
+		a_select <= "00000";
+		b_select <= "00000";
+		wait for 10 ns;
+
+		-- simulate loading 0x00000000 into reg00 while observing with a
+		a_select <= "00000";
+		dst_select <= "00000";
+		input_data <= x"00000000";
+		wait for 10 ns; load_enable <= '1';
+		wait for 10 ns; load_enable <= '0';
+
 		wait for 50 ns;
 
-		-- Loading HEX values into the 32 registers
-		load <= '1';
-		dst_reg <= "00000"; input <= x"012709c2"; wait for 10 ns;
-		dst_reg <= "00001"; input <= x"012709c1"; wait for 10 ns;
-		dst_reg <= "00010"; input <= x"012709c0"; wait for 10 ns;
-		dst_reg <= "00011"; input <= x"012709bf"; wait for 10 ns;
-		dst_reg <= "00100"; input <= x"012709be"; wait for 10 ns;
-		dst_reg <= "00101"; input <= x"012709bd"; wait for 10 ns;
-		dst_reg <= "00110"; input <= x"012709bc"; wait for 10 ns;
-		dst_reg <= "00111"; input <= x"012709bb"; wait for 10 ns;
-		dst_reg <= "01000"; input <= x"012709ba"; wait for 10 ns;
-		dst_reg <= "01001"; input <= x"012709b9"; wait for 10 ns;
-		dst_reg <= "01010"; input <= x"012709b8"; wait for 10 ns;
-		dst_reg <= "01011"; input <= x"012709b7"; wait for 10 ns;
-		dst_reg <= "01100"; input <= x"012709b6"; wait for 10 ns;
-		dst_reg <= "01101"; input <= x"012709b5"; wait for 10 ns;
-		dst_reg <= "01110"; input <= x"012709b4"; wait for 10 ns;
-		dst_reg <= "01111"; input <= x"012709b3"; wait for 10 ns;
-		dst_reg <= "10000"; input <= x"012709b2"; wait for 10 ns;
-		dst_reg <= "10001"; input <= x"012709b1"; wait for 10 ns;    
-		dst_reg <= "10010"; input <= x"012709a0"; wait for 10 ns;    
-		dst_reg <= "10011"; input <= x"012709af"; wait for 10 ns;    
-		dst_reg <= "10100"; input <= x"012709ae"; wait for 10 ns;    
-		dst_reg <= "10101"; input <= x"012709ad"; wait for 10 ns;    
-		dst_reg <= "10110"; input <= x"012709ac"; wait for 10 ns;    
-		dst_reg <= "10111"; input <= x"012709ab"; wait for 10 ns;    
-		dst_reg <= "11000"; input <= x"012709aa"; wait for 10 ns;    
-		dst_reg <= "11001"; input <= x"012709a9"; wait for 10 ns;    
-		dst_reg <= "11010"; input <= x"012709a8"; wait for 10 ns;    
-		dst_reg <= "11011"; input <= x"012709a7"; wait for 10 ns;    
-		dst_reg <= "11100"; input <= x"012709a6"; wait for 10 ns;    
-		dst_reg <= "11101"; input <= x"012709a5"; wait for 10 ns;    
-		dst_reg <= "11110"; input <= x"012709a4"; wait for 10 ns;    
-		dst_reg <= "11111"; input <= x"012709a3"; wait for 10 ns;
+		-- simulate loading 0x0f0f0f0f into reg05 while observing with b
+		b_select <= "00101";
+		dst_select <= "00101";
+		input_data <= x"0f0f0f0f";
+		wait for 10 ns; load_enable <= '1';
+		wait for 10 ns; load_enable <= '0';
 
-		-- Transfering register 00 to 01, 01 to 02, 02 to 03, etc... for 10 examples
-		load <= '0';
-		src_reg <= "00000"; dst_reg <= "00001"; wait for 10 ns;
-		src_reg <= "00001"; dst_reg <= "00010"; wait for 10 ns;
-		src_reg <= "00010"; dst_reg <= "00011"; wait for 10 ns;
-		src_reg <= "00011"; dst_reg <= "00100"; wait for 10 ns;
-		src_reg <= "00100"; dst_reg <= "00101"; wait for 10 ns;
-		src_reg <= "00101"; dst_reg <= "00110"; wait for 10 ns;
-		src_reg <= "00110"; dst_reg <= "00111"; wait for 10 ns;
-		src_reg <= "00111"; dst_reg <= "01000"; wait for 10 ns;
-		src_reg <= "01000"; dst_reg <= "01001"; wait for 10 ns;
-		src_reg <= "01001"; dst_reg <= "01010"; wait for 10 ns;
-		
-		wait for 1000 ns;
-		
+		wait for 50 ns;
+
+		-- load a different value 0xffffffff into reg05
+		dst_select <= "00101";
+		input_data <= x"ffffffff";
+		wait for 10 ns; load_enable <= '1';
+		wait for 10 ns; load_enable <= '0';
+
+		wait for 50 ns;
+
+		-- load 0x55555555 into reg1f without observing
+		dst_select <= "11111";
+		input_data <= x"55555555";
+		wait for 10 ns; load_enable <= '1';
+		wait for 10 ns; load_enable <= '0';
+
+		wait for 50 ns;
+
+		-- set output of a and b to reg1f
+		a_select <= "11111";
+		b_select <= "11111";
+
+		wait;
 	end process;
 end;
 

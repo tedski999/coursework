@@ -3,65 +3,65 @@ use ieee.std_logic_1164.all;
 
 entity mux32_32 is
 	port(
-		s : in std_logic_vector(4 downto 0);
-		in00, in01, in02, in03 : in std_logic_vector(31 downto 0);
-		in04, in05, in06, in07 : in std_logic_vector(31 downto 0);
-		in08, in09, in0a, in0b : in std_logic_vector(31 downto 0);
-		in0c, in0d, in0e, in0f : in std_logic_vector(31 downto 0);
-		in10, in11, in12, in13 : in std_logic_vector(31 downto 0);
-		in14, in15, in16, in17 : in std_logic_vector(31 downto 0);
-		in18, in19, in1a, in1b : in std_logic_vector(31 downto 0);
-		in1c, in1d, in1e, in1f : in std_logic_vector(31 downto 0);
-		o : out std_logic_vector(31 downto 0));
+		line_select : in std_logic_vector(4 downto 0);
+		line00, line01, line02, line03 : in std_logic_vector(31 downto 0);
+		line04, line05, line06, line07 : in std_logic_vector(31 downto 0);
+		line08, line09, line0a, line0b : in std_logic_vector(31 downto 0);
+		line0c, line0d, line0e, line0f : in std_logic_vector(31 downto 0);
+		line10, line11, line12, line13 : in std_logic_vector(31 downto 0);
+		line14, line15, line16, line17 : in std_logic_vector(31 downto 0);
+		line18, line19, line1a, line1b : in std_logic_vector(31 downto 0);
+		line1c, line1d, line1e, line1f : in std_logic_vector(31 downto 0);
+		output : out std_logic_vector(31 downto 0));
 end mux32_32;
 
 architecture Behavioral of mux32_32 is
 begin
 	process(
-		s,
-		in00, in01, in02, in03,
-		in04, in05, in06, in07,
-		in08, in09, in0a, in0b,
-		in0c, in0d, in0e, in0f,
-		in10, in11, in12, in13,
-		in14, in15, in16, in17,
-		in18, in19, in1a, in1b,
-		in1c, in1d, in1e, in1f)
+		line_select,
+		line00, line01, line02, line03,
+		line04, line05, line06, line07,
+		line08, line09, line0a, line0b,
+		line0c, line0d, line0e, line0f,
+		line10, line11, line12, line13,
+		line14, line15, line16, line17,
+		line18, line19, line1a, line1b,
+		line1c, line1d, line1e, line1f)
 	begin
-		case s is
-			when "00000" => o <= in00 after 1 ns;
-			when "00001" => o <= in01 after 1 ns;
-			when "00010" => o <= in02 after 1 ns;
-			when "00011" => o <= in03 after 1 ns;
-			when "00100" => o <= in04 after 1 ns;
-			when "00101" => o <= in05 after 1 ns;
-			when "00110" => o <= in06 after 1 ns;
-			when "00111" => o <= in07 after 1 ns;
-			when "01000" => o <= in08 after 1 ns;
-			when "01001" => o <= in09 after 1 ns;
-			when "01010" => o <= in0a after 1 ns;
-			when "01011" => o <= in0b after 1 ns;
-			when "01100" => o <= in0c after 1 ns;
-			when "01101" => o <= in0d after 1 ns;
-			when "01110" => o <= in0e after 1 ns;
-			when "01111" => o <= in0f after 1 ns;
-			when "10000" => o <= in10 after 1 ns;
-			when "10001" => o <= in11 after 1 ns;
-			when "10010" => o <= in12 after 1 ns;
-			when "10011" => o <= in13 after 1 ns;
-			when "10100" => o <= in14 after 1 ns;
-			when "10101" => o <= in15 after 1 ns;
-			when "10110" => o <= in16 after 1 ns;
-			when "10111" => o <= in17 after 1 ns;
-			when "11000" => o <= in18 after 1 ns;
-			when "11001" => o <= in19 after 1 ns;
-			when "11010" => o <= in1a after 1 ns;
-			when "11011" => o <= in1b after 1 ns;
-			when "11100" => o <= in1c after 1 ns;
-			when "11101" => o <= in1d after 1 ns;
-			when "11110" => o <= in1e after 1 ns;
-			when "11111" => o <= in1f after 1 ns;
-			when others => o <= in00 after 1 ns;
+		case line_select is
+			when "00000" => output <= line00 after 1 ns;
+			when "00001" => output <= line01 after 1 ns;
+			when "00010" => output <= line02 after 1 ns;
+			when "00011" => output <= line03 after 1 ns;
+			when "00100" => output <= line04 after 1 ns;
+			when "00101" => output <= line05 after 1 ns;
+			when "00110" => output <= line06 after 1 ns;
+			when "00111" => output <= line07 after 1 ns;
+			when "01000" => output <= line08 after 1 ns;
+			when "01001" => output <= line09 after 1 ns;
+			when "01010" => output <= line0a after 1 ns;
+			when "01011" => output <= line0b after 1 ns;
+			when "01100" => output <= line0c after 1 ns;
+			when "01101" => output <= line0d after 1 ns;
+			when "01110" => output <= line0e after 1 ns;
+			when "01111" => output <= line0f after 1 ns;
+			when "10000" => output <= line10 after 1 ns;
+			when "10001" => output <= line11 after 1 ns;
+			when "10010" => output <= line12 after 1 ns;
+			when "10011" => output <= line13 after 1 ns;
+			when "10100" => output <= line14 after 1 ns;
+			when "10101" => output <= line15 after 1 ns;
+			when "10110" => output <= line16 after 1 ns;
+			when "10111" => output <= line17 after 1 ns;
+			when "11000" => output <= line18 after 1 ns;
+			when "11001" => output <= line19 after 1 ns;
+			when "11010" => output <= line1a after 1 ns;
+			when "11011" => output <= line1b after 1 ns;
+			when "11100" => output <= line1c after 1 ns;
+			when "11101" => output <= line1d after 1 ns;
+			when "11110" => output <= line1e after 1 ns;
+			when "11111" => output <= line1f after 1 ns;
+			when others => output <= line00 after 1 ns;
 		end case;
 	end process;
 end Behavioral;

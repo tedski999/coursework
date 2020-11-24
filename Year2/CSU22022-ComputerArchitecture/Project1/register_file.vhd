@@ -3,104 +3,151 @@ use ieee.std_logic_1164.all;
 
 entity register_file is
 	port(
-		clk, load        : in std_logic;
-		src_reg, dst_reg : in std_logic_vector(4 downto 0);
-		input            : in std_logic_vector(31 downto 0);
-		output00, output01, output02, output03 : inout std_logic_vector(31 downto 0);
-		output04, output05, output06, output07 : inout std_logic_vector(31 downto 0);
-		output08, output09, output0a, output0b : inout std_logic_vector(31 downto 0);
-		output0c, output0d, output0e, output0f : inout std_logic_vector(31 downto 0);
-		output10, output11, output12, output13 : inout std_logic_vector(31 downto 0);
-		output14, output15, output16, output17 : inout std_logic_vector(31 downto 0);
-		output18, output19, output1a, output1b : inout std_logic_vector(31 downto 0);
-		output1c, output1d, output1e, output1f : inout std_logic_vector(31 downto 0));
+		load_enable                    : in std_logic;
+		dst_select, a_select, b_select : in std_logic_vector(4 downto 0);
+		input_data                     : in std_logic_vector(31 downto 0);
+		a_output_data, b_output_data   : out std_logic_vector(31 downto 0));
 end register_file;
 
 architecture Behavioral of register_file is
 
 	component decoder_5to32
 		port(
-			s : in  std_logic_vector(4 downto 0);
-			o : out std_logic_vector(31 downto 0));
+			input  : in  std_logic_vector(4 downto 0);
+			output : out std_logic_vector(31 downto 0));
 	end component;
 
 	component mux2_32
 		port(
-			s        : in  std_logic;
-			in0, in1 : in  std_logic_vector(31 downto 0);
-			o        : out std_logic_vector(31 downto 0));
+			line_select  : in  std_logic;
+			line0, line1 : in  std_logic_vector(31 downto 0);
+			output       : out std_logic_vector(31 downto 0));
 	end component;
 
 	component reg32
 		port(
-			load, clk : in  std_logic;
-			d         : in  std_logic_vector(31 downto 0);
-			o         : out std_logic_vector(31 downto 0));
+			load   : in  std_logic;
+			input  : in  std_logic_vector(31 downto 0);
+			output : out std_logic_vector(31 downto 0));
 	end component;
 
 	component mux32_32
 		port(
-			s : in std_logic_vector(4 downto 0);
-			in00, in01, in02, in03 : in std_logic_vector(31 downto 0);
-			in04, in05, in06, in07 : in std_logic_vector(31 downto 0);
-			in08, in09, in0a, in0b : in std_logic_vector(31 downto 0);
-			in0c, in0d, in0e, in0f : in std_logic_vector(31 downto 0);
-			in10, in11, in12, in13 : in std_logic_vector(31 downto 0);
-			in14, in15, in16, in17 : in std_logic_vector(31 downto 0);
-			in18, in19, in1a, in1b : in std_logic_vector(31 downto 0);
-			in1c, in1d, in1e, in1f : in std_logic_vector(31 downto 0);
-			o : out std_logic_vector(31 downto 0));
+			line_select : in std_logic_vector(4 downto 0);
+			line00, line01, line02, line03 : in std_logic_vector(31 downto 0);
+			line04, line05, line06, line07 : in std_logic_vector(31 downto 0);
+			line08, line09, line0a, line0b : in std_logic_vector(31 downto 0);
+			line0c, line0d, line0e, line0f : in std_logic_vector(31 downto 0);
+			line10, line11, line12, line13 : in std_logic_vector(31 downto 0);
+			line14, line15, line16, line17 : in std_logic_vector(31 downto 0);
+			line18, line19, line1a, line1b : in std_logic_vector(31 downto 0);
+			line1c, line1d, line1e, line1f : in std_logic_vector(31 downto 0);
+			output : out std_logic_vector(31 downto 0));
 	end component;
 
-	signal load_bitmap, loopback, reg_input : std_logic_vector(31 downto 0) := (others => '0');
+	signal dst_select_vector, load_vector                         : std_logic_vector(31 downto 0);
+	signal reg00_output, reg01_output, reg02_output, reg03_output : std_logic_vector(31 downto 0);
+	signal reg04_output, reg05_output, reg06_output, reg07_output : std_logic_vector(31 downto 0);
+	signal reg08_output, reg09_output, reg0a_output, reg0b_output : std_logic_vector(31 downto 0);
+	signal reg0c_output, reg0d_output, reg0e_output, reg0f_output : std_logic_vector(31 downto 0);
+	signal reg10_output, reg11_output, reg12_output, reg13_output : std_logic_vector(31 downto 0);
+	signal reg14_output, reg15_output, reg16_output, reg17_output : std_logic_vector(31 downto 0);
+	signal reg18_output, reg19_output, reg1a_output, reg1b_output : std_logic_vector(31 downto 0);
+	signal reg1c_output, reg1d_output, reg1e_output, reg1f_output : std_logic_vector(31 downto 0);
 
 begin
+	dst_decoder: decoder_5to32 port map(input => dst_select, output => dst_select_vector);
+	reg00: reg32 port map(load => load_vector(0),  input => input_data, output => reg00_output);
+	reg01: reg32 port map(load => load_vector(1),  input => input_data, output => reg01_output);
+	reg02: reg32 port map(load => load_vector(2),  input => input_data, output => reg02_output);
+	reg03: reg32 port map(load => load_vector(3),  input => input_data, output => reg03_output);
+	reg04: reg32 port map(load => load_vector(4),  input => input_data, output => reg04_output);
+	reg05: reg32 port map(load => load_vector(5),  input => input_data, output => reg05_output);
+	reg06: reg32 port map(load => load_vector(6),  input => input_data, output => reg06_output);
+	reg07: reg32 port map(load => load_vector(7),  input => input_data, output => reg07_output);
+	reg08: reg32 port map(load => load_vector(8),  input => input_data, output => reg08_output);
+	reg09: reg32 port map(load => load_vector(9),  input => input_data, output => reg09_output);
+	reg0a: reg32 port map(load => load_vector(10), input => input_data, output => reg0a_output);
+	reg0b: reg32 port map(load => load_vector(11), input => input_data, output => reg0b_output);
+	reg0c: reg32 port map(load => load_vector(12), input => input_data, output => reg0c_output);
+	reg0d: reg32 port map(load => load_vector(13), input => input_data, output => reg0d_output);
+	reg0e: reg32 port map(load => load_vector(14), input => input_data, output => reg0e_output);
+	reg0f: reg32 port map(load => load_vector(15), input => input_data, output => reg0f_output);
+	reg10: reg32 port map(load => load_vector(16), input => input_data, output => reg10_output);
+	reg11: reg32 port map(load => load_vector(17), input => input_data, output => reg11_output);
+	reg12: reg32 port map(load => load_vector(18), input => input_data, output => reg12_output);
+	reg13: reg32 port map(load => load_vector(19), input => input_data, output => reg13_output);
+	reg14: reg32 port map(load => load_vector(20), input => input_data, output => reg14_output);
+	reg15: reg32 port map(load => load_vector(21), input => input_data, output => reg15_output);
+	reg16: reg32 port map(load => load_vector(22), input => input_data, output => reg16_output);
+	reg17: reg32 port map(load => load_vector(23), input => input_data, output => reg17_output);
+	reg18: reg32 port map(load => load_vector(24), input => input_data, output => reg18_output);
+	reg19: reg32 port map(load => load_vector(25), input => input_data, output => reg19_output);
+	reg1a: reg32 port map(load => load_vector(26), input => input_data, output => reg1a_output);
+	reg1b: reg32 port map(load => load_vector(27), input => input_data, output => reg1b_output);
+	reg1c: reg32 port map(load => load_vector(28), input => input_data, output => reg1c_output);
+	reg1d: reg32 port map(load => load_vector(29), input => input_data, output => reg1d_output);
+	reg1e: reg32 port map(load => load_vector(30), input => input_data, output => reg1e_output);
+	reg1f: reg32 port map(load => load_vector(31), input => input_data, output => reg1f_output);
 
-	dst_decoder: decoder_5to32 port map(s => dst_reg, o => load_bitmap);
-	src_mux: mux2_32 port map(s => load, in0 => loopback, in1 => input, o => reg_input);
-	reg00: reg32 port map(d => reg_input, load => load_bitmap(0),  clk => clk, o => output00);
-	reg01: reg32 port map(d => reg_input, load => load_bitmap(1),  clk => clk, o => output01);
-	reg02: reg32 port map(d => reg_input, load => load_bitmap(2),  clk => clk, o => output02);
-	reg03: reg32 port map(d => reg_input, load => load_bitmap(3),  clk => clk, o => output03);
-	reg04: reg32 port map(d => reg_input, load => load_bitmap(4),  clk => clk, o => output04);
-	reg05: reg32 port map(d => reg_input, load => load_bitmap(5),  clk => clk, o => output05);
-	reg06: reg32 port map(d => reg_input, load => load_bitmap(6),  clk => clk, o => output06);
-	reg07: reg32 port map(d => reg_input, load => load_bitmap(7),  clk => clk, o => output07);
-	reg08: reg32 port map(d => reg_input, load => load_bitmap(8),  clk => clk, o => output08);
-	reg09: reg32 port map(d => reg_input, load => load_bitmap(9),  clk => clk, o => output09);
-	reg10: reg32 port map(d => reg_input, load => load_bitmap(10), clk => clk, o => output0a);
-	reg11: reg32 port map(d => reg_input, load => load_bitmap(11), clk => clk, o => output0b);
-	reg12: reg32 port map(d => reg_input, load => load_bitmap(12), clk => clk, o => output0c);
-	reg13: reg32 port map(d => reg_input, load => load_bitmap(13), clk => clk, o => output0d);
-	reg14: reg32 port map(d => reg_input, load => load_bitmap(14), clk => clk, o => output0e);
-	reg15: reg32 port map(d => reg_input, load => load_bitmap(15), clk => clk, o => output0f);
-	reg16: reg32 port map(d => reg_input, load => load_bitmap(16), clk => clk, o => output10);
-	reg17: reg32 port map(d => reg_input, load => load_bitmap(17), clk => clk, o => output11);
-	reg18: reg32 port map(d => reg_input, load => load_bitmap(18), clk => clk, o => output12);
-	reg19: reg32 port map(d => reg_input, load => load_bitmap(19), clk => clk, o => output13);
-	reg20: reg32 port map(d => reg_input, load => load_bitmap(20), clk => clk, o => output14);
-	reg21: reg32 port map(d => reg_input, load => load_bitmap(21), clk => clk, o => output15);
-	reg22: reg32 port map(d => reg_input, load => load_bitmap(22), clk => clk, o => output16);
-	reg23: reg32 port map(d => reg_input, load => load_bitmap(23), clk => clk, o => output17);
-	reg24: reg32 port map(d => reg_input, load => load_bitmap(24), clk => clk, o => output18);
-	reg25: reg32 port map(d => reg_input, load => load_bitmap(25), clk => clk, o => output19);
-	reg26: reg32 port map(d => reg_input, load => load_bitmap(26), clk => clk, o => output1a);
-	reg27: reg32 port map(d => reg_input, load => load_bitmap(27), clk => clk, o => output1b);
-	reg28: reg32 port map(d => reg_input, load => load_bitmap(28), clk => clk, o => output1c);
-	reg29: reg32 port map(d => reg_input, load => load_bitmap(29), clk => clk, o => output1d);
-	reg30: reg32 port map(d => reg_input, load => load_bitmap(30), clk => clk, o => output1e);
-	reg31: reg32 port map(d => reg_input, load => load_bitmap(31), clk => clk, o => output1f);
-	data_mux: mux32_32 port map(
-		s => src_reg,
-		in00 => output00, in01 => output01, in02 => output02, in03 => output03,
-		in04 => output04, in05 => output05, in06 => output06, in07 => output07,
-		in08 => output08, in09 => output09, in0a => output0a, in0b => output0b,
-		in0c => output0c, in0d => output0d, in0e => output0e, in0f => output0f,
-		in10 => output10, in11 => output11, in12 => output12, in13 => output13,
-		in14 => output14, in15 => output15, in16 => output16, in17 => output17,
-		in18 => output18, in19 => output19, in1a => output1a, in1b => output1b,
-		in1c => output1c, in1d => output1d, in1e => output1e, in1f => output1f,
-		o => loopback);
+	a_select_mux: mux32_32 port map(
+		line_select => a_select,
+		line00 => reg00_output, line01 => reg01_output, line02 => reg02_output, line03 => reg03_output,
+		line04 => reg04_output, line05 => reg05_output, line06 => reg06_output, line07 => reg07_output,
+		line08 => reg08_output, line09 => reg09_output, line0a => reg0a_output, line0b => reg0b_output,
+		line0c => reg0c_output, line0d => reg0d_output, line0e => reg0e_output, line0f => reg0f_output,
+		line10 => reg10_output, line11 => reg11_output, line12 => reg12_output, line13 => reg13_output,
+		line14 => reg14_output, line15 => reg15_output, line16 => reg16_output, line17 => reg17_output,
+		line18 => reg18_output, line19 => reg19_output, line1a => reg1a_output, line1b => reg1b_output,
+		line1c => reg1c_output, line1d => reg1d_output, line1e => reg1e_output, line1f => reg1f_output,
+		output => a_output_data);
 
+	b_select_mux: mux32_32 port map(
+		line_select => b_select,
+		line00 => reg00_output, line01 => reg01_output, line02 => reg02_output, line03 => reg03_output,
+		line04 => reg04_output, line05 => reg05_output, line06 => reg06_output, line07 => reg07_output,
+		line08 => reg08_output, line09 => reg09_output, line0a => reg0a_output, line0b => reg0b_output,
+		line0c => reg0c_output, line0d => reg0d_output, line0e => reg0e_output, line0f => reg0f_output,
+		line10 => reg10_output, line11 => reg11_output, line12 => reg12_output, line13 => reg13_output,
+		line14 => reg14_output, line15 => reg15_output, line16 => reg16_output, line17 => reg17_output,
+		line18 => reg18_output, line19 => reg19_output, line1a => reg1a_output, line1b => reg1b_output,
+		line1c => reg1c_output, line1d => reg1d_output, line1e => reg1e_output, line1f => reg1f_output,
+		output => b_output_data);
+
+	process(dst_select_vector, load_enable)
+	begin
+		load_vector(0)  <= load_enable and dst_select_vector(0)  after 1 ns;
+		load_vector(1)  <= load_enable and dst_select_vector(1)  after 1 ns;
+		load_vector(2)  <= load_enable and dst_select_vector(2)  after 1 ns;
+		load_vector(3)  <= load_enable and dst_select_vector(3)  after 1 ns;
+		load_vector(4)  <= load_enable and dst_select_vector(4)  after 1 ns;
+		load_vector(5)  <= load_enable and dst_select_vector(5)  after 1 ns;
+		load_vector(6)  <= load_enable and dst_select_vector(6)  after 1 ns;
+		load_vector(7)  <= load_enable and dst_select_vector(7)  after 1 ns;
+		load_vector(8)  <= load_enable and dst_select_vector(8)  after 1 ns;
+		load_vector(9)  <= load_enable and dst_select_vector(9)  after 1 ns;
+		load_vector(10) <= load_enable and dst_select_vector(10) after 1 ns;
+		load_vector(11) <= load_enable and dst_select_vector(11) after 1 ns;
+		load_vector(12) <= load_enable and dst_select_vector(12) after 1 ns;
+		load_vector(13) <= load_enable and dst_select_vector(13) after 1 ns;
+		load_vector(14) <= load_enable and dst_select_vector(14) after 1 ns;
+		load_vector(15) <= load_enable and dst_select_vector(15) after 1 ns;
+		load_vector(16) <= load_enable and dst_select_vector(16) after 1 ns;
+		load_vector(17) <= load_enable and dst_select_vector(17) after 1 ns;
+		load_vector(18) <= load_enable and dst_select_vector(18) after 1 ns;
+		load_vector(19) <= load_enable and dst_select_vector(19) after 1 ns;
+		load_vector(20) <= load_enable and dst_select_vector(20) after 1 ns;
+		load_vector(21) <= load_enable and dst_select_vector(21) after 1 ns;
+		load_vector(22) <= load_enable and dst_select_vector(22) after 1 ns;
+		load_vector(23) <= load_enable and dst_select_vector(23) after 1 ns;
+		load_vector(24) <= load_enable and dst_select_vector(24) after 1 ns;
+		load_vector(25) <= load_enable and dst_select_vector(25) after 1 ns;
+		load_vector(26) <= load_enable and dst_select_vector(26) after 1 ns;
+		load_vector(27) <= load_enable and dst_select_vector(27) after 1 ns;
+		load_vector(28) <= load_enable and dst_select_vector(28) after 1 ns;
+		load_vector(29) <= load_enable and dst_select_vector(29) after 1 ns;
+		load_vector(30) <= load_enable and dst_select_vector(30) after 1 ns;
+		load_vector(31) <= load_enable and dst_select_vector(31) after 1 ns;
+	end process;
 end Behavioral;
 
