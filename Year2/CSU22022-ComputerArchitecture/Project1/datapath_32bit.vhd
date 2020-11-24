@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 
 entity datapath_32bit is
 	port(
-		clock, load_enable, mb_select, md_select                 : in std_logic;
+		clock, load_enable, use_immediate, load_from_mem   : in std_logic;
 		function_select, dst_address, a_address, b_address : in std_logic_vector(4 downto 0);
 		constant_in, input_data                            : in std_logic_vector(31 downto 0);
 		address_out, data_out                              : out std_logic_vector(31 downto 0);
@@ -56,13 +56,13 @@ begin
 
 	-- Multiplexer for selecting functional unit B input between bus B and an immediate value
 	mux_b: mux2_32bit port map(
-		line_select => mb_select,
+		line_select => use_immediate,
 		line0 => b_output_data, line1 => constant_in,
 		output => b_bus);
 
 	-- Multiplexer for selecting input to dst register between functional unit output and input_data
 	mux_d: mux2_32bit port map(
-		line_select => md_select,
+		line_select => load_from_mem,
 		line0 => functional_unit_output, line1 => input_data,
 		output => loopback_data);
 	

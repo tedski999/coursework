@@ -26,7 +26,8 @@ begin
 		output => output, v => v, c => c, n => n, z => z);
 	stim_proc: process
 	begin
-
+		-- TODO: check if function_select works
+		-- TODO: check if vcnz works
 		wait;
 	end process;
 end;

@@ -13,7 +13,7 @@ architecture Behavioral of functional_unit_32bit is
 
 	component alu_32bit
 		port(
-			g_select         : in std_logic_vector(3 downto 0);
+			operation        : in std_logic_vector(3 downto 0);
 			a_input, b_input : in std_logic_vector(31 downto 0);
 			output           : out std_logic_vector(31 downto 0);
 			carry            : out std_logic);
@@ -21,9 +21,10 @@ architecture Behavioral of functional_unit_32bit is
 	
 	component shifter_32bit
 		port(
-			h_select : in std_logic_vector(1 downto 0);
-			input    : in std_logic_vector(31 downto 0);
-			output   : out std_logic_vector(31 downto 0));
+			left, right : in std_logic;
+			operation   : in std_logic_vector(1 downto 0);
+			input       : in std_logic_vector(31 downto 0);
+			output      : out std_logic_vector(31 downto 0));
 	end component;
 
 	component mux2_32bit
@@ -36,18 +37,27 @@ architecture Behavioral of functional_unit_32bit is
 	signal alu_output, shifter_output : std_logic_vector(31 downto 0);
 
 begin
-	alu: alu_32bit port map(g_select => "0000", a_input => a_input, b_input => b_input, output => alu_output, carry => c);
-	shifter: shifter_32bit port map(h_select => "00", input => b_input, output => shifter_output);
-	mux_f: mux2_32bit port map(line_select => '0', line0 => alu_output, line1 => shifter_output, output => output);
+	-- FIXME: i guessed the function_select bit
+	alu: alu_32bit port map(operation => function_select(3 downto 0), a_input => a_input, b_input => b_input, output => alu_output, carry => c);
+	shifter: shifter_32bit port map(operation => function_select(1 downto 0), left => '0', right => '0', input => b_input, output => shifter_output); -- NOTE: the left/right inputs are tied low
+	output_mux: mux2_32bit port map(line_select => function_select(4), line0 => alu_output, line1 => shifter_output, output => output);
 
 	process(alu_output)
 	begin
-		--v <= not alu_output(31) = (a_input(31) xor b_input(31));
-		n <= alu_output(31);
-		--if (
-		--	z <= alu_output = x"00000000");
-		--else
-		--	z <= '0';
+		-- FIXME: guessed the bits
+		-- v is set if the two inputs have the same sign, but the output has a different sign
+		v <= not (a_input(31) xor b_input(31)) and (a_input(31) xor alu_output(31)) after 5 ns;
+
+		-- FIXME: guessed the bits
+		-- n is set if the msb is set in the output
+		n <= alu_output(31) after 5 ns;
+
+		 -- z is set if the output is zero
+		if alu_output = x"00000000" then
+			z <= '1' after 5 ns;
+		else
+			z <= '0' after 5 ns;
+		end if;
 	end process;
 end Behavioral;
 
