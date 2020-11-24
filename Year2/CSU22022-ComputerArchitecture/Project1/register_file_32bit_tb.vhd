@@ -2,11 +2,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity register_file_tb is
-end register_file_tb;
+entity register_file_32bit_tb is
+end register_file_32bit_tb;
 
-architecture Behavior of register_file_tb is
-	component register_file
+architecture Behavior of register_file_32bit_tb is
+	component register_file_32bit
 		port(
 			load_enable                    : in std_logic;
 			dst_select, a_select, b_select : in std_logic_vector(4 downto 0);
@@ -20,7 +20,7 @@ architecture Behavior of register_file_tb is
 	signal a_output_data, b_output_data   : std_logic_vector(31 downto 0);
 
 begin
-	uut: register_file port map(
+	uut: register_file_32bit port map(
 		load_enable => load_enable,
 		dst_select => dst_select, a_select => a_select, b_select => b_select,
 		input_data => input_data,

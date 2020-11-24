@@ -1,11 +1,11 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity mux32_32_tb is
-end mux32_32_tb;
+entity mux32_32bit_tb is
+end mux32_32bit_tb;
 
-architecture Behavior of mux32_32_tb is
-	component mux32_32
+architecture Behavior of mux32_32bit_tb is
+	component mux32_32bit
 		port(
 			line_select : in std_logic_vector(4 downto 0);
 			line00, line01, line02, line03 : in std_logic_vector(31 downto 0);
@@ -31,7 +31,7 @@ architecture Behavior of mux32_32_tb is
 	signal output : std_logic_vector(31 downto 0);
 
 begin
-	uut: mux32_32 port map(
+	uut: mux32_32bit port map(
 		line_select => line_select,
 		line00 => line00, line01 => line01, line02 => line02, line03 => line03,
 		line04 => line04, line05 => line05, line06 => line06, line07 => line07,

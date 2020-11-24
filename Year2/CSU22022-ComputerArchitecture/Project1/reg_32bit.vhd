@@ -1,14 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity reg32 is
+entity reg_32bit is
 	port(
 		load   : in  std_logic;
 		input  : in  std_logic_vector(31 downto 0);
 		output : out std_logic_vector(31 downto 0));
-end reg32;
+end reg_32bit;
 
-architecture Behavioral of reg32 is
+architecture Behavioral of reg_32bit is
 begin
 	process(load, input)
 	begin

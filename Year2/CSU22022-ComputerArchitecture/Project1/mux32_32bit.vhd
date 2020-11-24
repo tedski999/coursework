@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity mux32_32 is
+entity mux32_32bit is
 	port(
 		line_select : in std_logic_vector(4 downto 0);
 		line00, line01, line02, line03 : in std_logic_vector(31 downto 0);
@@ -13,9 +13,9 @@ entity mux32_32 is
 		line18, line19, line1a, line1b : in std_logic_vector(31 downto 0);
 		line1c, line1d, line1e, line1f : in std_logic_vector(31 downto 0);
 		output : out std_logic_vector(31 downto 0));
-end mux32_32;
+end mux32_32bit;
 
-architecture Behavioral of mux32_32 is
+architecture Behavioral of mux32_32bit is
 begin
 	process(
 		line_select,

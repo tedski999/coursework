@@ -1,15 +1,15 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity register_file is
+entity register_file_32bit is
 	port(
 		load_enable                    : in std_logic;
 		dst_select, a_select, b_select : in std_logic_vector(4 downto 0);
 		input_data                     : in std_logic_vector(31 downto 0);
 		a_output_data, b_output_data   : out std_logic_vector(31 downto 0));
-end register_file;
+end register_file_32bit;
 
-architecture Behavioral of register_file is
+architecture Behavioral of register_file_32bit is
 
 	component decoder_5to32
 		port(
@@ -17,21 +17,14 @@ architecture Behavioral of register_file is
 			output : out std_logic_vector(31 downto 0));
 	end component;
 
-	component mux2_32
-		port(
-			line_select  : in  std_logic;
-			line0, line1 : in  std_logic_vector(31 downto 0);
-			output       : out std_logic_vector(31 downto 0));
-	end component;
-
-	component reg32
+	component reg_32bit
 		port(
 			load   : in  std_logic;
 			input  : in  std_logic_vector(31 downto 0);
 			output : out std_logic_vector(31 downto 0));
 	end component;
 
-	component mux32_32
+	component mux32_32bit
 		port(
 			line_select : in std_logic_vector(4 downto 0);
 			line00, line01, line02, line03 : in std_logic_vector(31 downto 0);
@@ -57,40 +50,40 @@ architecture Behavioral of register_file is
 
 begin
 	dst_decoder: decoder_5to32 port map(input => dst_select, output => dst_select_vector);
-	reg00: reg32 port map(load => load_vector(0),  input => input_data, output => reg00_output);
-	reg01: reg32 port map(load => load_vector(1),  input => input_data, output => reg01_output);
-	reg02: reg32 port map(load => load_vector(2),  input => input_data, output => reg02_output);
-	reg03: reg32 port map(load => load_vector(3),  input => input_data, output => reg03_output);
-	reg04: reg32 port map(load => load_vector(4),  input => input_data, output => reg04_output);
-	reg05: reg32 port map(load => load_vector(5),  input => input_data, output => reg05_output);
-	reg06: reg32 port map(load => load_vector(6),  input => input_data, output => reg06_output);
-	reg07: reg32 port map(load => load_vector(7),  input => input_data, output => reg07_output);
-	reg08: reg32 port map(load => load_vector(8),  input => input_data, output => reg08_output);
-	reg09: reg32 port map(load => load_vector(9),  input => input_data, output => reg09_output);
-	reg0a: reg32 port map(load => load_vector(10), input => input_data, output => reg0a_output);
-	reg0b: reg32 port map(load => load_vector(11), input => input_data, output => reg0b_output);
-	reg0c: reg32 port map(load => load_vector(12), input => input_data, output => reg0c_output);
-	reg0d: reg32 port map(load => load_vector(13), input => input_data, output => reg0d_output);
-	reg0e: reg32 port map(load => load_vector(14), input => input_data, output => reg0e_output);
-	reg0f: reg32 port map(load => load_vector(15), input => input_data, output => reg0f_output);
-	reg10: reg32 port map(load => load_vector(16), input => input_data, output => reg10_output);
-	reg11: reg32 port map(load => load_vector(17), input => input_data, output => reg11_output);
-	reg12: reg32 port map(load => load_vector(18), input => input_data, output => reg12_output);
-	reg13: reg32 port map(load => load_vector(19), input => input_data, output => reg13_output);
-	reg14: reg32 port map(load => load_vector(20), input => input_data, output => reg14_output);
-	reg15: reg32 port map(load => load_vector(21), input => input_data, output => reg15_output);
-	reg16: reg32 port map(load => load_vector(22), input => input_data, output => reg16_output);
-	reg17: reg32 port map(load => load_vector(23), input => input_data, output => reg17_output);
-	reg18: reg32 port map(load => load_vector(24), input => input_data, output => reg18_output);
-	reg19: reg32 port map(load => load_vector(25), input => input_data, output => reg19_output);
-	reg1a: reg32 port map(load => load_vector(26), input => input_data, output => reg1a_output);
-	reg1b: reg32 port map(load => load_vector(27), input => input_data, output => reg1b_output);
-	reg1c: reg32 port map(load => load_vector(28), input => input_data, output => reg1c_output);
-	reg1d: reg32 port map(load => load_vector(29), input => input_data, output => reg1d_output);
-	reg1e: reg32 port map(load => load_vector(30), input => input_data, output => reg1e_output);
-	reg1f: reg32 port map(load => load_vector(31), input => input_data, output => reg1f_output);
+	reg00: reg_32bit port map(load => load_vector(0),  input => input_data, output => reg00_output);
+	reg01: reg_32bit port map(load => load_vector(1),  input => input_data, output => reg01_output);
+	reg02: reg_32bit port map(load => load_vector(2),  input => input_data, output => reg02_output);
+	reg03: reg_32bit port map(load => load_vector(3),  input => input_data, output => reg03_output);
+	reg04: reg_32bit port map(load => load_vector(4),  input => input_data, output => reg04_output);
+	reg05: reg_32bit port map(load => load_vector(5),  input => input_data, output => reg05_output);
+	reg06: reg_32bit port map(load => load_vector(6),  input => input_data, output => reg06_output);
+	reg07: reg_32bit port map(load => load_vector(7),  input => input_data, output => reg07_output);
+	reg08: reg_32bit port map(load => load_vector(8),  input => input_data, output => reg08_output);
+	reg09: reg_32bit port map(load => load_vector(9),  input => input_data, output => reg09_output);
+	reg0a: reg_32bit port map(load => load_vector(10), input => input_data, output => reg0a_output);
+	reg0b: reg_32bit port map(load => load_vector(11), input => input_data, output => reg0b_output);
+	reg0c: reg_32bit port map(load => load_vector(12), input => input_data, output => reg0c_output);
+	reg0d: reg_32bit port map(load => load_vector(13), input => input_data, output => reg0d_output);
+	reg0e: reg_32bit port map(load => load_vector(14), input => input_data, output => reg0e_output);
+	reg0f: reg_32bit port map(load => load_vector(15), input => input_data, output => reg0f_output);
+	reg10: reg_32bit port map(load => load_vector(16), input => input_data, output => reg10_output);
+	reg11: reg_32bit port map(load => load_vector(17), input => input_data, output => reg11_output);
+	reg12: reg_32bit port map(load => load_vector(18), input => input_data, output => reg12_output);
+	reg13: reg_32bit port map(load => load_vector(19), input => input_data, output => reg13_output);
+	reg14: reg_32bit port map(load => load_vector(20), input => input_data, output => reg14_output);
+	reg15: reg_32bit port map(load => load_vector(21), input => input_data, output => reg15_output);
+	reg16: reg_32bit port map(load => load_vector(22), input => input_data, output => reg16_output);
+	reg17: reg_32bit port map(load => load_vector(23), input => input_data, output => reg17_output);
+	reg18: reg_32bit port map(load => load_vector(24), input => input_data, output => reg18_output);
+	reg19: reg_32bit port map(load => load_vector(25), input => input_data, output => reg19_output);
+	reg1a: reg_32bit port map(load => load_vector(26), input => input_data, output => reg1a_output);
+	reg1b: reg_32bit port map(load => load_vector(27), input => input_data, output => reg1b_output);
+	reg1c: reg_32bit port map(load => load_vector(28), input => input_data, output => reg1c_output);
+	reg1d: reg_32bit port map(load => load_vector(29), input => input_data, output => reg1d_output);
+	reg1e: reg_32bit port map(load => load_vector(30), input => input_data, output => reg1e_output);
+	reg1f: reg_32bit port map(load => load_vector(31), input => input_data, output => reg1f_output);
 
-	a_select_mux: mux32_32 port map(
+	a_select_mux: mux32_32bit port map(
 		line_select => a_select,
 		line00 => reg00_output, line01 => reg01_output, line02 => reg02_output, line03 => reg03_output,
 		line04 => reg04_output, line05 => reg05_output, line06 => reg06_output, line07 => reg07_output,
@@ -102,7 +95,7 @@ begin
 		line1c => reg1c_output, line1d => reg1d_output, line1e => reg1e_output, line1f => reg1f_output,
 		output => a_output_data);
 
-	b_select_mux: mux32_32 port map(
+	b_select_mux: mux32_32bit port map(
 		line_select => b_select,
 		line00 => reg00_output, line01 => reg01_output, line02 => reg02_output, line03 => reg03_output,
 		line04 => reg04_output, line05 => reg05_output, line06 => reg06_output, line07 => reg07_output,

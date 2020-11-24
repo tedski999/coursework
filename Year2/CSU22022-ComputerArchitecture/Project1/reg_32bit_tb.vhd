@@ -1,11 +1,11 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity reg32_tb is
-end reg32_tb;
+entity reg_32bit_tb is
+end reg_32bit_tb;
 
-architecture Behavior of reg32_tb is
-	component reg32
+architecture Behavior of reg_32bit_tb is
+	component reg_32bit
 		port(
 			load   : in  std_logic;
 			input  : in  std_logic_vector(31 downto 0);
@@ -16,7 +16,7 @@ architecture Behavior of reg32_tb is
 	signal input, output : std_logic_vector(31 downto 0) := (others => '0');
 
 begin
-	uut: reg32 port map(load => load, input => input, output => output);
+	uut: reg_32bit port map(load => load, input => input, output => output);
 	stim_proc: process
 	begin
 		load <= '0';
