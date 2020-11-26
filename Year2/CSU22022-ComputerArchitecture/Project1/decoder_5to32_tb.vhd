@@ -7,7 +7,7 @@ end decoder_5to32_tb;
 architecture Behavior of decoder_5to32_tb is
 	component decoder_5to32
 		port(
-			input  : in  std_logic_vector(4 downto 0);
+			input  : in std_logic_vector(4 downto 0);
 			output : out std_logic_vector(31 downto 0));
 	end component;
 

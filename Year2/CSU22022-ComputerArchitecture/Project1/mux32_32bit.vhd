@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 
 entity mux32_32bit is
 	port(
-		line_select : in std_logic_vector(4 downto 0);
+		line_select                    : in std_logic_vector(4 downto 0);
 		line00, line01, line02, line03 : in std_logic_vector(31 downto 0);
 		line04, line05, line06, line07 : in std_logic_vector(31 downto 0);
 		line08, line09, line0a, line0b : in std_logic_vector(31 downto 0);
@@ -12,7 +12,7 @@ entity mux32_32bit is
 		line14, line15, line16, line17 : in std_logic_vector(31 downto 0);
 		line18, line19, line1a, line1b : in std_logic_vector(31 downto 0);
 		line1c, line1d, line1e, line1f : in std_logic_vector(31 downto 0);
-		output : out std_logic_vector(31 downto 0));
+		output                         : out std_logic_vector(31 downto 0));
 end mux32_32bit;
 
 architecture Behavioral of mux32_32bit is
@@ -62,7 +62,7 @@ begin
 			when "11101" => output <= line1d after 5 ns;
 			when "11110" => output <= line1e after 5 ns;
 			when "11111" => output <= line1f after 5 ns;
-			when others => output <= line00 after 5 ns;
+			when others =>  output <= line00 after 5 ns;
 		end case;
 	end process;
 end Behavioral;

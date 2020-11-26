@@ -7,7 +7,7 @@ end mux32_32bit_tb;
 architecture Behavior of mux32_32bit_tb is
 	component mux32_32bit
 		port(
-			line_select : in std_logic_vector(4 downto 0);
+			line_select                    : in std_logic_vector(4 downto 0);
 			line00, line01, line02, line03 : in std_logic_vector(31 downto 0);
 			line04, line05, line06, line07 : in std_logic_vector(31 downto 0);
 			line08, line09, line0a, line0b : in std_logic_vector(31 downto 0);
@@ -16,10 +16,10 @@ architecture Behavior of mux32_32bit_tb is
 			line14, line15, line16, line17 : in std_logic_vector(31 downto 0);
 			line18, line19, line1a, line1b : in std_logic_vector(31 downto 0);
 			line1c, line1d, line1e, line1f : in std_logic_vector(31 downto 0);
-			output : out std_logic_vector(31 downto 0));
+			output                         : out std_logic_vector(31 downto 0));
 	end component;
 
-	signal line_select : std_logic_vector(4 downto 0);
+	signal line_select                    : std_logic_vector(4 downto 0);
 	signal line00, line01, line02, line03 : std_logic_vector(31 downto 0);
 	signal line04, line05, line06, line07 : std_logic_vector(31 downto 0);
 	signal line08, line09, line0a, line0b : std_logic_vector(31 downto 0);
@@ -28,7 +28,7 @@ architecture Behavior of mux32_32bit_tb is
 	signal line14, line15, line16, line17 : std_logic_vector(31 downto 0);
 	signal line18, line19, line1a, line1b : std_logic_vector(31 downto 0);
 	signal line1c, line1d, line1e, line1f : std_logic_vector(31 downto 0);
-	signal output : std_logic_vector(31 downto 0);
+	signal output                         : std_logic_vector(31 downto 0);
 
 begin
 	uut: mux32_32bit port map(
