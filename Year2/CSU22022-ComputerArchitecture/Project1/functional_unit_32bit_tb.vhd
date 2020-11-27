@@ -26,50 +26,57 @@ begin
 	stim_proc: process
 	begin
 
-		-- Addition of 1 and 2. Expected:
-		-- output: 0x00000011
-		-- vcnz: 0000
-		a_input <= x"00000001";
-		b_input <= x"00000002";
-		function_select <= "00000";
-		wait for 50 ns;
-
-		-- Subtraction of 5 and 5. Expected:
+		-- Transfer of 0. Expected:
 		-- output: 0x00000000
 		-- vcnz: 0001
-		a_input <= x"00000005";
+		a_input <= x"00000000";
+		b_input <= x"00000000";
+		function_select <= "00000";
+		wait for 500 ns;
+
+		-- Addition of 3 and 5. Expected:
+		-- output: 0x00000008
+		-- vcnz: 0000
+		a_input <= x"00000003";
 		b_input <= x"00000005";
-		function_select <= "00001";
-		wait for 50 ns;
-		
-		-- Addition of ? and ?. Expected:
+		function_select <= "00010";
+		wait for 500 ns;
+
+		-- Addition w/ carry of 0x7fffffff and 0x00000000. Expected:
 		-- output: 0x10000000
 		-- vcnz: 1010
-		a_input <= x"01000000";
-		b_input <= x"01000000";
-		function_select <= "00001";
-		wait for 50 ns;
+		a_input <= x"7fffffff";
+		b_input <= x"00000000";
+		function_select <= "00011";
+		wait for 500 ns;
 
-		-- Addition of -1 and 1. Expected:
+		-- Decrement of 1. Expected:
 		-- output: 0x00000000
 		-- vcnz: 0101
-		a_input <= x"ffffffff";
-		b_input <= x"00000001";
-		function_select <= "00000";
-		wait for 50 ns;
+		a_input <= x"00000001";
+		b_input <= x"00000000";
+		function_select <= "00110";
+		wait for 500 ns;
 
-		-- TODO: test logic gates
+		-- AND logic operation. Expected:
+		-- output: 0x00000000
+		a_input <= x"0000000a";
+		b_input <= x"0000000c";
+		function_select <= "01000";
+		wait for 500 ns;
 
-		-- Shift left of 1. Expected:
-		-- output: 0x00800002
-		b_input <= x"00400001";
-		function_select <= "00000";
-		wait for 50 ns;
+		-- NOT logic operation. Expected:
+		-- output: 0xffffffff
+		a_input <= x"00000000";
+		b_input <= x"00000000";
+		function_select <= "01110";
+		wait for 500 ns;
 
-		-- Shift right of 2. Expected:
-		-- output: 0x00400001
-		b_input <= x"00800002";
-		function_select <= "00000";
+		-- Shift left. Expected:
+		-- output: 0x00020002
+		a_input <= x"00000000";
+		b_input <= x"80010001";
+		function_select <= "11000";
 		wait;
 
 	end process;

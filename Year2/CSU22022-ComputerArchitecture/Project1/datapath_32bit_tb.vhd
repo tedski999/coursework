@@ -23,7 +23,7 @@ architecture Behavior of datapath_32bit_tb is
 
 begin
 
-	-- Simulate 1 MHz clock
+	-- Simulate 1 MHz clock - The maximum propagation delay for the circuit is 500 ns, so 1 MHz allows just enough time
 	clock <= not clock after 500 ns;
 
 	uut: datapath_32bit port map(

@@ -26,7 +26,7 @@ begin
 	stim_proc: process
 	begin
 
-		-- NOTE: The arithmetic unit has a maximum total gate delat of around 500 ns!
+		-- NOTE: The arithmetic unit has a maximum total gate delay of 480 ns
 
 		-- Operation 000 (TRANSFER): F = A
 		operation <= "000";
