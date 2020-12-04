@@ -60,6 +60,14 @@ void hashtable_remove(struct hashtable *table, char *item) {
 	listset_remove(table->table + hash, item);
 }
 
+// return the number of items in the hashtable set
+int hashtable_cardinality(struct hashtable *table) {
+	int count = 0;
+	for (int i = 0; i < table->size; i++)
+		count += listset_cardinality(table->table + i);
+	return count;
+}
+
 // print the elements of the hashtable set
 void hashtable_print(struct hashtable *table) {
 	if (!table)

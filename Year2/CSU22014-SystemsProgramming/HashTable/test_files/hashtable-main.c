@@ -35,6 +35,10 @@ int main(int argc, char ** argv) {
       hashtable_print(myset);
       i++;
     }
+    else if (argv[i][0] == '#' ) {
+      printf("hashtable cardinality: %i\n", hashtable_cardinality(myset));
+      i++;
+    }
     else {
       fprintf(stderr, "Error: Unknown command %s\n", argv[i]);
       exit(1);
