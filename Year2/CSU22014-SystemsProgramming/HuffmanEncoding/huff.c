@@ -126,41 +126,54 @@ void huffcoder_print_codes(struct huffcoder *coder) {
 // encode the input file and write the encoding to the output file
 void huffcoder_encode(struct huffcoder *coder, char *input_filename, char *output_filename) {
 
-	/*
-	// initialize everything
-	huffcoder_count(coder, input_filename);
-	huffcoder_build_tree(coder);
-	huffcoder_tree2table(coder);
-
 	// load files
 	FILE *in_file = fopen(input_filename, "r");
 	FILE *out_file = fopen(output_filename, "w");
 	if (!in_file || !out_file) {
 		fprintf(stderr, "Unable to open files '%s' and '%s'!\n", input_filename, output_filename);
-		huffcoder_destroy(coder);
 		fclose(in_file);
 		fclose(out_file);
 		exit(1);
 	}
 
 	// read entire file character-by-character
-	while (!feof(in_file)) {
-		char c = fgetc(in_file);
-		if (c == EOF)
-			break;
-		fprintf(out_file, "%s", coder->codes[(int) c]);
-	}
+	int c;
+	while ((c = fgetc(in_file)) != EOF)
+		fprintf(out_file, "%s", coder->codes[c]);
+	fprintf(out_file, "%s", coder->codes[0x04]); // append final EOT character
 
 	// cleanup
-	huffcoder_destroy(coder);
 	fclose(in_file);
 	fclose(out_file);
-	*/
 }
 
 // decode the input file and write the decoding to the output file
 void huffcoder_decode(struct huffcoder *coder, char *input_filename, char *output_filename) {
 
+	// load files
+	FILE *in_file = fopen(input_filename, "r");
+	FILE *out_file = fopen(output_filename, "w");
+	if (!in_file || !out_file) {
+		fprintf(stderr, "Unable to open files '%s' and '%s'!\n", input_filename, output_filename);
+		fclose(in_file);
+		fclose(out_file);
+		exit(1);
+	}
+
+	// read entire file character-by-character
+	int c;
+	struct huffchar *node = coder->tree;
+	while ((c = fgetc(in_file)) != EOF) {
+		if (!node->is_compound) {
+			fprintf(out_file, "%c", node->u.c);
+			node = coder->tree;
+		}
+		node = (c == '0' ? node->u.compound.left : node->u.compound.right);
+	}
+
+	// cleanup
+	fclose(in_file);
+	fclose(out_file);
 }
 
 // delete a huffcoder structure
@@ -183,7 +196,7 @@ void huffcoder_internal_generateCodes(struct huffcoder *coder, struct huffchar *
 		new_path[depth] = 1;
 		huffcoder_internal_generateCodes(coder, node->u.compound.right, new_path, depth + 1);
 		free(new_path);
-	} else {
+	} else if (depth != 0) {
 		// convert current path to a code
 		char *code = calloc(depth, 1);
 		for (int i = 0; i < depth; i++)
