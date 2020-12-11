@@ -58,7 +58,7 @@ void huffcoder_build_tree(struct huffcoder *coder) {
 	if (!node_list) {
 		fprintf(stderr, "memalloc failure\n");
 		huffcoder_destroy(coder);
-		return;
+		exit(1);
 	}
 
 	int seqno = 0;
@@ -114,17 +114,23 @@ void huffcoder_build_tree(struct huffcoder *coder) {
 
 // using the Huffman tree, build a table of the Huffman codes with the huffcoder object
 void huffcoder_tree2table(struct huffcoder *coder) {
+	if (!coder)
+		return;
 	huffcoder_internal_generateCodes(coder, coder->tree, NULL, 0);
 }
 
 // print the Huffman codes for each character in order
 void huffcoder_print_codes(struct huffcoder *coder) {
+	if (!coder)
+		return;
 	for (int i = 0; i < NUM_CHARS; i++)
 		printf("char: %d, freq: %d, code: %s\n", i, coder->freqs[i], coder->codes[i]);
 }
 
 // encode the input file and write the encoding to the output file
 void huffcoder_encode(struct huffcoder *coder, char *input_filename, char *output_filename) {
+	if (!coder || !input_filename || !output_filename)
+		return;
 
 	// load files
 	FILE *in_file = fopen(input_filename, "r");
@@ -149,6 +155,8 @@ void huffcoder_encode(struct huffcoder *coder, char *input_filename, char *outpu
 
 // decode the input file and write the decoding to the output file
 void huffcoder_decode(struct huffcoder *coder, char *input_filename, char *output_filename) {
+	if (!coder || !input_filename || !output_filename)
+		return;
 
 	// load files
 	FILE *in_file = fopen(input_filename, "r");
@@ -185,6 +193,7 @@ void huffcoder_destroy(struct huffcoder *coder) {
 	huffcoder_internal_destroy_huffchar(coder->tree);
 }
 
+// an internal function to recursively generate codes for each leaf node from a huffman tree
 void huffcoder_internal_generateCodes(struct huffcoder *coder, struct huffchar *node, int *path, int depth) {
 	if (node->is_compound) {
 		// recursively generate codes for subnodes
@@ -206,7 +215,7 @@ void huffcoder_internal_generateCodes(struct huffcoder *coder, struct huffchar *
 	}
 }
 
-// delete a huffchar structure and recursively any subnodes
+// an internal function to delete a huffchar structure and recursively any subnodes
 void huffcoder_internal_destroy_huffchar(struct huffchar *node) {
 	if (node && node->is_compound) {
 		huffcoder_internal_destroy_huffchar(node->u.compound.left);
