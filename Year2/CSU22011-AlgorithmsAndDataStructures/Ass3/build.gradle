@@ -1,11 +1,34 @@
-apply plugin: 'java'
+
+plugins {
+	id 'java'
+	id 'jacoco'
+}
 
 repositories { mavenCentral() }
 dependencies {
+	implementation 'junit:junit:4.12'
 	testImplementation 'junit:junit:4.12'
 }
 
 sourceSets {
+	main.java.srcDirs = ['src']
 	test.java.srcDirs = ['src']
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport.dependsOn {
+	test
+	jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification.violationRules {
+	rule {
+		limit {
+			minimum = 1.0
+		}
+	}
 }
 

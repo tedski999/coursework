@@ -7,7 +7,7 @@ import org.junit.runners.JUnit4;
 /**
  *  Test class for Binary Search Tree
  *
- *  @version 11/12/20
+ *  @version 12/12/20
  *
  *  @author Ted Johnson
  */
@@ -18,15 +18,34 @@ public class BSTTest {
 	@Test
 	public void testSize() {
 		BST<Integer, Integer> bst = new BST<Integer, Integer>();
+		assertEquals("Checking isEmpty for an empty tree", true, bst.isEmpty());
 		assertEquals("Checking size for an empty tree", 0, bst.size());
 
 		bst.put(2, 2);
+		assertEquals("Checking isEmpty for a single node tree", false, bst.isEmpty());
 		assertEquals("Checking size for a single node tree", 1, bst.size());
 
 		bst.put(1, 1);
 		bst.put(3, 3);
 		bst.put(4, 4);
+		assertEquals("Checking isEmpty for a complex multi node tree", false, bst.isEmpty());
 		assertEquals("Checking size for a complex multi node tree", 4, bst.size());
+	}
+
+	@Test
+	public void testContains() {
+		BST<Integer, Integer> bst = new BST<Integer, Integer>();
+		assertEquals("Checking contains for an empty tree", false, bst.contains(10));
+
+		bst.put(2, 2);
+		assertEquals("Checking valid contains for a single node tree", true, bst.contains(2));
+		assertEquals("Checking invalid contains for a single node tree", false, bst.contains(10));
+
+		bst.put(1, 1);
+		bst.put(3, 3);
+		bst.put(4, 4);
+		assertEquals("Checking valid contains for a complex multi node tree", true, bst.contains(4));
+		assertEquals("Checking invalid contains for a complex multi node tree", false, bst.contains(10));
 	}
 
 	@Test
@@ -63,11 +82,13 @@ public class BSTTest {
 		bst.put(3, 3);
 		assertEquals("Checking right put on a multi node tree - key", "((()1())2(()3()))", bst.printKeysInOrder());
 		assertEquals("Checking right put on a multi node tree - value", (Integer) 3, bst.get(3));
+
+		bst.put(3, null);
+		assertEquals("Checking null put on a multi node tree", "((()1())2())", bst.printKeysInOrder());
 	}
 
 	@Test
 	public void testDelete() {
-		/*
 		BST<Integer, Integer> bst = new BST<Integer, Integer>();
 		bst.delete(1);
 		assertEquals("Deleting from empty tree", "()", bst.printKeysInOrder());
@@ -93,9 +114,35 @@ public class BSTTest {
 		bst.delete(6);
 		assertEquals("Deleting node with single child", "(((()1(()2()))3(()4(()5())))7())", bst.printKeysInOrder());
 
+		// Testing the 3 cases for 2 children deletion
+
+		bst.delete(3); // predecessor is 2, 2 has no children
+		assertEquals("Deleting node with two children, no predecessor children", "(((()1())2(()4(()5())))7())", bst.printKeysInOrder());
+
+		bst.delete(2); // predecessor is 1, parent of 1 is the deletion target 2
+		assertEquals("Deleting node with two children, predecessor is root of targets left subtree", "((()1(()4(()5())))7())", bst.printKeysInOrder());
+
+		bst.delete(5);
+		bst.put(3, 3);
+		bst.put(8, 8);
+		//    _7_
+		//  /     \
+		// 1       8
+		//  \
+		//   4
+		//  /
+		// 3
+
+		bst.delete(7); // predecessor is 4, 4 has child 3
+		assertEquals("Deleting node with two children, predecessor has children", "((()1(()3()))4(()8()))", bst.printKeysInOrder());
+
+		// Deleting remaining nodes to cover all trivial cases
+
 		bst.delete(3);
-		assertEquals("Deleting node with two children", "(((()1())2(()4(()5())))7())", bst.printKeysInOrder());
-		*/
+		bst.delete(1);
+		bst.delete(4);
+		bst.delete(8);
+		assertEquals("Deleting all remaining nodes", "()", bst.printKeysInOrder());
 	}
 
 	@Test
@@ -110,11 +157,54 @@ public class BSTTest {
 		bst.put(3, 3);
 		bst.put(4, 4);
 		assertEquals("Checking height for a complex multi node tree", 2, bst.height());
+
+		bst.put(8, 8);
+		bst.put(7, 7);
+		bst.put(6, 6);
+		bst.put(5, 5);
+		assertEquals("Checking height for a complex multi node tree #2", 6, bst.height());
+
+		bst = new BST<Integer, Integer>();
+		bst.put(7, 7);
+		bst.put(8, 8);
+		bst.put(3, 3);
+		bst.put(1, 1);
+		bst.put(2, 2);
+		bst.put(6, 6);
+		bst.put(4, 4);
+		bst.put(5, 5);
+		assertEquals("Checking height for a complex multi node tree #3", 4, bst.height());
 	}
 
 	@Test
 	public void testMedian() {
-		// TODO
+		BST<Integer, Integer> bst = new BST<Integer, Integer>();
+		assertEquals("Checking media for an empty tree",  null, bst.median());
+
+		bst.put(2, 2);
+		assertEquals("Checking median for a single node tree", (Integer) 2, bst.median());
+
+		bst.put(1, 1);
+		bst.put(3, 3);
+		bst.put(4, 4);
+		assertEquals("Checking median for a complex multi node tree", (Integer) 2, bst.median());
+
+		bst.put(8, 8);
+		bst.put(7, 7);
+		bst.put(6, 6);
+		bst.put(5, 5);
+		assertEquals("Checking median for a complex multi node tree #2", (Integer) 4, bst.median());
+
+		bst = new BST<Integer, Integer>();
+		bst.put(7, 7);
+		bst.put(8, 8);
+		bst.put(3, 3);
+		bst.put(1, 1);
+		bst.put(2, 2);
+		bst.put(6, 6);
+		bst.put(4, 4);
+		bst.put(5, 5);
+		assertEquals("Checking median for a complex multi node tree #3", (Integer) 4, bst.median());
 	}
 
 	@Test
