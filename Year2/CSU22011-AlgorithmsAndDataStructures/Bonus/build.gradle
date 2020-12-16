@@ -1,0 +1,36 @@
+
+// plugins
+plugins {
+	id 'java'
+	id 'jacoco'
+}
+repositories { mavenCentral() }
+dependencies {
+	implementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.12'
+}
+
+// sources
+sourceSets {
+	main.java.srcDirs = ['src']
+	test.java.srcDirs = ['src']
+}
+
+// jacoco config
+test.finalizedBy jacocoTestReport
+jacocoTestReport.dependsOn test
+jacocoTestCoverageVerification.violationRules {
+	rule {
+		limit {
+			minimum = 1.0
+		}
+	}
+}
+
+// clear terminal
+gradle.addListener new BuildAdapter() {
+	void projectsEvaluated(Gradle gradle) {
+		exec { commandLine 'clear' }
+	}
+}
+
