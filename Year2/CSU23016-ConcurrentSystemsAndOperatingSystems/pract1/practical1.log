@@ -1,0 +1,20 @@
+Creating thread 0
+Creating thread 1
+
+0: Hello World, from edjohnso!
+Creating thread 2
+
+1: Hello World, from edjohnso!
+Creating thread 3
+
+2: Hello World, from edjohnso!
+Creating thread 4
+
+3: Hello World, from edjohnso!
+Creating thread 5
+
+4: Hello World, from edjohnso!
+
+5: Hello World, from edjohnso!
+
+All threads done by edjohnso, x = 6
