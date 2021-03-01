@@ -1,0 +1,30 @@
+
+plugins {
+	id "java"
+	id "jacoco"
+}
+
+repositories { mavenCentral() }
+dependencies {
+	implementation "junit:junit:4.12"
+	testImplementation "junit:junit:4.12"
+}
+
+sourceSets {
+	main.java.srcDirs = ["src"]
+	test.java.srcDirs = ["src"]
+}
+
+test {
+	finalizedBy jacocoTestReport
+	println "JUnit Tests report: file://$buildDir/reports/tests/test/index.html"
+}
+
+jacocoTestReport {
+	dependsOn test
+	println "Coverage report: file://$buildDir/reports/jacoco/test/html/index.html"
+}
+
+jacoco { reportsDirectory = file("$buildDir/reports/jacoco") }
+jacocoTestCoverageVerification.violationRules { rule { limit { minimum = 1.0 } } }
+
