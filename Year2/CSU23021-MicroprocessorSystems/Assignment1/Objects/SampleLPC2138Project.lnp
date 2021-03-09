@@ -1,0 +1,7 @@
+--cpu ARM7TDMI
+".\objects\startup.o"
+".\objects\tcd.o"
+--strict --scatter ".\Objects\SampleLPC2138Project.sct"
+--entry=0x00000000 --diag_suppress=L6314 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\SampleLPC2138Project.map" -o .\Objects\SampleLPC2138Project.axf

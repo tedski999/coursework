@@ -1,0 +1,4 @@
+Dependencies for Project 'SampleLPC2138Project', Target 'Target': (DO NOT MODIFY !)
+F (.\Startup.s)(0x60458820)(--cpu ARM7TDMI --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\INC\Philips--pd "__UVISION_VERSION SETA 526"--list .\listings\startup.lst -o .\objects\startup.o --depend .\objects\startup.d)
+F (.\TCD.s)(0x6046B80A)(--cpu ARM7TDMI --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\INC\Philips--pd "__UVISION_VERSION SETA 526"--list .\listings\tcd.lst -o .\objects\tcd.o --depend .\objects\tcd.d)
+F (.\quanda.txt)(0x6046B80F)()

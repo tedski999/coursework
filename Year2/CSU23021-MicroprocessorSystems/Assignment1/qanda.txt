@@ -1,0 +1,21 @@
+Ted Johnson - 1935618
+
+1. What does “well behaved” mean in the context of subroutines?
+A well behaved subroutine is one that does not perform any unanticipated modifications to the context of the calling program.
+This means the subroutine must not have changed the contents of registers or memory upon returning if they are not inputs/outputs.
+
+2. Explain how/why your subroutine is “well behaved”.
+The subroutine fact does not access memory and it pushes all internally used registers onto the stack. It, of course, pops those registers back off the stack
+after the subroutine is finished.
+
+3. How would you test that your subroutine is well behaved?
+Comparing the contents of the registers r2-r13 before and after the subroutine has been called. The fact subroutine is well behaved if they have not changed.
+We do not need to worry about memory as the subroutine does not use system memory.
+
+4. Why is using repeated addition to implement multiplication such a bad idea?
+It's a huge waste of clock cyclesas each addition required is a separate instruction.
+The number of additions required to compute the factorial of N grows quadratically with N.
+
+5. What would happen to the program if a very large number of recursive calls were made, i.e. if there was very "deep" recursion?
+There is the possibility of a stack overflow: Every recursive call needs to allocate space on the stack for data such as the return address or saved registers.
+However, the stack is not unlimited and can run out of space: This is called a stack overflow.

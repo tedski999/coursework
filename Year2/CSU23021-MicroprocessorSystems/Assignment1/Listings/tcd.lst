@@ -1,0 +1,180 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; Program to calculate and demonstrate the factorial, st
+                       oring the 64bit result in two registers
+    2 00000000         ; Ted johnson, 2021.
+    3 00000000         
+    4 00000000                 area             tcd,code,readonly
+    5 00000000                 export           __main
+    6 00000000         
+    7 00000000         __main
+    8 00000000         
+    9 00000000         ; An index into results space in rw memory
+   10 00000000 E59F208C        ldr              r2, =results ; i = &results
+   11 00000004         
+   12 00000004         ; Calculate 5 factorial, write to results
+   13 00000004 E3A00005        ldr              r0, =5      ; N = 5
+   14 00000008 EB00000E        bl               fact        ; result_lo, result
+                                                            _hi = fact(N)
+   15 0000000C E4820004        str              r0, [r2], #4 ; results[i] = res
+                                                            ult_hi, i += 4
+   16 00000010 E4821004        str              r1, [r2], #4 ; results[i] = res
+                                                            ult_lo, i += 4
+   17 00000014         ; The expected result is 120:
+   18 00000014         ; r0 = 0x0, r1 = 0x78, C = 0
+   19 00000014         
+   20 00000014         ; Calculate 14 factorial, write to results
+   21 00000014 E3A0000E        ldr              r0, =14
+   22 00000018 EB00000A        bl               fact
+   23 0000001C E4820004        str              r0, [r2], #4 ; results[i] = res
+                                                            ult_hi, i += 4
+   24 00000020 E4821004        str              r1, [r2], #4 ; results[i] = res
+                                                            ult_lo, i += 4
+   25 00000024         ; The expected result is 87,178,291,200:
+   26 00000024         ; r0 = 0x14, r1 = 0x4C3B2800, C = 0
+   27 00000024         
+   28 00000024         ; Calculate 20 factorial, write to results
+   29 00000024 E3A00014        ldr              r0, =20
+   30 00000028 EB000006        bl               fact
+   31 0000002C E4820004        str              r0, [r2], #4 ; results[i] = res
+                                                            ult_hi, i += 4
+   32 00000030 E4821004        str              r1, [r2], #4 ; results[i] = res
+                                                            ult_lo, i += 4
+   33 00000034         ; The expected result is 2,432,902,008,176,640,000:
+   34 00000034         ; r0 = 0x21C3677C, r1 = 0x82B40000, C = 0
+   35 00000034         
+   36 00000034         ; Calculate 30 factorial, write to results
+   37 00000034 E3A0001E        ldr              r0, =30
+   38 00000038 EB000002        bl               fact
+   39 0000003C E4820004        str              r0, [r2], #4 ; results[i] = res
+                                                            ult_hi, i += 4
+   40 00000040 E5821000        str              r1, [r2]    ; results[i] = resu
+                                                            lt_lo
+   41 00000044         ; The expected result is 0 (An overflow error will have 
+                       occurred, it's way off the scale!):
+   42 00000044         ; r0 = 0, r1 = 0, C = 1
+   43 00000044         
+   44 00000044 EAFFFFFE 
+                       stop    b                stop
+   45 00000048         
+   46 00000048         ; fact subroutine
+   47 00000048         ; Computes the 64bit factorial of N
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   48 00000048         ; Parameters:
+   49 00000048         ;   r0 - N, a positive 32bit integer
+   50 00000048         ; Returns:
+   51 00000048         ;   r0 - The most significant 32bits of the 64bit intege
+                       r result
+   52 00000048         ;   r0 - The least significant 32bits of the 64bit integ
+                       er result
+   53 00000048         ; Notes:
+   54 00000048         ;   If an error occurs, the C flag will be set and zero 
+                       is returned.
+   55 00000048         ;   Errors include the result not fitting in 64bits or a
+                        non-positive number was given for N.
+   56 00000048         ;   Otherwise, the C flag will be cleared.
+   57 00000048 E92D401C 
+                       fact    push             {r2 - r4, lr}
+   58 0000004C         
+   59 0000004C         ; Take a copy of N called n, subtract one from N, let th
+                       is be m.
+   60 0000004C         ; m being zero is the recursions base case.
+   61 0000004C         ; m being less than zero is due to a input N of 0 or les
+                       s, which causes an error
+   62 0000004C E1A02000        mov              r2, r0      ; n = N
+   63 00000050 E2500001        subs             r0, r0, #1  ; m = N - 1
+   64 00000054 0A00000B        beq              f_base      ; if m == 0: goto f
+                                                            _base
+   65 00000058 DA000006        ble              f_error     ; if m <= 0: goto f
+                                                            _error
+   66 0000005C         
+   67 0000005C         ; The forumal I'm using to calculate the factorial of N 
+                       is N! = N * (N-1)!
+   68 0000005C         ; We have N in r2 as n and N-1 in r0 as m.
+   69 0000005C         ; To compute (N-1)! we perform recursion with r0 = N-1
+   70 0000005C EBFFFFF9        bl               fact        ; m_fact_lo, m_fact
+                                                            _hi = fact(m)
+   71 00000060         
+   72 00000060         ; Before we continue, let's first check if that call fai
+                       led.
+   73 00000060         ; C will now be set if it failed, with the result alread
+                       y zeroed out.
+   74 00000060 28BD801C        popcs            {r2 - r4, pc} ; if C == TRUE: r
+                                                            eturn 0, 0
+   75 00000064         
+   76 00000064         ; At this point, m_fact_lo in r1 and m_fact_hi in r0 tog
+                       ether form the 64bit result of (n-1)!
+   77 00000064         ; Now we must multiply this 64bit result by the 32bit va
+                       lue n located in r2.
+   78 00000064         
+   79 00000064         ; To do this, we're going to perform 64bit multipication
+                        on both registers
+   80 00000064         ; and then add whatever overflowed when we multiplied m_
+                       fact_lo into result_hi.
+   81 00000064 E0831192        umull            r1, r3, r2, r1 ; result_lo, res
+                                                            ult_lo_overflow = n
+                                                             * m_fact_lo
+   82 00000068 E0840092        umull            r0, r4, r2, r0 ; result_hi, res
+                                                            ult_hi_overflow = n
+                                                             * m_fact_hi
+   83 0000006C E0800003        add              r0, r0, r3  ; result_hi += resu
+                                                            lt_lo_overflow
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+   84 00000070         
+   85 00000070         ; Before we return this result, we need to verify that t
+                       he result fit within the 64bits.
+   86 00000070         ; We can do this by checking if result_hi_overflow in r4
+                        is zero.
+   87 00000070         ; If it does, we can return with r0 = result_hi and r1 =
+                        result_lo.
+   88 00000070         ; Else, we continue on past the f_error label.
+   89 00000070         ; We need to use cmn to unset the C flag as to not signa
+                       l an error has occurred.
+   90 00000070 E3740000        cmn              r4, #0      ; if result_hi_over
+                                                            flow == 0:
+   91 00000074 08BD801C        popeq            {r2 - r4, pc} ;  return result_
+                                                            lo, result_hi
+   92 00000078         
+   93 00000078         ; An error occurred - Return r0 = 0 and r1 = 0, with C s
+                       et
+   94 00000078 E3A01000 
+                       f_error ldr              r1, =0      ; result_lo = 1
+   95 0000007C E3A00000        ldr              r0, =0      ; result_hi = 1
+   96 00000080 E3500000        cmp              r0, #0      ; C = 1
+   97 00000084 E8BD801C        pop              {r2 - r4, pc} ; return result_l
+                                                            o, result_hi
+   98 00000088         
+   99 00000088         ; Recursion base case - Return r0 = 0 and r1 = 1
+  100 00000088         ; Note result_hi in r0 is already zero by now, no point 
+                       setting it again.
+  101 00000088         ; We also need to clear the C flag as we don't want to a
+                       ccidentally signal we've errored.
+  102 00000088 E3A01001 
+                       f_base  ldr              r1, =1      ; result_lo = 1
+  103 0000008C E3700000        cmn              r0, #0      ; C = 0
+  104 00000090 E8BD801C        pop              {r2 - r4, pc} ; return result_l
+                                                            o, result_hi
+  105 00000094         
+  106 00000094         ; Reserve rw space for results
+  107 00000094 00000000        area             tcddata,data,readwrite
+  108 00000000 20      results dcb              4 * 8       ; 4x 8-byte spaces
+  109 00000001         
+  110 00000001                 end
+Command Line: --debug --diag_suppress=9931 --apcs=interwork --depend=.\objects\
+tcd.d -o.\objects\tcd.o -IC:\Keil_v5\ARM\RV31\INC -IC:\Keil_v5\ARM\CMSIS\Includ
+e -IC:\Keil_v5\ARM\INC\Philips --predefine="__EVAL SETA 1" --predefine="__UVISI
+ON_VERSION SETA 526" --list=.\listings\tcd.lst TCD.s
