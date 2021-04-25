@@ -1,0 +1,208 @@
+\documentclass[12pt]{article}
+
+\usepackage[parfill]{parskip}
+\usepackage{fancyhdr}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{15pt}
+\lhead{\textbf{MAU22C00} Discrete Mathematics}
+\rhead{Ted Johnson ‑ 19335618}
+\rfoot{\thepage}
+
+\newcommand{\qedsymbol}{\rule{0.7em}{0.7em}}
+\def\<#1>{\langle\ignorespaces#1\unskip\rangle}
+
+\urlstyle{same}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\begin{document}
+
+\section*{Assignment 5}
+
+I have read and I understand the plagiarism provisions in the General Regulations of the University Calendar for the current year, found at \href{http://www.tcd.ie/calendar}{here}.
+I have also completed the Online Tutorial on avoiding plagiarism ‘Ready Steady Write’, located \href{http://tcd-ie.libguides.com/plagiarism/ready-steady-write}{here}.
+
+\subsection*{Exercise 1}
+
+Let $A = \mathbb{N} \times \mathbb{Z} \times \mathbb{Q} \times \mathbb{C}$.
+Is $A$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+Note that $\mathbb{R} \subseteq \mathbb{C} \subseteq A$.
+As we have proven in lectures, $\mathbb{R}$ is uncountably infinite.
+$\therefore \mathbb{C}$ has an uncountably infinite subset, so $\mathbb{C}$ itself is uncountably infinite.
+From this it is clear $A$ also has an uncountably infinite subset, so $A$ itself is uncountably infinite.
+
+\subsection*{Exercise 2}
+
+Let $A$ be the set of points in $\mathbb{R}^{2}$ whose polar coordinates ${(r, \theta)}$ satisfy the equation $r^{2} = {(\sin(\theta) - 1)}^{2}$.
+Is $A$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+To convert the Cartesian coordinates $(x,y)$ to Polar coordinates $(r,\theta)$, we can use the following equations:
+\begin{align*}
+	& r = \sqrt{x^{2} + y^{2}} \\
+	& \theta = \tan^{-1}\frac{y}{x}
+	\intertext{We can substitute $r$ and simplify as such:}
+	& r^{2} = {(\sin\theta - 1)}^{2} \\
+	\rightarrow\ & {(\sqrt{x^{2} + y^{2}})}^{2} = {(\sin\theta - 1)}^{2} \\
+	\rightarrow\ & x^{2} + y^{2} = {(\sin\theta - 1)}^{2} \\
+	\intertext{Notice the values of $\sin\theta$ always equal $\frac{\pi}{2} + 2 \pi n$ where $n \in \mathbb{Z}$}
+	& x^{2} + y^{2} = {(\sin\theta - 1)}^{2} \\
+	\rightarrow\ & x^{2} + y^{2} = {(\frac{\pi}{2} + 2 \pi n - 1)}^{2}
+\end{align*}
+
+From this, $A = \{\ (x,y) \in \mathbb{R}^{2}\ |\ x^{2} + y^{2} = {(\frac{\pi}{2} + 2 \pi n - 1)}^{2}, n \in \mathbb{Z} \}$.
+
+\ldots
+
+$A$ is uncountably infinite.
+
+\subsection*{Exercise 3}
+
+Let $A = \{\ (x,y) \in \mathbb{C}^{2}\ |\ x^{6} - 3x^{2} + 1 = 0\ \}$.
+Is $A$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+$A$ consists of all roots of the polynomial $x^{6} - 3x^{2} + 1$ paired with $\forall y \in \mathbb{C}$.
+The polynomial has a degree of 6, so according to the Fundamental Theorem of Algebra, this polynomial must have exactly 6 roots over $\mathbb{C}$.
+Let these set of roots be $(x_1, x_2, \ldots, x_6)$.
+\\
+As $A$ is the set of roots to $x^{6} - 3x^{2} + 1$ paired with all values of $\mathbb{C}$, we can redefine $A$ as $\{\ x_n \times \mathbb{C}\ \}_{n=1\ldots6}$.
+It is now clear that $A$ is the Cartesian product of a finite set and $\mathbb{C}$.
+As we proved in Exercise 1, the set of $\mathbb{C}$ is uncountably infinite.
+Therefore $A$ is the Cartesian product of a finite set and an uncountably infinite set.
+From the definition of the Cartesian product, $A$ itself must be an uncountably infinite set.
+
+\newpage
+\subsection*{Exercise 4}
+
+Let $A = \{\ (x,y) \in \mathbb{R} \times \mathbb{R}^{+}\ |\ 1 + xy = 0\ \}\ \cap\ \{\ (x,y) \in \mathbb{R}^{2}\ |\ \frac{{(x - 7)}^{2}}{25} + \frac{{(y + 4)}^{2}}{9} = 1\ \}$
+
+$\mathbb{R}^{+}$ stands for all positive real numbers. Consider $\mathcal{P}(A)$, the power set of $A$.
+Is $\mathcal{P}(A)$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+Let $B = \{\ (x,y) \in \mathbb{R} \times \mathbb{R}^{+}\ |\ 1 + xy = 0\ \}$ and $C = \{\ (x,y) \in \mathbb{R}^{2}\ |\ \frac{{(x - 7)}^{2}}{25} + \frac{{(y + 4)}^{2}}{9} = 1\ \}$.
+Notice that $A = B \cap C$. In other words, $A$ consists of all the elements common to both $B$ and $C$.
+\\
+The domain of $B$ is limited to $(x,y) \in \mathbb{R} \times \mathbb{R}^{+}$ while the domain of $C$ is limited to $(x,y) \in \mathbb{R}^{2}$.
+Clearly, the intersection $A$ must therefore be confined to the more restricted domain $(x,y) \in \mathbb{R} \times \mathbb{R}^{+}$.
+Therefore, $A$ consists of all common elements from sets $B$ and $C$ within the domain $(x,y) \in \mathbb{R} \times \mathbb{R}^{+}$.
+\\
+Consider the elements within $C$ that can be selected from the domain of $A$.
+Notice that this domain only permits positive real values for $y$.
+Due to this, we can show that there exists no value within $(x,y) \in \mathbb{R} \times \mathbb{R}^{+}$ such that $\frac{{(x - 7)}^{2}}{25} + \frac{{(y + 4)}^{2}}{9} = 1$.
+We can accomplish this by replacing $\frac{{(y + 4)}^{2}}{9}$ with a smaller value.
+As $y$ must be a positive real number, letting $y = 0$ results in the smaller value $\frac{16}{9}$.
+Let us assume there exists a valid value for $x$.
+\begin{align*}
+	& \frac{{(x - 7)}^{2}}{25} + \frac{16}{9} < 1 \\
+	\rightarrow\ & \frac{{(x - 7)}^{2}}{25} < -\frac{7}{9} \\
+	\rightarrow\ & {(x - 7)}^{2} < -\frac{175}{9}
+\end{align*}
+Here, we have met a contradiction. $x \in \mathbb{R}$, so it is impossible for any value for ${(x-7)}^{2}$ to be less than a negitive number.
+As such, $C$ cannot contain any elements within the domain $(x,y) \in \mathbb{R} \times \mathbb{R}^{+}$.
+Clearly, the intersection of this set with a set restricted to this domain must contain exactly zero elements.
+$\therefore A = B \cap C$ results in an empty set.
+\\
+Futhermore, $\mathcal{P}(A)$, the power set of $A$, is the power set of the empty set.
+As such, $\mathcal{P}(A)$ only consists of the empty set.
+Therefore, $\mathcal{P}(A)$ is a finite set.
+
+\subsection*{Exercise 5}
+
+Let $A$ consist of all $2 \times 2$ matrices with entries in the real numbers $\mathbb{R}$ and determinant equal to 1.
+Is $A$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+$A$ consists of matrices in the form $\big(\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}\big)$ where $a,b,c,d \in \mathbb{R}$ and $ad - bc = 1$.
+We can express $A \sim B$ where $B = \{\ (a,b,c,d) \in \mathbb{R}^{4}\ |\ ad - bc = 1\ \}$,
+as each matrix $\big(\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}\big)$ in $A$ is mapped to $(a,b,c,d)$ in $B$.
+\\
+Consider the subset of $B$ that is $C = B \cap (\mathbb{R} \times \{0\} \times \{0\} \times \mathbb{R})$.
+Notice we have simply created $C = \{\ (a,0,0,d) \in \mathbb{R}^{4}\ |\ ad = 1\ \}$ as $b = 0$ and $c = 0$.
+
+\ldots
+
+$A$ is uncountably infinite.
+
+\subsection*{Exercise 6}
+
+Let $A = \{\ (x,y,z) \in \mathbb{R}^{3}\ |\ 3x - y + 2z = 0$ and $x + 2y + 3z = 0\ \}$.
+Is $A$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+Consider the subset of $A$ that is $B = A \cap ((0,1) \times (0,1) \times \mathbb{R})$
+
+\ldots
+
+As $B$ is uncountably infinite, we have proven $A$ has an uncountably infinite subset.
+Therefore $A$ is uncountably infinite.
+
+\newpage
+\subsection*{Exercise 7}
+
+Let $A = \{ 0, 1 \}$.
+Is the language $[\ {(0 \cup \epsilon)}^{*} \circ {(1 \cup \epsilon)}\ ]\ \cap\ {(A \circ A)}^{*}$ finite, countably infinite, or uncountably infinite?
+Justify your answer.
+
+\subsubsection*{Solution}
+
+\ldots
+
+$L$ can be enumerated.
+
+\dots
+
+$L$ is countably infinite.
+
+\subsection*{Exercise 8}
+
+Let $A$ be a countably infinite alphabet.
+Is $A^{*}$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+Recall that $A^{*} = \bigcup\limits_{j=1}^{\infty} A^{j}$ where $A^{j}$ is the sequence of all words of length $j$ in the alphabet $A$.
+Note that the set of all words of a fixed length in an countably infinite alphabet is itself countably infinite, so $A^{j}$ is a sequence of countably infinite sets.
+$\therefore A^{*}$ is the union of a sequence of countably infinite sets. As proven in lectures, it holds that $A^{*}$ itself is then countably infinite.
+
+\subsection*{Exercise 9}
+
+Let $A = \{ 0, 1, 2, 3, 4, 5 \}$. Let the language $L$ consist of all even length strings containing at least three odd letters.
+Is $L$ finite, countably infinite or uncountably infinite? Justify your answer.
+
+\subsubsection*{Solution}
+
+$L$ can be expressed as the regular expression ${(A \circ A)}^{*}\ \cap\ (A^{*} \circ \{1,3,5\} \circ A^{*} \circ \{1,3,5\} \circ A^{*} \circ \{1,3,5\} \circ A^{*})$
+so it must be a regular language.
+
+\ldots
+
+$L$ is countably infinite.
+
+\subsection*{Exercise 10}
+
+Does there exist a sequence $\{ x1, x2, x3, \cdots \}$ of languages over a finite alphabet $A$ such that $xi$ is not a regular language $\forall i \geq 1$?
+Justify your answer.
+
+\subsubsection*{Solution}
+
+As proven in lectures, there are an uncountably infinite number of languages over the finite alphabet $A$.
+
+\ldots
+
+\end{document}
+
