@@ -1,0 +1,3 @@
+tui new-layout srcregs {-horizontal src 1 regs 1} 3 cmd 1
+layout srcregs
+focus cmd
