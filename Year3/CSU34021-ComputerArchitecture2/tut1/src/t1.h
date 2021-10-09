@@ -1,3 +1,9 @@
+
+/*
+t1.h - Ted Johnson (TCD 19335618), 2021
+Contains C decleration for tut1 functions written in x86 Assembly with NASM syntax
+*/
+
 #ifndef TUT1_T1
 #define TUT1_T1
 

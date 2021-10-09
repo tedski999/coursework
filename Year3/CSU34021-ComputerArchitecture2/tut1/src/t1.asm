@@ -1,9 +1,20 @@
 
+;
+; t1.asm - Ted Johnson (TCD 19335618), 2021
+; Contains implementation for tut1 functions written in x86 Assembly with NASM syntax
+;
+
+BITS 32
+
+section .text
+	global poly
+	global factorial
+	global multiple_k_asm
+
 	; poly - Calculate x^3 + x^2 + x + 1
 	; Parameters: (int32) x
 	; Returns: (int32) The result of x^3 + x^2 + x + 1
 	; Side-effects: None
-	global poly
 poly:
 	push ebp
 	mov ebp, esp
@@ -46,13 +57,13 @@ pow:
 	; compute x^y and write to eax
 	mov eax, 1        ; eax = 1
 	mov ecx, 1        ; ecx = 1
-pow_loop:             ;
+.while_loop:          ;
 	cmp ecx, [ebp+12] ; while (ecx <= y)
-	jg pow_end        ; {
+	jg .while_end     ; {
 	imul eax, [ebp+8] ;   eax *= x
 	inc ecx           ;   ecx++
-	jmp pow_loop      ; }
-pow_end:
+	jmp .while_loop   ; }
+.while_end:
 
 	; return
 	mov esp, ebp
@@ -63,7 +74,6 @@ pow_end:
 	; Parameters: (int32) x
 	; Returns: (int32) factorial of x
 	; Side-effects: None
-	global factorial
 factorial:
 	push ebp
 	mov ebp, esp
@@ -71,13 +81,13 @@ factorial:
 	; compute factorial of x and write to eax
 	mov eax, [ebp+8]  ; eax = x
 	cmp eax, 1        ; if (eax != 1)
-	je factorial_end  ; {
+	je .if_end        ; {
 	dec eax           ;   eax--
 	push eax          ;   eax = factorial(eax)
 	call factorial    ;   ...
 	add esp, 4        ;   ...
 	imul eax, [ebp+8] ;   eax *= x
-factorial_end:            ; }
+.if_end:              ; }
 
 	; return
 	mov esp, ebp
@@ -88,7 +98,6 @@ factorial_end:            ; }
 	; Parameters: (uint16) m, (uint16) n, (uint16) k, (uint16 *) arr
 	; Returns: None
 	; Side-effects: arr[m:n] is modified
-	global multiple_k_asm
 multiple_k_asm:
 	push ebp
 	mov ebp, esp
@@ -97,9 +106,9 @@ multiple_k_asm:
 	; while ebx < n
 	mov ebx, [ebp+8]        ; ebx = m
 	mov ecx, [ebp+20]       ; ecx = arr
-multiple_k_asm_loop:            ;
+.while_loop:                ;
 	cmp bx, [ebp+12]        ; while (bx < n)
-	jge multiple_k_asm_end  ; {
+	jge .while_end          ; {
 	                        ;
 	; divide bx by k        ;
 	mov ax, bx              ;   dx = bx % k
@@ -113,8 +122,8 @@ multiple_k_asm_loop:            ;
 	                        ;
 	; continue while loop   ;
 	inc bx                  ;   bx++
-	jmp multiple_k_asm_loop ; }
-multiple_k_asm_end:
+	jmp .while_loop         ; }
+.while_end:
 
 	; return
 	pop ebx

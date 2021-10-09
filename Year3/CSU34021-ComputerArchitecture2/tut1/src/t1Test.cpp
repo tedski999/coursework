@@ -1,3 +1,8 @@
+/*
+t1test.cpp - Ted Johnson (TCD 19335618), 2021
+Contains C++ implementation for testing tut1 functions written in x86 Assembly with NASM syntax
+*/
+
 #include "t1.h"
 #include <iostream>
 

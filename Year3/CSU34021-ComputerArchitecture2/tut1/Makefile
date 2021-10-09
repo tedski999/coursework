@@ -1,6 +1,6 @@
 CC     = g++
 AS     = nasm
-AFLAGS = -f elf32
+AFLAGS = -f elf32 -w+all
 CFLAGS = -m32 -Wall -pedantic
 LFLAGS = -m32
 
