@@ -1,3 +1,4 @@
+RUN_ARGS = 14285
 
 # Project structure
 TARGET  = subpub
@@ -31,9 +32,7 @@ build: $(BIN_SUBDIR)/$(TARGET)
 .PHONY: debug
 debug:
 	@echo -e "\n# Building debug version..."
-	make --no-print-directory build \
-		SUBDIR="debug" \
-		CFLAGS="-D DEBUG -g"
+	make --no-print-directory build SUBDIR="debug" CFLAGS="-g"
 
 # Run tests
 .PHONY: test
@@ -49,8 +48,8 @@ test:
 # Run target
 .PHONY: run
 run: $(BIN_SUBDIR)/$(TARGET)
-	@echo -e "\n# Running ./$(BIN_SUBDIR)/$(TARGET)..."
-	./$(BIN_SUBDIR)/$(TARGET)
+	@echo -e "\n# Running ./$(BIN_SUBDIR)/$(TARGET)$ (RUN_ARGS)"
+	./$(BIN_SUBDIR)/$(TARGET) $(RUN_ARGS)
 
 # Remove the build directories
 .PHONY: clean

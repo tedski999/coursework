@@ -11,8 +11,9 @@ enum subpub_log_urgency {
 	SUBPUB_LOG_ERRR,
 	subpub_log_urgency_len
 };
+extern const char *SUBPUB_LOG_URGENCY_STR[subpub_log_urgency_len];
 
-void subpub_log_init(void);
+void subpub_log_init(enum subpub_log_urgency verbosity);
 void subpub_log(enum subpub_log_urgency urgency, const char *message, ...);
 void subpub_elog(const char *message, ...);
 void subpub_vlog(enum subpub_log_urgency urgency, const char *message, va_list args);
