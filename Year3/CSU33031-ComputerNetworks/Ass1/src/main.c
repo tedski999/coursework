@@ -114,6 +114,7 @@ int main(int argc, char **argv) {
 
 	if (setup_signals_handlers()) {
 		subpub_elog("Failed to set signal handlers: ");
+		subpub_log_cleanup();
 		return EXIT_FAILURE;
 	}
 
@@ -123,12 +124,14 @@ int main(int argc, char **argv) {
 	fds[UDP] = (struct pollfd) { subpub_net_socket_open(address), POLLIN };
 	if (fds[UDP].fd < 0) {
 		subpub_elog("Failed to create UDP socket: ");
+		subpub_log_cleanup();
 		return EXIT_FAILURE;
 	}
 	fds[IPC] = (struct pollfd) { subpub_ipc_fifo_create(SUBPUB_IPC_PATH), POLLIN };
 	if (fds[IPC].fd < 0) {
 		subpub_elog("Failed to create IPC message queue: ");
 		subpub_net_socket_close(fds[UDP].fd);
+		subpub_log_cleanup();
 		return EXIT_FAILURE;
 	}
 
@@ -137,6 +140,7 @@ int main(int argc, char **argv) {
 		subpub_elog("Failed to create deadline list: ");
 		subpub_net_socket_close(fds[UDP].fd);
 		subpub_ipc_fifo_destroy(fds[IPC].fd, SUBPUB_IPC_PATH);
+		subpub_log_cleanup();
 		return EXIT_FAILURE;
 	}
 
