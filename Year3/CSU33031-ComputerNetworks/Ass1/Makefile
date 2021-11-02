@@ -9,7 +9,7 @@ BIN_DIR = bin
 
 # Build options
 CC = gcc
-override CFLAGS += -Wall -pedantic -O3
+override CFLAGS += -Wall -pedantic
 override LFLAGS +=
 
 # Modify options when building tests
@@ -48,7 +48,7 @@ test:
 # Run target
 .PHONY: run
 run: $(BIN_SUBDIR)/$(TARGET)
-	@echo -e "\n# Running ./$(BIN_SUBDIR)/$(TARGET)$ (RUN_ARGS)"
+	@echo -e "\n# Running ./$(BIN_SUBDIR)/$(TARGET) $(RUN_ARGS)"
 	./$(BIN_SUBDIR)/$(TARGET) $(RUN_ARGS)
 
 # Remove the build directories
