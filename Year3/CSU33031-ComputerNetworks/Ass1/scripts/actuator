@@ -1,2 +1,10 @@
+#!/bin/bash
 
-todo
+# Output instructions for another program to read
+BROKER_ADDRESS="broker:1428"
+SUBSCRIBE_TOPIC="room_1_instructions"
+SUBPUB="./subpub"
+(
+	echo subscribe "$BROKER_ADDRESS" "$SUBSCRIBE_TOPIC"
+	sleep infinity
+) | "$SUBPUB" -v none 1428 "$BROKER_ADDRESS"

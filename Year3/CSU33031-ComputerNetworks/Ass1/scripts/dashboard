@@ -1,2 +1,16 @@
+#!/bin/bash
 
-todo
+# Output sensor readings and publish an instruction every 10 - 20 seconds
+BROKER_ADDRESS="broker:1428"
+SUBSCRIBE_TOPIC="room_1_temperature"
+PUBLISH_TOPIC="room_1_instructions"
+INSTRUCTIONS=("on" "off" "explode")
+SUBPUB="./subpub"
+(
+	echo subscribe "$BROKER_ADDRESS" "$SUBSCRIBE_TOPIC"
+	while true; do
+		sleep "$((10 + $RANDOM % 10))"
+		INSTRUCTION="${INSTRUCTIONS[$RANDOM % ${#INSTRUCTIONS[@]} ]}"
+		echo publish "$BROKER_ADDRESS" "$PUBLISH_TOPIC" "$INSTRUCTION"
+	done
+) | "$SUBPUB" 1428 "$BROKER_ADDRESS" -v none

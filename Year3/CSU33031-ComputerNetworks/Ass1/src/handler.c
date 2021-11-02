@@ -13,11 +13,11 @@
 #define QUIT_COMMAND_LABEL "quit"
 #define QUIT_COMMAND_USAGE ""
 #define SUBSCRIBE_COMMAND_LABEL "subscribe"
-#define SUBSCRIBE_COMMAND_USAGE "<hostname> <port> <topic>"
+#define SUBSCRIBE_COMMAND_USAGE "<address> <topic>"
 #define UNSUBSCRIBE_COMMAND_LABEL "unsubscribe"
-#define UNSUBSCRIBE_COMMAND_USAGE "<hostname> <port> <topic>"
+#define UNSUBSCRIBE_COMMAND_USAGE "<address> <topic>"
 #define PUBLISH_COMMAND_LABEL "publish"
-#define PUBLISH_COMMAND_USAGE "<hostname> <port> <topic> <data>"
+#define PUBLISH_COMMAND_USAGE "<address> <topic> <data>"
 
 bool is_command(char *command_label, char *user_command) {
 	if (command_label == NULL || *command_label == '\0' ||
@@ -50,7 +50,7 @@ bool subpub_handle_command(int sockfd, struct subpub_net_address *verified_addre
 	char *usage;
 	char *command_string = input_buffer;
 	char *label = strsep(&command_string, " ");
-	char *hostname = strsep(&command_string, " ");
+	char *hostname = strsep(&command_string, ":");
 	char *portname = strsep(&command_string, " ");
 	char *topic = strsep(&command_string, " ");
 	char *data = command_string;
@@ -141,7 +141,8 @@ bool subpub_handle_network(int sockfd, struct subpub_net_address *verified_addre
 			verified = true;
 	if (!verified) {
 		subpub_log(SUBPUB_LOG_INFO, "Discarding unauthenticated network request...");
-		subpub_protocol_send(sockfd, address, (char[2]) { input_buffer[0] | SUBPUB_ACK_MASK, SUBPUB_ACK_UNAUTH }, 2);
+		// TODO: unauth can lead to endless back-and-forth
+		//subpub_protocol_send(sockfd, address, (char[2]) { input_buffer[0] | SUBPUB_ACK_MASK, SUBPUB_ACK_UNAUTH }, 2);
 		return true;
 	}
 

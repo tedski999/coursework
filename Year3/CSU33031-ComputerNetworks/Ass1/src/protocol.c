@@ -276,6 +276,8 @@ enum subpub_protocol_ack subpub_protocol_handle(int sockfd, struct subpub_net_ad
 				if (data == buffer + buffer_len - 1)
 					return SUBPUB_ACK_INVALID;
 				data++;
+				subpub_log(SUBPUB_LOG_INFO, "Topic: %s", topic);
+				subpub_log(SUBPUB_LOG_INFO, "Data: %s", data);
 
 				// Output data if subscribed
 				if (subpub_publishers_is_subscribed(topic, address)) {
@@ -303,6 +305,7 @@ enum subpub_protocol_ack subpub_protocol_handle(int sockfd, struct subpub_net_ad
 				if (buffer[buffer_len - 1])
 					return SUBPUB_ACK_INVALID;
 				char *topic = buffer + 1;
+				subpub_log(SUBPUB_LOG_INFO, "Topic: %s", topic);
 				return subpub_subscribers_remove(topic, address) ? SUBPUB_ACK_OK : SUBPUB_ACK_STATE;
 			}
 
@@ -312,6 +315,7 @@ enum subpub_protocol_ack subpub_protocol_handle(int sockfd, struct subpub_net_ad
 				if (buffer[buffer_len - 1])
 					return SUBPUB_ACK_INVALID;
 				char *topic = buffer + 1;
+				subpub_log(SUBPUB_LOG_INFO, "Topic: %s", topic);
 				return subpub_subscribers_add(topic, address) ? SUBPUB_ACK_OK : SUBPUB_ACK_STATE;
 			}
 

@@ -1,2 +1,13 @@
+#!/bin/bash
 
-todo
+# Publish a sensor reading of 20 - 40 every 10 - 30 seconds
+BROKER_ADDRESS="broker:1428"
+PUBLISH_TOPIC="room_1_temperature"
+SUBPUB="./subpub"
+(
+	while true; do
+		sleep "$((10 + $RANDOM % 20))"
+		SENSOR_READING="$((20 + $RANDOM % 20))"°C
+		echo publish "$BROKER_ADDRESS" "$PUBLISH_TOPIC" "$SENSOR_READING"
+	done
+) | "$SUBPUB" 1428 "$BROKER_ADDRESS"
