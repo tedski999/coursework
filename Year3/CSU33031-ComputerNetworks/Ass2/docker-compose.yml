@@ -1,0 +1,100 @@
+# Flow Forwarding
+# Copyright (C) 2021 Ted Johnson TCD 19335618 <edjohnso@tcd.ie>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+version: "3"
+
+x-contoller:
+  &controller
+  build: .
+  image: ff:latest
+  command: ./flowctl
+  stdin_open: true
+  tty: true
+
+x-forwarder:
+  &forwarder
+  build: .
+  image: ff:latest
+  command: ./flowfwd
+  stdin_open: true
+  tty: true
+
+services:
+
+  # Server for networks a, b and c
+  controller-abc:
+    <<: *controller
+    networks:
+      - a
+      - b
+      - c
+
+  # Clients for network a
+  forwarder-a:
+    <<: *forwarder
+    deploy:
+      replicas: 3
+    networks:
+      - a
+    depends_on:
+      - abc-controller
+
+  # Clients for network a and b
+  forwarder-ab:
+    <<: *forwarder
+    deploy:
+      replicas: 2
+    networks:
+      - a
+      - b
+    depends_on:
+      - abc-controller
+
+  # Clients for network b
+  forwarder-b:
+    <<: *forwarder
+    deploy:
+      replicas: 3
+    networks:
+      - b
+    depends_on:
+      - abc-controller
+
+  # Clients for network b and c
+  forwarder-bc:
+    <<: *forwarder
+    deploy:
+      replicas: 1
+    networks:
+      - b
+      - c
+    depends_on:
+      - abc-controller
+
+  # Clients for network c
+  forwarder-c:
+    <<: *forwarder
+    deploy:
+      replicas: 2
+    networks:
+      - c
+    depends_on:
+      - abc-controller
+
+networks:
+  a:
+  b:
+  c:
