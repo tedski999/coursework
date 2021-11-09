@@ -1,5 +1,5 @@
 /**
- * Subscriber Publisher Protocol
+ * Flow Forwarding
  * Copyright (C) 2021 Ted Johnson TCD 19335618 <edjohnso@tcd.ie>
  *
  * This program is free software: you can redistribute it and/or modify
