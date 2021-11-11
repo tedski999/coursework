@@ -16,83 +16,95 @@
 
 version: "3"
 
-x-contoller:
-  &controller
-  build: .
-  image: ff:latest
-  command: ./flowctl
-  stdin_open: true
-  tty: true
+#x-contoller:
+#  &controller
+#  build: .
+#  image: ff:latest
+#  stdin_open: true
+#  tty: true
 
 x-forwarder:
   &forwarder
   build: .
   image: ff:latest
-  command: ./flowfwd
   stdin_open: true
   tty: true
 
 services:
 
-  # Server for networks a, b and c
-  controller-abc:
-    <<: *controller
+  #controller-abc:
+  #  <<: *controller
+  #  container_name: controller-abc
+  #  command: ./flowctl
+  #  networks:
+  #    - a
+  #    - b
+  #    - c
+
+  forwarder-a-1:
+    <<: *forwarder
+    container_name: forwarder-a-1
+    command: ./flowfwd -a alice -t charlie:forwarder-ab-1 forwarder-a-2 forwarder-ab-1
+    networks:
+      - a
+    #depends_on:
+    #  - abc-controller
+
+  forwarder-a-2:
+    <<: *forwarder
+    container_name: forwarder-a-2
+    command: ./flowfwd -a amy forwarder-a-1 forwarder-ab-1
+    networks:
+      - a
+    #depends_on:
+    #  - abc-controller
+
+  forwarder-ab-1:
+    <<: *forwarder
+    container_name: forwarder-ab-1
+    command: ./flowfwd -a frank -t charlie:forwarder-bc-1 -t alice:forwarder-a-1 forwarder-a-1 forwarder-a-2 forwarder-b-1 forwarder-bc-1
     networks:
       - a
       - b
-      - c
+    #depends_on:
+    #  - abc-controller
 
-  # Clients for network a
-  forwarder-a:
+  forwarder-b-1:
     <<: *forwarder
-    deploy:
-      replicas: 3
-    networks:
-      - a
-    depends_on:
-      - abc-controller
-
-  # Clients for network a and b
-  forwarder-ab:
-    <<: *forwarder
-    deploy:
-      replicas: 2
-    networks:
-      - a
-      - b
-    depends_on:
-      - abc-controller
-
-  # Clients for network b
-  forwarder-b:
-    <<: *forwarder
-    deploy:
-      replicas: 3
+    container_name: forwarder-b-1
+    command: ./flowfwd -a bob forwarder-ab-1 forwarder-bc-1
     networks:
       - b
-    depends_on:
-      - abc-controller
+    #depends_on:
+    #  - abc-controller
 
-  # Clients for network b and c
-  forwarder-bc:
+  forwarder-bc-1:
     <<: *forwarder
-    deploy:
-      replicas: 1
+    container_name: forwarder-bc-1
+    command: ./flowfwd -a fay -t charlie:forwarder-c-1 -t alice:forwarder-ab-1 forwarder-ab-1 forwarder-b-1 forwarder-c-1 forwarder-c-2
     networks:
       - b
       - c
-    depends_on:
-      - abc-controller
+    #depends_on:
+    #  - abc-controller
 
-  # Clients for network c
-  forwarder-c:
+  forwarder-c-1:
     <<: *forwarder
-    deploy:
-      replicas: 2
+    container_name: forwarder-c-1
+    command: ./flowfwd -a charlie -t alice:forwarder-bc-1 forwarder-bc-1 forwarder-c-2
     networks:
       - c
-    depends_on:
-      - abc-controller
+    #depends_on:
+    #  - abc-controller
+
+  forwarder-c-2:
+    <<: *forwarder
+    container_name: forwarder-c-2
+    command: ./flowfwd -a carol forwarder-bc-1 forwarder-c-1
+    networks:
+      - c
+    #depends_on:
+    #  - abc-controller
 
 networks:
   a:

@@ -67,7 +67,7 @@ int flowfwd_clients_fulfill(int fd, char *src, char *msg) {
 	int clients_fulfilled = 0;
 	for (int i = clients_len - 1; i >= 0; i--) {
 		if (!strcmp(clients[i].src, src)) {
-			ff_log(FF_LOG_DBUG, "  Relaying to a client at port %s...", clients[i].portname);
+			ff_log(FF_LOG_INFO, "Fulfilling a waiting client at port %s...", clients[i].portname);
 			struct ff_net_address *address = ff_net_address_create(FF_LOCALHOST, clients[i].portname);
 			if (!address) {
 				ff_log(FF_LOG_ERRR, "Unable to resolve an address for the client at port %s!", clients[i].portname);

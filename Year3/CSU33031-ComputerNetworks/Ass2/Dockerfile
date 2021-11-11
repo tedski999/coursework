@@ -22,5 +22,7 @@ RUN make
 
 FROM alpine:latest
 RUN apk add libc6-compat
+RUN apk add bash
+RUN apk add tcpdump
 WORKDIR /app
 COPY --from=build ./build/bin/release .

@@ -140,6 +140,11 @@ static bool handle_ipc(int fd, struct ff_command_handler *command_handlers, int 
 		command[command_len - 1] = token;
 		token = strtok(NULL, separators);
 	}
+	if (!command) {
+		ff_log(FF_LOG_WARN, "No command inputted.");
+		free(input_buffer);
+		return true;
+	}
 
 	// Execute appropriate handler
 	ff_log(FF_LOG_DBUG, "Executing command handlers...");
@@ -155,6 +160,7 @@ static bool handle_ipc(int fd, struct ff_command_handler *command_handlers, int 
 
 	if (!command_found)
 		ff_log(FF_LOG_ERRR, "Command '%s' does not exist!", command[0]);
+	free(input_buffer);
 	free(command);
 	return !is_quitting;
 }
@@ -212,4 +218,13 @@ void ff_handler(
 	// Cleanup
 	ff_log(FF_LOG_DBUG, "Exited event handler loop.");
 	ff_net_close(fds[FDS_UDP].fd);
+}
+
+// TODO
+enum ff_ack ff_handle_ack(int fd, char *tlvs[ff_data_type_len]) {
+	ff_log(FF_LOG_NOTE, "Received an ack %d! TODO: Actually react to this appropriately...", tlvs[FF_DATA_TYPE_ACK][0]);
+	for (int i = 0; i < ff_data_type_len; i++)
+		if (tlvs[i])
+			ff_log(FF_LOG_DBUG, "  TLV: 0x%02x - 0x%02x", i, tlvs[i][0]);
+	return ff_ack_len;
 }

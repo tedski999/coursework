@@ -18,6 +18,7 @@
 
 #include "protocol.h"
 #include "clients.h"
+#include "table.h"
 #include "../common/net.h"
 #include "../common/log.h"
 #include "../common/protocol.h"
@@ -51,9 +52,17 @@ enum ff_ack flowfwd_protocol_handle_send_packet(int fd, char **tlvs) {
 	// If this is the destination, send data to any waiting receivers
 	if (!strcmp(tlvs[FF_DATA_TYPE_DST], local_address)) {
 		ff_log(FF_LOG_NOTE, "Received a packet. Relaying to any waiting clients...");
-		return flowfwd_clients_fulfill(fd, tlvs[FF_DATA_TYPE_SRC], tlvs[FF_DATA_TYPE_MSG])
-			? FF_ACK_OK
-			: FF_ACK_NO_RECEIVERS;
+		ff_log(FF_LOG_INFO, "Source address: %s", tlvs[FF_DATA_TYPE_SRC]);
+		ff_log(FF_LOG_INFO, "Contents: %s", tlvs[FF_DATA_TYPE_MSG]);
+		bool is_received =  flowfwd_clients_fulfill(fd, tlvs[FF_DATA_TYPE_SRC], tlvs[FF_DATA_TYPE_MSG]);
+		if (!is_received)
+			ff_log(FF_LOG_WARN, "No clients were waiting to receive a message from %s!", tlvs[FF_DATA_TYPE_SRC]);
+		ff_log(FF_LOG_NOTE, "TODO: At this point, this device should forward an ACK back towards %s...", tlvs[FF_DATA_TYPE_SRC]);
+		return ff_ack_len;
+		//return is_received
+		//	? FF_ACK_OK
+		//	: FF_ACK_NO_RECEIVERS;
+
 	}
 
 	// Otherwise, forward the message on
@@ -61,7 +70,7 @@ enum ff_ack flowfwd_protocol_handle_send_packet(int fd, char **tlvs) {
 		ff_log(FF_LOG_NOTE, "Forwarding a packet...");
 
 		ff_log(FF_LOG_DBUG, "Looking for next hop destination...");
-		char *next_peer = NULL; // TODO: lookup dst on flow table which finds the next peer to hop to...
+		char *next_peer = flowfwd_table_get(tlvs[FF_DATA_TYPE_DST]);
 		if (!next_peer) {
 			ff_log(FF_LOG_INFO, "Unable to determine next hop destination.");
 			// TODO: query the controller
@@ -124,7 +133,7 @@ void flowfwd_protocol_address_command(int argc, char **argv) {
 		if (argc > 2)
 			ff_log(FF_LOG_ERRR, "Usage: %s print", argv[0]);
 		else
-			ff_log(FF_LOG_NOTE, "This devices address is currently set to %s.", local_address);
+			ff_log(FF_LOG_NOTE, "This devices address is set to '%s'.", local_address);
 	}
 
 	// Set the devices address

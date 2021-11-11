@@ -17,6 +17,7 @@
  */
 
 #include "peers.h"
+#include "table.h"
 #include "clients.h"
 #include "protocol.h"
 #include "../common/handler.h"
@@ -31,18 +32,20 @@
 static void signal_handler(int a) {}
 
 static void print_usage(FILE *output, char *execfile) {
-	fprintf(output, "Usage: %s [-hv] <address> [peers...]\n\n", execfile);
+	fprintf(output, "Usage: %s [-h] [-v <verbosity>] -a <address> [peers...]\n\n", execfile);
 	fprintf(output, "  -h --help : Display this usage message\n");
 	fprintf(output, "  -v --verbosity <verbosity> : Set the output verbosity level\n\n");
+	fprintf(output, "  -a --address <address> : Set the devices address\n\n");
 	fprintf(output, "Note: The verbosity level can be set to any of [");
 	for (enum ff_log_urgency urgency = FF_LOG_DBUG; urgency <= ff_log_urgency_len; urgency++)
 		fprintf(output, " %s", FF_LOG_URGENCY_STR[urgency]);
 	fprintf(output, " ]\n\n");
-	fprintf(output, "Note: 'address' is what other other devices can address this device with.\n\n");
+	fprintf(output, "Note: A devices address is what other other devices can address this device with.\n\n");
 	fprintf(output, "Note: Only provide a peers hostname or IP address. The port is always %s.\n\n", FF_PORTNAME);
 	fprintf(output, "Licensed under GPLv3\n");
 	fprintf(output, "Ted Johnson 2021\n");
 }
+
 int main(int argc, char **argv) {
 	int exit_code = EXIT_FAILURE;
 
@@ -50,8 +53,8 @@ int main(int argc, char **argv) {
 	flowfwd_clients_init();
 
 	// Parse arguments
+	char *address = NULL;
 	int peers_added = 0;
-	bool is_local_address_set = false;
 	enum ff_log_urgency verbosity = FF_LOG_INFO;
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help") || !strcmp(argv[i], "-?")) {
@@ -71,19 +74,35 @@ int main(int argc, char **argv) {
 				fprintf(stderr, "Error: Unknown verbosity level '%s'! Use -h for help.\n", argv[i]);
 				goto exit;
 			}
-		} else if (!is_local_address_set) {
-			flowfwd_protocol_set_local_address(argv[i]);
-			is_local_address_set = true;
+		} else if (!strcmp(argv[i], "-t") || !strcmp(argv[i], "--entry")) { // TODO: temporary until the controller is implemented
+			if (++i >= argc) {
+				fprintf(stderr, "Error: Please provide an address and peer in the form 'address:peer'! Use -h for help.\n");
+				goto exit;
+			}
+			char *dst = strsep(argv + i, ":");
+			char *peer = argv[i];
+			flowfwd_table_set(dst, peer);
+		} else if (!strcmp(argv[i], "-a") || !strcmp(argv[i], "--address")) {
+			if (++i >= argc) {
+				fprintf(stderr, "Error: Please provide an address! Use -h for help.\n");
+				goto exit;
+			}
+			address = argv[i];
 		} else {
 			flowfwd_peers_add(argv[i]);
 			peers_added++;
 		}
 	}
+
 	ff_log_init(verbosity);
-	if (!is_local_address_set) {
-		fprintf(stderr, "Error: Please provide a local address for other nodes to address you as! Use -h for help.\n");
+
+	if (!address) {
+		fprintf(stderr, "Error: Please provide an address for other nodes to address you as! Use -h for help.\n");
 		goto exit;
 	}
+	flowfwd_protocol_set_local_address(address);
+	ff_log(FF_LOG_INFO, "Starting forwarding service with the address '%s'...", address);
+
 	if (peers_added)
 		ff_log(FF_LOG_INFO, "%d peer%s successfully registered from command-line arguments.", peers_added, (peers_added == 1) ? "" : "s");
 	else
@@ -109,7 +128,8 @@ int main(int argc, char **argv) {
 	int command_handlers_len = sizeof command_handlers / sizeof *command_handlers;
 	struct ff_packet_handler packet_handlers[] = {
 		{ FF_DATA_TYPE_MSG, flowfwd_protocol_handle_send_packet },
-		{ FF_DATA_TYPE_PORT, flowfwd_protocol_handle_client_request }
+		{ FF_DATA_TYPE_PORT, flowfwd_protocol_handle_client_request },
+		{ FF_DATA_TYPE_ACK, ff_handle_ack }
 	};
 	int packet_handlers_len = sizeof packet_handlers / sizeof *packet_handlers;
 
