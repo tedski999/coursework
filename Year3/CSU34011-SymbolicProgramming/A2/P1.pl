@@ -20,3 +20,11 @@ nat(japanese).
 pet(jaguar).
 pet(snail).
 pet(zebra).
+
+/** <examples>
+?- nbd([h(red,english,snail), h(blue,japanese,jaguar), H], []).
+?- nbd([h(red,english,snail), h(blue,japanese,jaguar), h(green,spanish,Z)], []).
+?- nbd([h(red,english,P), h(blue,japanese,P), h(green,spanish,zebra)], []).
+?- nbd([A,B,C], []).
+?- nbd(X, []).
+*/
