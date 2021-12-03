@@ -1,0 +1,45 @@
+Ted Johnson (TCD 19335618), 2021
+Answer for question 2
+
+i. ALU forwarding enabled
+
+Resulting R1: -1
+Resulting R2: 3
+Total clock cycles: 11
+
+This processor is both fast and logically correct. The ALU forwarding
+hardware allows this by using the results of previously executed
+instructions with subsequent instructions before the results are
+written back to the register file. This extra hardware/complexity
+prevents the processor from having to stall for data hazards.
+
+
+ii. ALU forwarding disabled, CPU data dependency locks enabled
+
+Resulting R1: -1
+Resulting R2: 3
+Total clock cycles: 21
+
+This processor is still logically correct but no longer fast. Without
+the added complexity from the ALU forwarding hardware, it must stall
+in the case of data hazards while the result of the previous
+instruction is written back to the register file. Only then can
+dependant subsequent instructions may be executed. As such,
+dependant sequential instructions can stall the processor for up to
+2 clock cycles. This is apparent between many of the instructions in
+the code segment.
+
+
+iii. ALU forwarding disabled, CPU data dependency locks disabled
+
+Resulting R1: 4
+Resulting R2: 0
+Total clock cycles: 11
+
+While this processor is no longer logically correct (the processor
+no longer respects data hazards between subsequent instructions),
+this processor executes the entire code segment in as few clock
+cycles as the processor with the additional ALU forwarding hardware.
+This hardware may be cheap, simple and fast but the added complexity
+comes from software managing its own data dependency and hazards.
+
