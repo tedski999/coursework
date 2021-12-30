@@ -16,20 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FF_HANDLER_H
-#define FF_HANDLER_H
+#ifndef FF_FLOWCTL_HANDLERS_REQUEST_H
+#define FF_FLOWCTL_HANDLERS_REQUEST_H
 
-#include "send.h"
-#include "requests.h"
-#include "config.h"
+#include "flowtable.h"
+#include "../common/net.h"
+#include "../common/requests.h"
+#include "../common/config.h"
 #include <stdbool.h>
 
-typedef bool (*ff_request_handler)(
-	int fd, struct ff_net_addr *src, struct ff_requests *requests,
-	char *tlvs[ff_datatype_len], void *user_ptr);
+struct ff_flowctl_service {
+	char *address;
+	int peers_len;
+	char **peers;
+	struct ff_flowctl_flowtable *flowtable;
+};
 
-void ff_start_handler(
-	int fd, ff_request_handler *handlers, int handlers_len,
-	struct ff_requests *requests, void *user_ptr);
+struct ff_flowctl_request_handler_data {
+	int services_len;
+	struct ff_flowctl_service *services;
+};
+
+bool ff_flowctl_handle_advertisement(int fd, struct ff_net_addr *src, struct ff_requests *requests, char *tlvs[ff_datatype_len], void *user_ptr);
+bool ff_flowctl_handle_route_request(int fd, struct ff_net_addr *src, struct ff_requests *requests, char *tlvs[ff_datatype_len], void *user_ptr);
 
 #endif

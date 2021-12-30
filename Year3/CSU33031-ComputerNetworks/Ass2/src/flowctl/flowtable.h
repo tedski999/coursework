@@ -16,17 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FLOWFWD_CLIENTS_H
-#define FLOWFWD_CLIENTS_H
+#ifndef FF_FLOWCTL_FLOWTABLE_H
+#define FF_FLOWCTL_FLOWTABLE_H
 
-#include <stdbool.h>
+#include "../common/net.h"
 
-void flowfwd_clients_init(void);
-void flowfwd_clients_list(void);
-void flowfwd_clients_add(char *src, char *portname);
-int flowfwd_clients_fulfill(int fd, char *src, char *portname);
-int flowfwd_clients_remove(char *src, char *portname);
-void flowfwd_clients_command(int argc, char **argv);
-void flowfwd_clients_cleanup(void);
+struct ff_flowctl_service;
+
+struct ff_flowctl_flowtable;
+
+struct ff_flowctl_flowtable *ff_flowctl_flowtable_create(void);
+void ff_flowctl_flowtable_generate(
+	struct ff_flowctl_flowtable *flowtable, struct ff_flowctl_service *root,
+	struct ff_flowctl_service *services, int services_len);
+char *ff_flowctl_flowtable_get(struct ff_flowctl_flowtable *flowtable, char *destination);
+void ff_flowctl_flowtable_destroy(struct ff_flowctl_flowtable *flowtable);
 
 #endif

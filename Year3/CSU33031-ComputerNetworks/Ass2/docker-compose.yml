@@ -16,12 +16,12 @@
 
 version: "3"
 
-#x-contoller:
-#  &controller
-#  build: .
-#  image: ff:latest
-#  stdin_open: true
-#  tty: true
+x-contoller:
+  &controller
+  build: .
+  image: ff:latest
+  stdin_open: true
+  tty: true
 
 x-forwarder:
   &forwarder
@@ -32,81 +32,33 @@ x-forwarder:
 
 services:
 
-  #controller-abc:
-  #  <<: *controller
-  #  container_name: controller-abc
-  #  command: ./flowctl
-  #  networks:
-  #    - a
-  #    - b
-  #    - c
+  controller:
+    <<: *controller
+    container_name: controller
+    command: bash -c "./flowctl"
+    networks: [a,b]
 
-  forwarder-a-1:
+  alice:
     <<: *forwarder
-    container_name: forwarder-a-1
-    command: ./flowfwd -a alice -t charlie:forwarder-ab-1 forwarder-a-2 forwarder-ab-1
-    networks:
-      - a
-    #depends_on:
-    #  - abc-controller
+    container_name: alice
+    command: bash -c "./flowfwd alice controller frank"
+    networks: [a]
+    depends_on: [controller]
 
-  forwarder-a-2:
+  frank:
     <<: *forwarder
-    container_name: forwarder-a-2
-    command: ./flowfwd -a amy forwarder-a-1 forwarder-ab-1
-    networks:
-      - a
-    #depends_on:
-    #  - abc-controller
+    container_name: frank
+    command: bash -c "./flowfwd frank controller alice,bob"
+    networks: [a,b]
+    depends_on: [controller]
 
-  forwarder-ab-1:
+  bob:
     <<: *forwarder
-    container_name: forwarder-ab-1
-    command: ./flowfwd -a frank -t charlie:forwarder-bc-1 -t alice:forwarder-a-1 forwarder-a-1 forwarder-a-2 forwarder-b-1 forwarder-bc-1
-    networks:
-      - a
-      - b
-    #depends_on:
-    #  - abc-controller
-
-  forwarder-b-1:
-    <<: *forwarder
-    container_name: forwarder-b-1
-    command: ./flowfwd -a bob forwarder-ab-1 forwarder-bc-1
-    networks:
-      - b
-    #depends_on:
-    #  - abc-controller
-
-  forwarder-bc-1:
-    <<: *forwarder
-    container_name: forwarder-bc-1
-    command: ./flowfwd -a fay -t charlie:forwarder-c-1 -t alice:forwarder-ab-1 forwarder-ab-1 forwarder-b-1 forwarder-c-1 forwarder-c-2
-    networks:
-      - b
-      - c
-    #depends_on:
-    #  - abc-controller
-
-  forwarder-c-1:
-    <<: *forwarder
-    container_name: forwarder-c-1
-    command: ./flowfwd -a charlie -t alice:forwarder-bc-1 forwarder-bc-1 forwarder-c-2
-    networks:
-      - c
-    #depends_on:
-    #  - abc-controller
-
-  forwarder-c-2:
-    <<: *forwarder
-    container_name: forwarder-c-2
-    command: ./flowfwd -a carol forwarder-bc-1 forwarder-c-1
-    networks:
-      - c
-    #depends_on:
-    #  - abc-controller
+    container_name: bob
+    command: bash -c "./flowfwd bob controller frank"
+    networks: [b]
+    depends_on: [controller]
 
 networks:
   a:
   b:
-  c:

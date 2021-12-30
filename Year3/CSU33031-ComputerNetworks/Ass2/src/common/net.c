@@ -18,19 +18,20 @@
 
 #include "net.h"
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <netdb.h>
-#include <string.h>
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
-struct ff_net_address {
+struct ff_net_addr {
 	struct sockaddr_storage addr;
 	socklen_t addrlen;
+
 };
 
-int ff_net_recv(int sockfd, char *buffer, int buffer_len, struct ff_net_address **src) {
-	*src = calloc(1, sizeof (struct ff_net_address));
+int ff_net_recv(int sockfd, char *buffer, int buffer_len, struct ff_net_addr **src) {
+	*src = calloc(1, sizeof (struct ff_net_addr));
 	(*src)->addrlen = sizeof (*src)->addr;
 	int data_len = recvfrom(
 		sockfd, buffer, buffer_len, 0,
@@ -42,11 +43,11 @@ int ff_net_recv(int sockfd, char *buffer, int buffer_len, struct ff_net_address 
 	return data_len;
 }
 
-int ff_net_send(int sockfd, struct ff_net_address *address, char *buffer, int buffer_len) {
+int ff_net_send(int sockfd, struct ff_net_addr *address, char *buffer, int buffer_len) {
 	return sendto(sockfd, buffer, buffer_len, 0, (struct sockaddr *) &address->addr, address->addrlen);
 }
 
-int ff_net_open(struct ff_net_address *address) {
+int ff_net_open(struct ff_net_addr *address) {
 	int sockfd = socket(address->addr.ss_family, SOCK_DGRAM, 0);
 	if (sockfd == -1)
 		return -1;
@@ -61,7 +62,7 @@ void ff_net_close(int sockfd) {
 	close(sockfd);
 }
 
-struct ff_net_address *ff_net_address_create(char *hostname, char *portname) {
+struct ff_net_addr *ff_net_addr_create(char *hostname, char *portname) {
 	struct addrinfo hints = {
 		.ai_family = AF_UNSPEC,
 		.ai_socktype = SOCK_DGRAM,
@@ -69,29 +70,38 @@ struct ff_net_address *ff_net_address_create(char *hostname, char *portname) {
 		.ai_flags = AI_ADDRCONFIG | (hostname ? 0 : AI_PASSIVE)
 	};
 
+	// TODO: which resolve?
 	struct addrinfo *resolve_list = NULL;
 	if (getaddrinfo(hostname, portname, &hints, &resolve_list))
 		return NULL;
 
-	struct ff_net_address *address = malloc(sizeof *address);
-	address->addr = *(struct sockaddr_storage *) resolve_list->ai_addr;
+	struct ff_net_addr *address = malloc(sizeof *address);
+	memcpy(&address->addr, resolve_list->ai_addr, resolve_list->ai_addrlen);
 	address->addrlen = resolve_list->ai_addrlen;
 	freeaddrinfo(resolve_list);
 	return address;
 }
 
-int ff_net_address_extract(struct ff_net_address *address, char *hostname, int hostname_len, char *portname, int portname_len) {
+struct ff_net_addr *ff_net_addr_dup(struct ff_net_addr *address) {
+	struct ff_net_addr *duplicate = malloc(sizeof *duplicate);
+	memcpy(duplicate, address, sizeof *address);
+	return duplicate;
+}
+
+/*
+int ff_net_addr_extract(struct ff_net_addr *address, char *hostname, int hostname_len, char *portname, int portname_len) {
 	return getnameinfo(
 		(struct sockaddr *) &address->addr, address->addrlen,
 		hostname, hostname_len, portname, portname_len, NI_DGRAM | NI_NUMERICSERV);
 }
+*/
 
-int ff_net_address_cmp(struct ff_net_address *a, struct ff_net_address *b) {
+int ff_net_addr_cmp(struct ff_net_addr *a, struct ff_net_addr *b) {
 	if (a->addrlen < b->addrlen) return -1;
 	else if (a->addrlen > b->addrlen) return 1;
 	return memcmp(&a->addr, &b->addr, a->addrlen);
 }
 
-void ff_net_address_destroy(struct ff_net_address *address) {
+void ff_net_addr_destroy(struct ff_net_addr *address) {
 	free(address);
 }

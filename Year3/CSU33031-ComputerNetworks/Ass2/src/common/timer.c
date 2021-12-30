@@ -18,32 +18,23 @@
 
 #include "timer.h"
 #include <stdlib.h>
+#include <time.h>
 
 #define SEC2NSEC(sec) ((sec) * 1000000000.0)
 #define NSEC2SEC(nsec) ((nsec) / 1000000000.0)
 
-struct ff_timer {
-	struct timespec start_time;
-};
+struct ff_timer { struct timespec t; };
 
 struct ff_timer *ff_timer_create(void) {
 	struct ff_timer *timer = malloc(sizeof *timer);
-	clock_gettime(CLOCK_MONOTONIC, &timer->start_time);
+	clock_gettime(CLOCK_MONOTONIC, &timer->t);
 	return timer;
 }
 
 double ff_timer_measure(const struct ff_timer *timer) {
-	struct timespec diff = ff_timer_measure_in_timespec(timer);
-	return diff.tv_sec + NSEC2SEC(diff.tv_nsec);
-}
-
-struct timespec ff_timer_measure_in_timespec(const struct ff_timer *timer) {
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);
-	return (struct timespec) {
-		now.tv_sec - timer->start_time.tv_sec,
-		now.tv_nsec - timer->start_time.tv_nsec
-	};
+	return (now.tv_sec - timer->t.tv_sec) + NSEC2SEC(now.tv_nsec - timer->t.tv_nsec);
 }
 
 void ff_timer_set(struct ff_timer *timer, double new_time) {
@@ -51,8 +42,8 @@ void ff_timer_set(struct ff_timer *timer, double new_time) {
 	clock_gettime(CLOCK_MONOTONIC, &now);
 	long secs = new_time;
 	long nsecs = SEC2NSEC(new_time - secs);
-	timer->start_time.tv_sec = now.tv_sec - secs;
-	timer->start_time.tv_nsec = now.tv_nsec - nsecs;
+	timer->t.tv_sec = now.tv_sec - secs;
+	timer->t.tv_nsec = now.tv_nsec - nsecs;
 }
 
 void ff_timer_destroy(struct ff_timer *timer) {

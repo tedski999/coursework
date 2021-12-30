@@ -16,14 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FLOWFWD_PEERS_H
-#define FLOWFWD_PEERS_H
+#ifndef FF_FLOWFWD_FORWARDING_REQUEST_H
+#define FF_FLOWFWD_FORWARDING_REQUEST_H
 
-void flowfwd_peers_init(void);
-void flowfwd_peers_list(void);
-void flowfwd_peers_add(char *hostname);
-int flowfwd_peers_remove(char *hostname);
-void flowfwd_peers_command(int argc, char **argv);
-void flowfwd_peers_cleanup(void);
+#include "handlers.h"
+#include "../common/net.h"
+#include "../common/requests.h"
+#include "../common/config.h"
+#include <stdbool.h>
+
+struct ff_flowfwd_forwarding_request_callback_data {
+	struct ff_net_addr *src;
+	struct ff_flowfwd_request_handler_data *user_ptr;
+};
+
+bool ff_flowfwd_forwarding_request_callback(int fd, struct ff_net_addr *src, struct ff_requests *requests, char *tlvs[ff_datatype_len], void *user_ptr);
+bool ff_flowfwd_forwarding_request_callback_timeout(int fd, struct ff_net_addr *dst, struct ff_requests *requests, void *user_ptr);
+void ff_flowfwd_forwarding_request_callback_cleanup(void *user_ptr);
 
 #endif

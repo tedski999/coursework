@@ -16,15 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FLOWFWD_PROTOCOL_H
-#define FLOWFWD_PROTOCOL_H
+#ifndef FF_FLOWFWD_PEERADDR_REQUEST_H
+#define FF_FLOWFWD_PEERADDR_REQUEST_H
 
+#include "handlers.h"
+#include "../common/net.h"
+#include "../common/requests.h"
 #include "../common/config.h"
 
-void flowfwd_protocol_set_local_address(char *local_address);
-enum ff_ack flowfwd_protocol_handle_send_packet(int fd, char **tlvs);
-enum ff_ack flowfwd_protocol_handle_client_request(int fd, char **tlvs);
-void flowfwd_protocol_address_command(int argc, char **argv);
-void flowfwd_protocol_cleanup(void);
+struct ff_flowfwd_peeraddr_request_callback_data {
+	struct ff_net_addr *peer;
+	struct ff_flowfwd_request_handler_data *user_ptr;
+};
+
+bool ff_flowfwd_peeraddr_request_callback(int fd, struct ff_net_addr *src, struct ff_requests *requests, char *tlvs[ff_datatype_len], void *user_ptr);
+bool ff_flowfwd_peeraddr_request_callback_timeout(int fd, struct ff_net_addr *dst, struct ff_requests *requests, void *user_ptr);
+void ff_flowfwd_peeraddr_request_callback_cleanup(void *user_ptr);
 
 #endif

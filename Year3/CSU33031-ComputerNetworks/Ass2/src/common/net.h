@@ -19,17 +19,16 @@
 #ifndef FF_NET_H
 #define FF_NET_H
 
-#include <netdb.h>
+struct ff_net_addr;
 
-struct ff_net_address;
-
-int ff_net_recv(int sockfd, char *buffer, int buffer_len, struct ff_net_address **src);
-int ff_net_send(int sockfd, struct ff_net_address *address, char *buffer, int buffer_len);
-int ff_net_open(struct ff_net_address *address);
+int ff_net_recv(int sockfd, char *buffer, int buffer_len, struct ff_net_addr **src);
+int ff_net_send(int sockfd, struct ff_net_addr *address, char *buffer, int buffer_len);
+int ff_net_open(struct ff_net_addr *address);
 void ff_net_close(int sockfd);
-struct ff_net_address *ff_net_address_create(char *hostname, char *portname);
-int ff_net_address_extract(struct ff_net_address *address, char *hostname, int hostname_len, char *portname, int portname_len);
-int ff_net_address_cmp(struct ff_net_address *a, struct ff_net_address *b);
-void ff_net_address_destroy(struct ff_net_address *address);
+struct ff_net_addr *ff_net_addr_create(char *hostname, char *portname);
+struct ff_net_addr *ff_net_addr_dup(struct ff_net_addr *address);
+//int ff_net_addr_extract(struct ff_net_addr *address, char *hostname, int hostname_len, char *portname, int portname_len);
+int ff_net_addr_cmp(struct ff_net_addr *a, struct ff_net_addr *b);
+void ff_net_addr_destroy(struct ff_net_addr *address);
 
 #endif

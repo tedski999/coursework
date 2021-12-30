@@ -47,7 +47,7 @@ $(FLOWFWD): $(BIN_DIR)/$(BUILD_TYPE)/$(FLOWFWD)
 .PHONY: debug
 debug:
 	@echo -e "\n# Building debug binaries..."
-	make --no-print-directory BUILD_TYPE="debug" CFLAGS="-g"
+	make -B --no-print-directory BUILD_TYPE="debug" CFLAGS="-g"
 
 # Remove the build directories
 .PHONY: clean

@@ -19,13 +19,10 @@
 #ifndef FF_TIMER_H
 #define FF_TIMER_H
 
-#include <time.h>
-
 struct ff_timer;
 
 struct ff_timer *ff_timer_create(void);
 double ff_timer_measure(const struct ff_timer *timer);
-struct timespec ff_timer_measure_in_timespec(const struct ff_timer *timer);
 void ff_timer_set(struct ff_timer *timer, double new_time);
 void ff_timer_destroy(struct ff_timer *timer);
 

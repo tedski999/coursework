@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FF_PROTOCOL_H
-#define FF_PROTOCOL_H
+#ifndef FF_SEND_H
+#define FF_SEND_H
 
 #include "net.h"
 #include "config.h"
 #include <stdbool.h>
 
-bool ff_protocol_send_str(int fd, struct ff_net_address *address, char *str);
-bool ff_protocol_send_tlvs(int fd, struct ff_net_address *address, char **tlvs);
-bool ff_protocol_send_ack(int fd, struct ff_net_address *address, enum ff_ack ack);
-char *ff_protocol_get_next_id(struct ff_net_address *address);
+bool ff_send_string(int fd, struct ff_net_addr *dst, char *data);
+bool ff_send_ack(int fd, struct ff_net_addr *dst, enum ff_ack ack);
+bool ff_send_tlvs(int fd, struct ff_net_addr *dst, char **tlvs);
 
 #endif
