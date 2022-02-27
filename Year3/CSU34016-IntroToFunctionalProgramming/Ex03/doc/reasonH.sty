@@ -1,0 +1,82 @@
+
+%
+% (c) Andrew Butterfield, 2017
+%
+\def\reasonH{\textit{\textsf{reasonH}}}
+\def\prfchk{\textit{\textsf{prfchk}}}
+
+% basic types
+\def\Bool{\mathbb{B}}
+\def\True{True}
+\def\true{\textsf{true}}
+\def\false{\textsf{false}}
+\def\False{False}
+\def\Int{\mathbb{Z}}
+\def\Nat{\mathbb{N}}
+
+\def\Seq#1{{#1}^*}
+\def\seqof#1{\langle{#1}\rangle}
+\def\nil{\seqof{}}
+\def\Set#1{\mathcal P{#1}}
+\def\setof#1{\{{#1}\}}
+\def\cat{\frown}
+
+% function types
+\def\fun{\rightarrow}
+\def\pfun{\dashrightarrow}
+\def\power{\mathbb{P}}
+\def\finset{\mathbb{F}}
+\def\dom{\mathrm{dom}}
+\def\maplet#1#2{{#1}\mapsto{#2}}
+\def\override{\oplus}
+
+% semantics, proofs, calculations
+\def\semlbr{ [\!\,\![ }
+\def\semrbr{ ]\!\,\!] }
+\def\Sem#1{ \semlbr{#1}\semrbr }
+\def\coz#1{\text{``{#1}''}}
+
+% terms
+\def\fv{\mathsf{fv}}
+
+\def\K#1{\mathsf K~#1} \def\kk#1{\mathsf{#1}}
+\def\V#1{\mathsf V~#1} \def\vv#1{\textit{\textsf{#1}}}
+\def\C#1#2{\mathsf C~#1~#2} \def\cc#1#2{{#1}({#2})}
+\def\B#1#2#3{\mathsf B~#1~#2~#3} \def\bb#1#2#3{\mathcal{Q}_{#1}~{#2}\bullet{#3}}
+\def\L#1#2#3{\mathsf L~#1~#2~#3} \def\ll#1#2#3{\Lambda_{#1}~{#2}\bullet{#3}}
+\def\S#1#2#3{\mathsf S~#1~(#2,#3)^+} \def\ss#1#2#3{{#1}[#3/#2]}
+\def\I#1#2#3{\mathsf I~#1~#2~#3} \def\ii#1#2#3{{{\large{#1}}}_I~\{\cc{#2}{#3}\}}
+\def\T#1{\mathsf T~#1}
+% \def\tt#1{{#1}}
+
+
+%% UTP syntax
+
+\def\lst#1{#1{\scriptstyle{\mathsf{\$}}}}
+\def\cond#1{\mathbin{\lhd{#1}\rhd}}
+\def\defs{\mathrel{~\widehat{=\!\!\!\!=}}~}
+\def\less#1{{}\!\setminus\!{}_{#1}}
+\def\Skip{\mathit{I\!I}}
+
+%% Matching
+\def\mvX{{\scriptscriptstyle\times}}
+\def\mvlsym{:\!{\scriptscriptstyle l}\!:}
+\def\mvl{\mathop{\;\tilde{\mvlsym}\;}}
+\def\mvlx{\mathop{\;\mvlsym_\mvX\;}}
+\def\mvlxx{\mathop{\;{}_\mvX\!\!\mvlsym_\mvX\;}}
+
+\def\mvssym{:\!{\scriptscriptstyle s}\!:}
+\def\mvs{\mathop{\;\tilde{\mvssym}\;}}
+\def\mvsx{\mathop{\;\mvssym_\mvX\;}}
+\def\mvsxx{\mathop{\;{}_\mvX\!\!\mvssym_\mvX\;}}
+
+%% Proofs
+
+\def\try{\textbf{try}}
+\def\splitand{split\!\land\!}
+
+% because it does...
+\def\adobesucks{
+ \newpage
+ Because Adobe Reader 2-page display sucks!
+}

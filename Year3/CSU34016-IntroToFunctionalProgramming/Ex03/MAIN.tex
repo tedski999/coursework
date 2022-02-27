@@ -1,0 +1,57 @@
+\documentclass[fleqn,10pt]{report}
+\usepackage[a4paper, margin=1.1in]{geometry}
+\usepackage{amssymb,amsmath}
+\usepackage{mathpartir}
+\usepackage{doc/reasonH}
+\usepackage{listings}
+\usepackage{doc/lstlhs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\def\includepicture#1{\includegraphics{#1.eps}}
+
+\parindent=0pt % I hate first line indentation
+\parskip=3pt   % I like a visual white gap between paragraphs
+
+\def\version{0.9.3.0}
+
+\author{
+Andrew Butterfield
+\\
+{\small \copyright\ 2017--2020}
+}
+\title{
+  \prfchk: Proof Checking for Haskell
+  \\(v\version)
+}
+\date{
+\today
+}
+
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\chapter{prfckh Application}
+
+\lstinputlisting[basicstyle=\tt]{app/Main.hs}
+
+
+\chapter{\prfchk\ Libraries}
+
+\input{src/AST.lhs}
+\newpage
+\input{src/Matching.lhs}
+\newpage
+\input{src/HParse.lhs}
+\newpage
+\input{src/Theory.lhs}
+\newpage
+\input{src/Check.lhs}
+
+\appendix
+\input{src/Utilities.lhs}
+
+\end{document}

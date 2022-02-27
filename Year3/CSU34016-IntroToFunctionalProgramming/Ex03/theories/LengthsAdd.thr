@@ -1,0 +1,63 @@
+THEORY LengthsAdd
+
+IMPORT-HASKELL List
+IMPORT-THEORY List
+IMPORT-THEORY Arithmetic
+
+THEOREM concat_lengths_add
+    length (xs++ys)  ==  length xs + length ys
+
+STRATEGY Induction xs :: List
+
+    BASE []
+        length ([]++ys)  ==  length [] + length ys
+
+    STRATEGY ReduceBoth
+
+    LHS
+
+        length ([]++ys)
+         = DEF ++.1
+        length  ys
+
+    RHS
+
+        length [] + length ys
+         = DEF length.1
+        0 + length ys
+         = LAW add_left_unit l2r
+        length ys
+
+    QED BASE
+
+    STEP (x:xs)
+
+    ASSUME
+        length (xs++ys)   ==   length xs + length ys
+
+    SHOW
+        length ((x:xs)++ys)  ==  length (x:xs) + length ys
+
+    STRATEGY ReduceBoth
+
+    LHS
+
+        length ((x:xs)++ys)
+         = DEF ++.2
+        length (x:(xs++ys))
+         = DEF length.2
+        1 + length (xs++ys)
+         = INDHYP l2r @ length
+        1 + (length xs + length ys)
+
+    RHS
+
+        length (x:xs) + length ys
+         = DEF length.2
+        (1 + length xs) + length ys
+         = LAW add_assoc r2l
+        1 + (length xs + length ys)
+
+    QED STEP
+
+QED concat_lengths_add

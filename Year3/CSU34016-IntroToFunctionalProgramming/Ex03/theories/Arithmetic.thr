@@ -1,0 +1,18 @@
+THEORY Arithmetic
+
+INDUCTION-SCHEME Nat
+BASE 0
+STEP x --> x + 1
+INJ  ( x == y )  ==  ( (x + 1) == (y + 1) )
+
+LAW add_left_unit    0 + x == x
+LAW add_right_unit   x + 0 == x
+LAW add_symm         x + y == y + x
+LAW add_assoc  x + (y + z) ==  (x + y) + z
+
+LAW mul_left_unit    1 * x == x
+LAW mul_right_unit   x * 1 == x
+LAW mul_symm         x * y == y * x
+LAW mul_assoc  x * (y * z) ==  (x * y) * z
+LAW mul_left_zero    0 * x == 0
+LAW mul_right_zero   x * 0 == 0

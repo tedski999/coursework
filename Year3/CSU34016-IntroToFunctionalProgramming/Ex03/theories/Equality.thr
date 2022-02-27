@@ -1,0 +1,6 @@
+THEORY Equality
+
+
+LAW eq_refl    x == x
+LAW eq_symm    (x == y) == (y == x)
+LAW eq_trans  (x == y) && (y == z) ==> (x==z)

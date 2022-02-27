@@ -1,0 +1,22 @@
+jrel law [usage] [focus]
+
+1. jrel (mandatory):
+ =  -- logical equality
+    -- inequalities such as <, <=, ==>, .. may be supported later
+2. law (mandatory):
+  LAW name    -- name of law
+  DEF name    -- defn of name
+  DEF name.i  -- defn of name, identifying clause
+  INDHYP      -- inductive hypothesis
+  CASE        -- case assumption
+  SIMP        -- Simplifier
+3. usage (optional):
+      -- if omitted for DEF, then l2r
+      -- if omitted otherwise, then whole law
+  l2r -- left-to-right (for laws of form lhs = rhs)
+  r2l -- right-to-left (for laws of form lhs = rhs)
+4. focus (optional):
+            -- if omitted for DEF, focus is first occurrence of DEF name
+            -- if omitted for anything else, the focus is at top-level
+  @ name    -- the first occurrence of that name
+  @ name i  -- ith in-order occurrence of name
