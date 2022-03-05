@@ -1,0 +1,8 @@
+#ifndef WP_CONFIG_H
+#define WP_CONFIG_H
+
+#define LISTENING_PORT "4000"
+#define TUNNEL_METHOD "CONNECT"
+#define CONNECTION_MSG_BUFFER_SIZE (1024*64)
+
+#endif
