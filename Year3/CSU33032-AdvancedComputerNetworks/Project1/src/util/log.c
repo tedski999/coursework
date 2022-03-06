@@ -30,13 +30,14 @@ void wp_elog(enum wp_log_urg urg, const char *msg, ...) {
 	char *error = strerror(errno);
 	int len = strlen(msg) + strlen(error) + 1;
 	char *msg_err = malloc(len);
-	strcpy(msg_err, msg);
-	strcat(msg_err, error);
+	strcat(strcpy(msg_err, msg), error);
 
 	va_list args;
 	va_start(args, msg);
 	wp_vlog(urg, msg_err, args);
 	va_end(args);
+
+	free(msg_err);
 }
 
 void wp_vlog(enum wp_log_urg urg, const char *msg, va_list args) {

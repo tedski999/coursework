@@ -1,5 +1,5 @@
-#ifndef WP_TIMER_H
-#define WP_TIMER_H
+#ifndef WP_UTIL_TIMER_H
+#define WP_UTIL_TIMER_H
 
 struct wp_timer;
 

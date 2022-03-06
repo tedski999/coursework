@@ -1,8 +1,10 @@
-#include "handlers.h"
-#include "log.h"
+#include "handlers/handlers.h"
+#include "util/hash.h"
+#include "util/net.h"
+#include "util/log.h"
 #include "config.h"
+#include "state.h"
 #include <stdlib.h>
-#include <stdbool.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <signal.h>
@@ -25,48 +27,47 @@ int main(int argc, char **argv) {
 	if (sigaction(SIGHUP, &sa, NULL) || sigaction(SIGINT, &sa, NULL) ||
 		sigaction(SIGQUIT, &sa, NULL) || sigaction(SIGTERM, &sa, NULL)) {
 		wp_elog(WP_ERRR, "Failed to set signal handlers: ");
-		goto error_early;
+		goto error_a;
 	}
 
 	wp_log(WP_DBUG, "Preparing connection socket...");
 
-	int err;
-	struct addrinfo hints = {
-		.ai_family = AF_UNSPEC,
-		.ai_socktype = SOCK_STREAM,
-		.ai_flags = AI_PASSIVE
-	};
-
-	struct addrinfo *addr = NULL;
-	if ((err = getaddrinfo(NULL, LISTENING_PORT, &hints, &addr))) {
-		wp_log(WP_ERRR, "Failed to resolve local address: %s", gai_strerror(err));
-		goto error_early;
-	}
-
-	int connection_fd;
-	if ((connection_fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol)) == -1) {
+	struct addrinfo *addr;
+	int connection_fd = wp_open_socket(NULL, LISTENING_PORT, &addr);
+	if (connection_fd == -2) {
+		wp_log(WP_ERRR, "Failed to resolve local address.");
+		goto error_b;
+	} else if (connection_fd == -1) {
 		wp_elog(WP_ERRR, "Failed to create connection socket: ");
-		goto error_early;
+		goto error_b;
 	}
 
 	if (setsockopt(connection_fd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof (int))) {
 		wp_elog(WP_ERRR, "Failed to set SO_REUSEADDR on connection socket: ");
-		goto error;
+		goto error_b;
 	}
 
 	if (bind(connection_fd, addr->ai_addr, addr->ai_addrlen)) {
 		wp_elog(WP_ERRR, "Failed to bind connection socket: ");
-		goto error;
+		goto error_b;
 	}
-
-	freeaddrinfo(addr);
 
 	wp_log(WP_DBUG, "Opening connection socket...");
 
 	if (listen(connection_fd, 1)) {
 		wp_elog(WP_ERRR, "Failed to open connection socket: ");
-		goto error;
+		goto error_b;
 	}
+
+	wp_log(WP_DBUG, "Starting worker thread pool...");
+
+	struct wp_pool *pool = wp_pool_init(wp_request_handler);
+	if (!pool) {
+		wp_elog(WP_ERRR, "Failed to start worker thread pool: ");
+		goto error_b;
+	}
+
+	wp_log(WP_NOTE, "Web proxy ready and listening on :%s", LISTENING_PORT);
 
 	enum { FDS_TCP = 0, FDS_IPC, fds_len };
 	struct pollfd fds[fds_len];
@@ -76,13 +77,11 @@ int main(int argc, char **argv) {
 	struct wp_state state = {
 		.lock = PTHREAD_MUTEX_INITIALIZER,
 		.is_running = true,
-		.blocklist = NULL,
-		.cache = NULL
+		.pool = pool,
+		.blocklist = wp_hashset_create(),
+		.cache = wp_cache_create()
 	};
 
-	wp_log(WP_NOTE, "Web proxy ready and listening on :%s", LISTENING_PORT);
-
-	// TODO: not sure about POLLIN
 	while (state.is_running) {
 		if (poll(fds, fds_len, -1) > 0) {
 			if (fds[FDS_TCP].revents & POLLIN)
@@ -98,9 +97,17 @@ int main(int argc, char **argv) {
 
 	status = EXIT_SUCCESS;
 	wp_log(WP_NOTE, "Exiting...");
-error:
+	wp_log(WP_DBUG, "Cleaning up worker thread pool...");
+	wp_pool_cleanup(state.pool);
+	wp_log(WP_DBUG, "Cleaning up blocklist and cache...");
+	wp_hashset_destroy(state.blocklist);
+	wp_cache_destroy(state.cache);
+error_b:
+	wp_log(WP_DBUG, "Cleaning up connection socket...");
 	close(connection_fd);
-error_early:
+	freeaddrinfo(addr);
+error_a:
+	wp_log(WP_DBUG, "Cleaning up logger...");
 	wp_log_cleanup();
 	return status;
 }

@@ -1,5 +1,5 @@
-#ifndef WP_LOG_H
-#define WP_LOG_H
+#ifndef WP_UTIL_LOG_H
+#define WP_UTIL_LOG_H
 
 #include <stdarg.h>
 

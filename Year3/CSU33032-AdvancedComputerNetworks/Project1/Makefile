@@ -1,19 +1,3 @@
-# Web Proxy
-# Copyright (C) 2022 Ted Johnson TCD 19335618 <edjohnso@tcd.ie>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 TARGET = webproxy
 
 SRC_DIR    = src
@@ -22,7 +6,7 @@ BIN_DIR    = bin
 BUILD_TYPE = release
 
 override CFLAGS += -Wall -pedantic
-override LFLAGS +=
+override LFLAGS += -lcurl
 
 SRC_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(BUILD_TYPE)/%.o)
@@ -60,7 +44,7 @@ $(BIN_DIR)/$(BUILD_TYPE)/$(TARGET): $(OBJ_FILES)
 -include $(DEP_FILES)
 
 # Compile source files to object file
-$(OBJ_DIR)/$(BUILD_TYPE)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/%.h Makefile
+$(OBJ_DIR)/$(BUILD_TYPE)/%.o: $(SRC_DIR)/%.c Makefile
 	@echo -e "\n# Compiling $< -> $@"
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
