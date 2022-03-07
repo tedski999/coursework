@@ -12,4 +12,3 @@ void wp_strmap_unset(struct wp_strmap *map);
 void wp_strmap_destroy(struct wp_strmap *map);
 
 #endif
-

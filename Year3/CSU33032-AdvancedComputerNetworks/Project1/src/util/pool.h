@@ -10,4 +10,3 @@ void wp_pool_add_job(struct wp_pool *pool, void *job);
 void wp_pool_cleanup(struct wp_pool *pool);
 
 #endif
-

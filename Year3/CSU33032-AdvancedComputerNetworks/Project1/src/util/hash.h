@@ -21,4 +21,3 @@ void wp_hashmap_remove(struct wp_hashmap *hashmap, const char *str);
 void wp_hashmap_destroy(struct wp_hashmap *hashmap);
 
 #endif
-

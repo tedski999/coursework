@@ -9,4 +9,3 @@ void wp_timer_set(struct wp_timer *timer, double new_time);
 void wp_timer_destroy(struct wp_timer *timer);
 
 #endif
-
