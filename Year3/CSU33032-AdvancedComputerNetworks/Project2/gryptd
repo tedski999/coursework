@@ -1,0 +1,187 @@
+#!/bin/python
+
+import os
+import sys
+import pathlib
+import json
+import base64
+import argparse
+import threading
+import getpass
+import rsa
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from multiprocessing.connection import Client, Listener
+
+USER_KEY_NBITS = 1024
+PASSWORD_SALT_LENGTH = 16
+DEFAULT_IPC_PORT = 19119
+DEFAULT_SRV_PORT = 19118
+DEFAULT_KEYFILE = os.getenv("XDG_DATA_HOME", os.getenv("HOME", "") + "/.local/share") + "/grypt/user"
+
+def derive_key(password, salt):
+    """Derive Fernet key from password and salt"""
+    kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=390000)
+    return base64.urlsafe_b64encode(kdf.derive(password.encode()))
+
+def subscribe_to_group_session_key(sessions: dict, addr: str, user: tuple) -> None:
+    session = sessions[addr]
+    server = session["connection"]
+
+    try:
+
+        # Update session key when group server pushes new key out
+        while True:
+            cipher = server.recv()
+
+            # An empty response means user is not a group member
+            if not cipher:
+                print("Group %s rejected user." % addr)
+                break
+
+            # Decrypt session key with public-key cryptography
+            session_key = rsa.decrypt(cipher, user[1])
+
+            # Update session key
+            with session["lock"]:
+                print("New session key received from group %s." % addr)
+                session["key"] = session_key
+                session["lock"].notify_all()
+
+    except EOFError:
+        print("Group %s has disconnected. The session will have to be re-established when used again." % addr)
+
+    # The thread removes the session itself
+    server.close()
+    with session["lock"]:
+        session["key"] = ""
+        session["lock"].notify_all()
+        del sessions[addr]
+
+
+if __name__ == "__main__":
+
+    # Parse arguments
+    argparser = argparse.ArgumentParser(
+        description="Daemon for handling persistant connections to gryptservers",
+        epilog="Ted Johnson <edjohnso@tcd.ie>")
+    argparser.add_argument("-k", "--keyfile", help="file containing user key, defaults to $XDG_DATA_HOME/grypt/user")
+    argparser.add_argument("-p", "--port", type=int, help="port to use to listen for grypt client connections")
+    args = argparser.parse_args()
+    ipc_port = args.port or DEFAULT_IPC_PORT
+    keyfile = args.keyfile or DEFAULT_KEYFILE
+
+    # Map groups to session keys
+    sessions = dict()
+
+    try:
+
+        # Keep the user data in an password-encrypted file
+        try:
+            # Read keyfile to get user keypair
+            with open(keyfile, "rb") as f:
+                data = f.read()
+            password = getpass.getpass("Password: ")
+            secret = data[:PASSWORD_SALT_LENGTH]
+            fernet = Fernet(derive_key(password, secret))
+            # Decrypt
+            data = fernet.decrypt(data[PASSWORD_SALT_LENGTH:]).decode()
+            # Deserialise
+            user_pkcs = json.loads(data)
+            user = (
+                rsa.PublicKey.load_pkcs1(user_pkcs[0].encode()),
+                rsa.PrivateKey.load_pkcs1(user_pkcs[1].encode())
+            )
+        except FileNotFoundError:
+            # Generate a new user keypair and write to file
+            print("User file not found. Creating new user...")
+            password = getpass.getpass("Password for %s: " % keyfile)
+            secret = os.urandom(PASSWORD_SALT_LENGTH)
+            fernet = Fernet(derive_key(password, secret))
+            # Generate new keypair
+            print("Generating new user keypair...")
+            user = rsa.newkeys(USER_KEY_NBITS)
+            # Serialise
+            user_pkcs = (
+                user[0].save_pkcs1().decode(),
+                user[1].save_pkcs1().decode()
+            )
+            user_pkcs_str = json.dumps(user_pkcs)
+            # Encrypt
+            data = fernet.encrypt(user_pkcs_str.encode())
+            # Write to file
+            pathlib.Path(keyfile).parent.mkdir(parents=True, exist_ok=True)
+            with open(keyfile, "wb") as f:
+                f.write(secret + data)
+
+        # Accept client requests
+        with Listener(("localhost", ipc_port)) as listener:
+            print("Daemon listening on port", ipc_port)
+            while True:
+                with listener.accept() as client:
+
+                    print("\nHandling new client: ", end="")
+
+                    # Parse client requests and get corresponding group session
+                    addr, decrypt, text = client.recv()
+
+                    print(
+                        "Decrypt" if decrypt else "Encrypt",
+                        "'" + text + "'",
+                        "for group", addr)
+
+                    # If no session is found, attempt to join session
+                    session = sessions.get(addr)
+                    if not session:
+
+                        print("Session not found, contacting %s for session key..." % addr)
+
+                        try:
+
+                            # Send public key to group server
+                            server = Client((addr, DEFAULT_SRV_PORT))
+                            print("Sending user public key...")
+                            server.send(user[0])
+
+                            session = { "connection": server, "lock": threading.Condition() }
+                            sessions[addr] = session
+
+                            with session["lock"]:
+
+                                # Spawn a thread to receive responses from server containing new session keys
+                                threading.Thread(
+                                    target=subscribe_to_group_session_key,
+                                    args=(sessions, addr, user)
+                                ).start()
+
+                                # Wait for the first response
+                                session["lock"].wait()
+
+                                # If response is empty, the use has been rejected
+                                if not session["key"]:
+                                    err = "User is not a member of %s." % addr
+                                    print(err, file=sys.stderr)
+                                    client.send((False, err))
+                                    continue # The thread will clean the session up itself
+
+                        except ConnectionRefusedError:
+                            err = "Failed to connect to %s." % addr
+                            print(err, file=sys.stderr)
+                            client.send((False, err))
+                            continue
+
+                    # Encrypt/decrypt text with session key
+                    with session["lock"]:
+                        print("Decrypting" if decrypt else "Encrypting", "input with session key...")
+                        byte_text = text.encode()
+                        fernet = Fernet(session["key"])
+                        result = fernet.decrypt(byte_text) if decrypt else fernet.encrypt(byte_text)
+                        client.send((True, result.decode()))
+                        print("Client request complete.")
+
+    except KeyboardInterrupt:
+        pass
+
+    except OSError:
+        print("Unable to bind to port %s. Is another gryptd instance already running?" % ipc_port, file=sys.stderr)

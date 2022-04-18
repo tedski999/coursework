@@ -1,0 +1,38 @@
+#!/bin/python
+
+import sys
+import argparse
+from multiprocessing.connection import Client
+
+DEFAULT_IPC_PORT = 19119
+
+if __name__ == "__main__":
+
+    # Parse arguments
+    argparser = argparse.ArgumentParser(
+        description="Encrypt and decrypt group chat messages with grypt",
+        epilog="Ted Johnson <edjohnso@tcd.ie>")
+    argparser.add_argument("-d", "--decrypt", action="store_true", help="decrypt input text instead")
+    argparser.add_argument("-p", "--port", type=int, help="port connect to gryptd with")
+    argparser.add_argument("server", help="IP address of group server")
+    argparser.add_argument("text", nargs="?", help="input text or none for stdin")
+
+    args = argparser.parse_args()
+    port = args.port or DEFAULT_IPC_PORT
+    text = args.text or sys.stdin.read()
+
+    # Get gryptd to encrypt or decrypt
+    try:
+        with Client(("localhost", port)) as conn:
+            conn.send((args.server, args.decrypt, text))
+            success, message = conn.recv()
+    except ConnectionRefusedError:
+        print("Unable to connect to gryptd. Is it running?", file=sys.stderr)
+        exit(1)
+
+    if not success:
+        print(message, file=sys.stderr)
+        exit(1)
+
+    # Write response to stdout
+    print(message)

@@ -1,0 +1,191 @@
+#!/bin/python
+
+import os
+import sys
+import pathlib
+import json
+import base64
+import argparse
+import threading
+import getpass
+import rsa
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from multiprocessing.connection import Listener
+
+PASSWORD_SALT_LENGTH = 16
+DEFAULT_SRV_PORT = 19118
+DEFAULT_GROUP_FILE = os.getenv("XDG_DATA_HOME", os.getenv("HOME", "") + "/.local/share") + "/grypt/group"
+
+def derive_key(password, salt):
+    """Derive Fernet key from password and salt"""
+    kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=390000)
+    return base64.urlsafe_b64encode(kdf.derive(password.encode()))
+
+def save_group_data(group, active):
+    """Write encrypted group data to file"""
+    # Serialise
+    serialised_group = { "session_key": group["session_key"], "members": [] }
+    for member in group["members"]:
+        serialised_group["members"].append(member.save_pkcs1().decode())
+    # Encrypt
+    group_str = active["fernet"].encrypt(json.dumps(serialised_group).encode())
+    # Write to file
+    pathlib.Path(groupfile).parent.mkdir(parents=True, exist_ok=True)
+    with open(groupfile, "wb") as f:
+        f.write(active["secret"] + group_str)
+
+def send_session_key(active, public_key):
+    """Encrypts and pushes the session key to a client"""
+    data = rsa.encrypt(active["session_key"], public_key)
+    active["members"][public_key].send(data)
+
+def admin_input_handler(active, group):
+    while True:
+        command = input()
+        if command == "regen":
+            regenerate_session_key(active, group)
+        elif command == "add":
+            add_member(active, group)
+        elif command == "kick":
+            remove_member(active, group)
+        else:
+            print("Unknown command", file=sys.stderr)
+
+def regenerate_session_key(active, group):
+    # Generate new session key
+    print("Generating new session key...")
+    active["session_key"] = Fernet.generate_key()
+    group["session_key"] = active["session_key"].decode()
+    save_group_data(group, active)
+    # Send new session key to other members
+    print("Pushing public-key encrypted session key to active members...")
+    for member in active["members"]:
+        send_session_key(active, member)
+    print("Done.")
+
+def add_member(active, group):
+    """Add user public key to group members list"""
+    if "latest_public_key" not in active:
+        print("No recent rejected users.", file=sys.stderr)
+        return
+    group["members"].append(active["latest_public_key"])
+    save_group_data(group, active)
+    print("Added client to group members.")
+
+def remove_member(active, group):
+    """Remove user public key from group members list"""
+
+    print("\nCurrent members:\n")
+    for i, member in enumerate(group["members"]):
+        print(str(i + 1) + ".\n" + member.save_pkcs1().decode())
+
+    try:
+        sel = int(input("Select user to remove: "))
+        public_key = group["members"][sel - 1]
+    except:
+        print("Cancelled.")
+        return
+
+    group["members"].remove(public_key)
+    if public_key in active["members"]:
+        conn = active["members"][public_key]
+        del active["members"][public_key]
+        conn.send("")
+        conn.close()
+    print("Removed user from group members.")
+    regenerate_session_key(active, group)
+
+
+if __name__ == "__main__":
+
+    # Parse arguments
+    argparser = argparse.ArgumentParser(
+        description="Authoritative server for generating and distributing grypt session keys.",
+        epilog="Ted Johnson <edjohnso@tcd.ie>")
+    argparser.add_argument("-g", "--groupfile", help="file containing group members, defaults to $XDG_DATA_HOME/grypt/group")
+    args = argparser.parse_args()
+    groupfile = args.groupfile or DEFAULT_GROUP_FILE
+    srv_port = DEFAULT_SRV_PORT
+
+    # Map active members to active connections
+    active = dict()
+    active["members"] = dict()
+
+    try:
+
+        # Keep the group data in an password-encrypted file
+        try:
+            # Read groupfile to get group data
+            with open(groupfile, "rb") as f:
+                data = f.read()
+            password = getpass.getpass("Password: ")
+            active["secret"] = data[:PASSWORD_SALT_LENGTH]
+            active["fernet"] = Fernet(derive_key(password, active["secret"]))
+            # Decrypt
+            group_str = active["fernet"].decrypt(data[PASSWORD_SALT_LENGTH:])
+            # Deserialise
+            group = json.loads(group_str)
+            for i, member in enumerate(group["members"]):
+                group["members"][i] = rsa.PublicKey.load_pkcs1(member.encode())
+        except FileNotFoundError:
+            # Generate a new group and write to file
+            print("Generating new group...")
+            password = getpass.getpass("Create password for %s: " % groupfile)
+            active["secret"] = os.urandom(PASSWORD_SALT_LENGTH)
+            active["fernet"] = Fernet(derive_key(password, active["secret"]))
+            group = { "session_key": Fernet.generate_key().decode(), "members": [] }
+            save_group_data(group, active)
+
+        # The key is stored as a string but is used as bytes
+        active["session_key"] = group["session_key"].encode()
+
+        # Create a thread to handle admin user input
+        admin_input_thread = threading.Thread(
+            target=admin_input_handler,
+            args=(active, group))
+        admin_input_thread.start()
+
+        # Accept client requests
+        with Listener(("localhost", srv_port)) as listener:
+            print("Server listening on port", srv_port)
+            while True:
+                client = listener.accept()
+
+                print("\nHandling new client:")
+
+                # Parse client request
+                public_key = client.recv()
+
+                # Close previous active connection if one exists
+                if public_key in active["members"]:
+                    print("User was already connected as another client! Closing previous connection.")
+                    active["members"][public_key].close()
+                    del active["members"][public_key]
+
+                # Reject users not in group members list
+                if public_key not in group["members"]:
+                    print("Client is not on members list. Received following public key:")
+                    print(public_key.save_pkcs1().decode())
+                    print("Use 'add' command to add client to members list.")
+                    active["latest_public_key"] = public_key
+                    client.send("")
+                    client.close()
+                    continue
+
+                # Send session key using public-key cryptography
+                print("Client is a valid member - Sending encrypted session key...")
+                active["members"][public_key] = client
+                send_session_key(active, public_key)
+                print("Client request complete.")
+
+    except KeyboardInterrupt:
+        pass
+
+    except OSError:
+        print("Unable to bind to port %s. Is another gryptserver already running?" % srv_port, file=sys.stderr)
+
+    # Close the connection with every member still connected
+    for member in active["members"]:
+        active["members"][member].close()
