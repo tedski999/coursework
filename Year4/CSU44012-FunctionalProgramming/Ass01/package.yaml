@@ -1,0 +1,27 @@
+name: Ass01
+source-dirs: src
+
+executables:
+  p1:
+    main: p1.hs
+  p3:
+    main: p3.hs
+
+dependencies:
+- base >= 4.7 && < 5
+- parallel
+
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-export-lists
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+- -threaded
+- -rtsopts
+- -with-rtsopts=-N
+- -eventlog
