@@ -15,7 +15,7 @@ yar::model::model(std::string file) {
 		exit(1);
 	}
 
-	for (int i = 0; i < scene->mNumMeshes; i++) {
+	for (unsigned i = 0; i < scene->mNumMeshes; i++) {
 		const aiMesh *ai_mesh = scene->mMeshes[i];
 
 		assert(ai_mesh->HasPositions());
@@ -23,16 +23,16 @@ yar::model::model(std::string file) {
 		assert(ai_mesh->HasNormals());
 
 		std::vector<GLuint> indices;
-		GLfloat vertices[ai_mesh->mNumVertices * 3];
-		GLfloat colors[ai_mesh->mNumVertices * 4];
-		GLfloat normals[ai_mesh->mNumVertices * 3];
+		GLfloat *vertices = new GLfloat[ai_mesh->mNumVertices * 3];
+		GLfloat *colors = new GLfloat[ai_mesh->mNumVertices * 4];
+		GLfloat *normals = new GLfloat[ai_mesh->mNumVertices * 3];
 
-		for (int j = 0; j < ai_mesh->mNumFaces; j++) {
+		for (unsigned j = 0; j < ai_mesh->mNumFaces; j++) {
 			aiFace face = ai_mesh->mFaces[j];
 			indices.insert(indices.end(), face.mIndices, face.mIndices + face.mNumIndices);
 		}
 
-		for (int j = 0; j < ai_mesh->mNumVertices; j++) {
+		for (unsigned j = 0; j < ai_mesh->mNumVertices; j++) {
 			vertices[j*3+0] = ai_mesh->mVertices[j].x;
 			vertices[j*3+1] = ai_mesh->mVertices[j].y;
 			vertices[j*3+2] = ai_mesh->mVertices[j].z;
@@ -45,7 +45,7 @@ yar::model::model(std::string file) {
 			normals[j*3+2] = ai_mesh->mNormals[j].z;
 		}
 
-		struct mesh mesh = { .len = (int) indices.size() };
+		struct mesh mesh = { (int) indices.size() };
 
 		glGenVertexArrays(1, &mesh.vao);
 		glBindVertexArray(mesh.vao);
@@ -70,6 +70,10 @@ yar::model::model(std::string file) {
 		glVertexAttribPointer(NORMAL,   3, GL_FLOAT, GL_FALSE, 0, (void *) (ai_mesh->mNumVertices * 7 * sizeof (GLfloat)));
 
 		meshes.push_back(mesh);
+
+		delete[] vertices;
+		delete[] colors;
+		delete[] normals;
 	}
 }
 

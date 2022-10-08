@@ -111,7 +111,8 @@ void yar::yar::update() {
 	rainbow_lighting_shader->set_uniform("view", view);
 
 	static float f = 0;
-	f += 0.005f;
+	if (glfwGetKey(window, GLFW_KEY_SPACE))
+		f += 0.005f;
 
 	teapot->position.z = sin(f);
 	teacup1->rotation += 0.1f;

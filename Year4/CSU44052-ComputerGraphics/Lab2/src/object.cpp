@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 yar::object::object(yar::model *model, yar::shader *shader, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
-	: model(model), shader(shader), position(position), rotation(rotation), scale(scale) {}
+	: position(position), rotation(rotation), scale(scale), model(model), shader(shader)  {}
 
 void yar::object::render() {
 	glm::mat4 transform(1.0f);
