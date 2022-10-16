@@ -1,0 +1,5 @@
+/build
+/node_modules
+/cities.json
+/config.env
+/config.dev.env

@@ -1,0 +1,27 @@
+{
+	"name": "Simple Weather App",
+	"description": "A Vue.js weather app using the OpenWeatherMap API",
+	"license": "GPLv3",
+	"scripts": {
+		"clean": "rm -rf ./build/",
+		"lint": "eslint --ext .ts ./server/**/*.ts --ignore-path .gitignore",
+		"build": "npm run clean && npm run lint && tsc",
+		"dev": "nodemon --require=dotenv/config ./server/index.ts dotenv_config_path=./config.dev.env",
+		"start": "node --require=dotenv/config ./build/index.js dotenv_config_path=./config.env"
+	},
+	"dependencies": {
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2"
+	},
+	"devDependencies": {
+		"@types/express": "^4.17.14",
+		"@types/node": "^18.11.0",
+		"@typescript-eslint/eslint-plugin": "^5.3.0",
+		"@typescript-eslint/parser": "^5.3.0",
+		"eslint": "^8.25.0",
+		"nodemon": "^2.0.20",
+		"ts-loader": "^9.4.1",
+		"ts-node": "^10.9.1",
+		"typescript": "^4.8.4"
+	}
+}

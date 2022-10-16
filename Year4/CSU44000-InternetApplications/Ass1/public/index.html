@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Simple Weather App</title>
+		<script type="module" src="/main.js"></script>
+		<link rel="stylesheet" href="/styles.css">
+	</head>
+	<body>
+		<div id="app" v-cloak>
+
+			<ul v-if="!city">
+				<input v-model="search" @input="onSearchInput" placeholder="Search For Cities">
+				<li v-for="city of results">
+					<span v-if="city.state">{{ city.name }}, {{ city.state }}, {{ city.country }}</span>
+					<span v-if="!city.state">{{ city.name }}, {{ city.country }}</span>
+					<button @click="selectCity(city)">Go</button>
+				</li>
+			</ul>
+
+			<div v-if="city">
+				<button @click="clearCity()">Back</button>
+				<p>{{city.name}}</p>
+				<p>{{city.country}}</p>
+				<p>{{cityData}}</p>
+			</div>
+		</div>
+	</body>
+</html>
