@@ -7,22 +7,76 @@
 		<link rel="stylesheet" href="/styles.css">
 	</head>
 	<body>
+		<!-- Show error if JavaScript is disabled -->
+		<noscript>
+			<p>Apologises, this site requires JavaScript to be enabled.</p>
+		</noscript>
+		<!-- The root of the Vue.js app -->
 		<div id="app" v-cloak>
-
-			<ul v-if="!city">
-				<input v-model="search" @input="onSearchInput" placeholder="Search For Cities">
-				<li v-for="city of results">
-					<span v-if="city.state">{{ city.name }}, {{ city.state }}, {{ city.country }}</span>
-					<span v-if="!city.state">{{ city.name }}, {{ city.country }}</span>
-					<button @click="selectCity(city)">Go</button>
-				</li>
-			</ul>
-
-			<div v-if="city">
-				<button @click="clearCity()">Back</button>
-				<p>{{city.name}}</p>
-				<p>{{city.country}}</p>
-				<p>{{cityData}}</p>
+			<!-- Place all content views in the center of the screen -->
+			<div class="center-view">
+				<h1 class="title">5 Day Weather Forecast</h1>
+				<!-- The search box for finding and selecting a city by name and country -->
+				<div class="search-panel">
+					<input v-model="search" @input="onSearchInput" placeholder="Search for a city..." class="search">
+					<div class="results scrollbar">
+						<a v-for="city of results" @click="selectCity(city)" :key="city">
+							<p class="result">{{ city.name }}, <span v-if="city.state">{{ city.state }}, </span>{{ city.country }}</p>
+						</a>
+					</div>
+				</div>
+				<!-- Displaying weather information about the selected city -->
+				<transition name="city-panel">
+					<div v-if="showCityView && city" class="city-panel">
+						<h2>{{ city.name }}, <span v-if="city.state">{{ city.state }}, </span>{{ city.country }}</h2>
+						<!-- Display a loading message while the data is loaded -->
+						<p v-if="isCityLoading">Loading...</p>
+						<!-- Display data in two columns -->
+						<transition name="fade">
+							<div v-if="!isCityLoading" class="city-subpanels">
+								<div class="city-subpanel-left">
+									<h3>5 Day Travel Advice</h3>
+									<p>
+										<span v-if="days.cold">It's going to be cold on {{days.cold}}. </span>
+										<span v-if="days.mild">It will be mild on {{days.mild}}. </span>
+										<span v-if="days.hot">It's hot on {{days.hot}}. </span>
+										<span v-if="days.rainy">Additionally it's expected to rain on {{days.rainy}} - Bring an umbrella! </span>
+										<span v-if="days.pollution">There's also significant PM<sub>2.5</sub> air pollution on {{days.pollution}} - So pack some masks! </span>
+									</p>
+									<h3>Current Weather - {{ weather.description }}</h3>
+									<ul class="current-weather">
+										<li>🌡 {{ weather.temperature.actual }}°C - Feels like {{ weather.temperature.feelsLike }}°C</li>
+										<li>🌦 {{ weather.precipitation }} mm of rain</li>
+										<li>☁  {{ weather.cloud }}% cloud coverage</li>
+										<li>🌬 {{ weather.wind.speed }} km/h at {{ weather.wind.deg}}°</li>
+										<li>↔  {{ weather.pressure }} mb pressure</li>
+										<li>💧 {{ weather.humidity }}% humidity</li>
+										<li>😷 {{ weather.pollution.pm2_5 }} PM<sub>2.5</sub> and {{ weather.pollution.pm10 }} PM<sub>10</sub></li>
+									</ul>
+								</div>
+								<div class="city-subpanel-right scrollbar">
+									<table class="city-forecast">
+										<tr v-for="(intervals, day) in forecast">
+											<td class="city-forecast-day"><strong>{{ day }}</strong></td>
+											<td v-for="interval in intervals" class="city-forecast-interval">
+												<p class="interval-data"><strong>{{ interval.time }}</strong></p>
+												<p class="interval-data">{{ interval.temperature }}°C</p>
+												<p class="interval-data">{{ interval.wind.speed }} km/h</p>
+												<p class="interval-data">{{ interval.precipitation }} mm</p>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</transition>
+					</div>
+				</transition>
+			</div>
+			<!-- Separate panel to show program errors if they occur -->
+			<div v-if="errors.length !== 0" class="error-panel">
+				<p>Errors have occurred:</p>
+				<p v-for="error of errors">{{ error }}</p>
+				<button @click="errors = []">Clear</button>
 			</div>
 		</div>
 	</body>

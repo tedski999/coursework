@@ -7,7 +7,12 @@ const maxResults: number = parseInt(process.env.MAX_SEARCH_RESULTS ?? "") || 50;
 type City = {
 	id: number;
 	name: string;
+	state: string;
 	country: string;
+	coords: {
+		lat: number;
+		long: number;
+	}
 };
 
 class CityTrie {

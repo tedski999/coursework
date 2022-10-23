@@ -13,11 +13,11 @@ app.use(express.static("./public/"));
 
 // Start the server listening on port
 const server = app.listen(port, () => {
-	console.log("[Server] Server up and listening at :%s", port)
-})
+	console.log("[Server] Server up and listening at :%s", port);
+});
 
 // Shutdown server on SIGINT
 process.on("SIGINT", () => {
-	console.log("[Server] Shutting down server...")
-	server.close(() => console.log("Goodbye :)"))
-})
+	console.log("[Server] Shutting down server...");
+	server.close(() => console.log("Goodbye :)"));
+});

@@ -1,3 +1,147 @@
+
+body {
+	background: black;
+	transition: background 2s ease-in-out;
+}
+
 [v-cloak] {
 	display: none;
+}
+
+.center-view {
+	width: 80%;
+	margin: 0 auto;
+}
+
+.title {
+	text-align: center;
+	color: white;
+	margin-bottom: .5em;
+}
+
+.search-panel {
+	border-radius: .25rem;
+	padding: 1rem;
+}
+
+.search {
+	display: block;
+	margin: 0 auto;
+	width: 15rem;
+}
+
+.results {
+	background: white;
+	border-radius: .25rem;
+	width: 15rem;
+	max-height: 10rem;
+	overflow-x: hidden;
+	overflow-y: auto;
+	text-align: center;
+	margin: 0 auto;
+	padding: 0;
+}
+
+.result {
+	cursor: pointer;
+	padding: 0.5rem;
+	margin: 0;
+}
+.result:hover {
+	background: #bbb;
+}
+
+.city-panel {
+	width: 100%;
+	min-height: 45rem;
+	background: white;
+	padding: 1rem;
+	border-radius: .25rem;
+}
+
+.city-subpanels {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.city-subpanel-left {
+	flex: 30%;
+	min-width: 15rem;
+}
+
+.city-subpanel-right {
+	flex: 70%;
+	overflow: scroll;
+}
+
+.current-weather {
+	list-style-type: none;
+	padding: 0;
+}
+.current-weather li {
+	margin: 10px;
+}
+
+.city-forecast {
+	margin: 0 auto;
+	text-align: center;
+}
+
+.city-forecast-day {
+	border: 1px solid black;
+	background: #eee;
+	padding: .5em;
+}
+
+.city-forecast-interval {
+	border: 1px solid black;
+	padding: .5em;
+}
+
+.interval-data {
+	margin: 0;
+}
+
+.error-panel {
+	background: white;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: .25rem;
+	border: 1px double black;
+	padding: 1rem;
+}
+
+.scrollbar::-webkit-scrollbar {
+	width: 5px;
+}
+.scrollbar::-webkit-scrollbar-track {
+	display: none;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+	background: #bbb;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #777;
+}
+
+.city-panel-enter-active,
+.city-panel-leave-active {
+	transition: opacity transform 0.2s ease-in-out;
+}
+.city-panel-enter-from, .city-panel-leave-to {
+	transform: translateX(2rem);
+	opacity: 0;
+}
+
+.fade-enter-active {
+	transition: opacity 0.3s ease-in-out;
+}
+.fade-leave-active {
+	transition: opacity 0.1s ease-in-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }

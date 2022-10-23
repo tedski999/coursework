@@ -7,7 +7,7 @@ const router: express.Router = express.Router();
 
 // Responds to queries with a list of cities with matching prefix
 router.get("/search", async (req: express.Request, res: express.Response) => {
-	if (req.query.city === undefined || req.query.country === undefined) {
+	if (req.query.city === undefined || req.query.city == "" || req.query.country === undefined) {
 		res.sendStatus(400);
 		return
 	}
@@ -22,16 +22,35 @@ router.get("/search", async (req: express.Request, res: express.Response) => {
 })
 
 // Responds to queries with a list of cities with matching prefix
-router.get("/city/:id", async (req: express.Request, res: express.Response) => {
-	// Parse request
-	const cityID: string = req.params.id;
+router.get("/forecast", async (req: express.Request, res: express.Response) => {
+	if (req.query.lat === undefined || req.query.lon === undefined) {
+		res.sendStatus(400);
+		return
+	}
+	// Parse queries
+	const lat: string = String(req.query.lat).toLowerCase();
+	const lon: string = String(req.query.lon).toLowerCase();
 	try {
 		// Query OpenWeatherMap API
-		const apires: Response = await owm(`/weather?id=${cityID}`);
-		const json: string = JSON.parse(apires.body);
-		res.status(apires.statusCode).json(json);
+		const responses: Response[] = await Promise.all([
+			owm(`/weather?lat=${lat}&lon=${lon}&units=metric`),
+			owm(`/forecast?lat=${lat}&lon=${lon}&units=metric`),
+			owm(`/air_pollution?lat=${lat}&lon=${lon}`),
+			owm(`/air_pollution/forecast?lat=${lat}&lon=${lon}`)
+		]);
+		// Send response
+		res.json({
+			weather: {
+				current: JSON.parse(responses[0].body),
+				forecast: JSON.parse(responses[1].body)
+			},
+			pollution: {
+				current: JSON.parse(responses[2].body),
+				forecast: JSON.parse(responses[3].body)
+			}
+		});
 	} catch (err) {
-		// If anything fails, blame the client
+		// If anything goes wrong, blame the client
 		res.sendStatus(400);
 	}
 })

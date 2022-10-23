@@ -4,9 +4,9 @@
 	"license": "GPLv3",
 	"scripts": {
 		"clean": "rm -rf ./build/",
-		"lint": "eslint --ext .ts ./server/**/*.ts --ignore-path .gitignore",
+		"lint": "eslint ./public/**/*.js --ext .ts ./server/**/*.ts --ignore-path .gitignore",
 		"build": "npm run clean && npm run lint && tsc",
-		"dev": "nodemon --require=dotenv/config ./server/index.ts dotenv_config_path=./config.dev.env",
+		"dev": "npm run lint && nodemon --require=dotenv/config ./server/index.ts dotenv_config_path=./config.dev.env",
 		"start": "node --require=dotenv/config ./build/index.js dotenv_config_path=./config.env"
 	},
 	"dependencies": {

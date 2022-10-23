@@ -17,4 +17,4 @@ RUN set -xe; \
 COPY ./config.env ./config.env
 COPY ./public ./public
 COPY --from=build /usr/src/app/build ./build
-CMD ["npm", "start"]
+CMD npm start
