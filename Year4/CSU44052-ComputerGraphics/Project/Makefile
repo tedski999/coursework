@@ -1,64 +1,66 @@
-TARGET = winter
+TARGET = winter_wonderland
 BUILD = release
-CFLAGS = -Ilib/glad/include -Ilib/cb/include -Wall -pedantic
+CFLAGS = -Ilib/glad/include -Ilib/cglm/include -Wall -pedantic
 LFLAGS = -lm -lzip -lpng -lcglm -lglfw -lassimp
 
 ifeq ($(BUILD),debug)
-CFLAGS += -g -O0 -DCB_LOG_VERBOSITY=CB_LOG_DBUG
-# CFLAGS += -g -Og -DCB_LOG_VERBOSITY=CB_LOG_INFO
+CFLAGS += -g -O0 -DWW_NO_PROF
 else
-CFLAGS += -O2 -DCB_LOG_VERBOSITY=CB_LOG_WARN -DCB_NO_PROF -DCB_NO_ASSERT_DETAIL -Wno-unused-value
+CFLAGS += -O2 -DWW_NO_PROF -DWW_NO_ASSERT_DETAIL
 endif
 
 define SRC
+src/alloc.c
+src/assert.c
+src/entity.c
+src/log.c
 src/main.c
-src/player.c
-src/robin.c
-lib/cb/src/cb.c
-lib/cb/src/cbi.c
-lib/cb/src/core/wad.c
-lib/cb/src/core/window.c
-lib/cb/src/data/model.c
-lib/cb/src/data/texture.c
-lib/cb/src/data/shader.c
-lib/cb/src/gfx/entity.c
-lib/cb/src/gfx/skybox.c
-lib/cb/src/gfx/transform.c
-lib/cb/src/util/alloc.c
-lib/cb/src/util/assert.c
-lib/cb/src/util/log.c
-lib/cb/src/util/prof.c
+src/model.c
+src/prof.c
+src/shader.c
+src/texture.c
+src/wad.c
+src/window.c
+src/application/main.c
+src/application/ground.c
+src/application/skybox.c
+src/application/present.c
+src/application/snow.c
+src/application/snowman.c
+src/application/tree.c
+src/application/candycane.c
 lib/glad/src/gl.c
 endef
 
 define WAD
-res/plane.obj
-res/box.obj
-res/box.png
-res/robin/body.obj
-res/robin/left_leg.obj
-res/robin/right_leg.obj
-res/robin/left_wing.obj
-res/robin/right_wing.obj
-res/robin/tail.obj
-res/robin/body.png
-res/robin/left_leg.png
-res/robin/right_leg.png
-res/robin/left_wing.png
-res/robin/right_wing.png
-res/robin/tail.png
-res/basic.frag.glsl
-res/basic.vert.glsl
-res/light.frag.glsl
-res/light.vert.glsl
+res/ground.vert.glsl
+res/ground.frag.glsl
+res/skybox.glb
+res/skybox.png
+res/skybox.vert.glsl
+res/skybox.frag.glsl
+res/present.glb
+res/present.png
+res/present.vert.glsl
+res/present.frag.glsl
+res/snow.vert.glsl
+res/snow.frag.glsl
+res/snowman.glb
+res/snowman.vert.glsl
+res/snowman.frag.glsl
+res/tree.glb
+res/tree.png
+res/tree.vert.glsl
+res/tree.frag.glsl
+res/candycane.glb
+res/candycane.png
+res/candycane.vert.glsl
+res/candycane.frag.glsl
 endef
 
-.PHONY: all run clean
+.PHONY: all clean
 
 all: bin/$(BUILD)/$(TARGET) bin/$(BUILD)/data.wad
-
-run: all
-	./bin/$(BUILD)/$(TARGET)
 
 clean:
 	$(RM) -r obj bin
