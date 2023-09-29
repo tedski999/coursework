@@ -1,0 +1,18 @@
+# Generate 300000 captcha image pairs to ./data with a font size of 42
+training.py generate ./data/noisy ./data/clean font.ttf 42 300000
+
+# Preprocess both directories with OpenCV
+training.py preprocess ./data/noisy ./data/noisy_preprocessed
+training.py preprocess ./data/clean ./data/clean_preprocessed
+
+# Train cleaner.keras for 20 epochs on preprocessed image pairs
+training.py train cleaner ./data/noisy_preprocessed ./data/clean_preprocessed 20 ./cleaner.keras
+
+# Use cleaner.keras to clean noisy images
+training.py clean ./data/noisy_preprocessed ./data/cleaned ./cleaner.keras
+
+# Train decoder_in_training.keras and decoder.keras for 20 epochs on cleaned noisy images
+training.py train decoder ./data/cleaned 20 ./decoder_in_training.keras ./decoder.keras
+
+# Use decoder.keras to decode noisy images into text
+training.py decode ./data/noisy_preprocessed ./decoder.keras
