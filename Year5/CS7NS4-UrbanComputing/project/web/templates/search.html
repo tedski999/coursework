@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unbustle</title>
+		<style>
+			.input { display: block; }
+			.result { display: block; }
+		</style>
+	</head>
+
+	<body>
+		<h1>Unbustle</h1>
+		<p>Search</p>
+
+		<input type="text" class="input" id="routeInput" placeholder="Search Routes" onkeyup="onRouteInput()">
+		<input type="text" class="input" id="srcInput" placeholder="Search Stops" onkeyup="onSrcInput()">
+		<input type="text" class="input" id="dstInput" placeholder="Search Destinations" onkeyup="onDstInput()">
+		<br/>
+		<div id="results">
+		</div>
+
+		<script type="text/javascript">
+			let route_id = "";
+			let src_id = "";
+			let dst_id = "";
+			let src_dir = "";
+
+			function onInput(input) {
+				let filter = input.toUpperCase();
+				let results = document.getElementById("results").getElementsByTagName("a");
+				for (let i = 0; i < results.length; i++) {
+					result = results[i].textContent || results[i].innerText;
+					results[i].style.display = result.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+				}
+			}
+
+			function onRouteInput() { if (route_id != null) setRouteSearch(); onInput(document.getElementById("routeInput").value); }
+			function onSrcInput() { if (src_id != null) setSrcSearch(); onInput(document.getElementById("srcInput").value); }
+			function onDstInput() { if (dst_id != null) setDstSearch(); onInput(document.getElementById("dstInput").value); }
+
+			async function setRouteSearch() {
+				route_id = src_id = dst_id = null;
+				document.getElementById("routeInput").style.display = "";
+				document.getElementById("srcInput").style.display = "none";
+				document.getElementById("dstInput").style.display = "none";
+				document.getElementById("routeInput").focus();
+				document.getElementById("srcInput").value = "";
+				document.getElementById("dstInput").value = "";
+				document.getElementById("results").replaceChildren();
+				onInput("");
+
+				let res = [
+					{{#each routes as |r|}}
+					{ id: "{{r.id}}", short: "{{r.short}}", long: "{{r.long}}" },
+					{{/each}}
+				];
+
+				let results = [];
+				for (let i = 0; i < res.length; i++) {
+					let result = document.createElement("a");
+					result.className = "result";
+					let label = res[i].short + ": " + res[i].long
+					result.href = "javascript:onRouteResult(\"" + res[i].id + "\", \"" + label + "\");";
+					result.textContent = " " + label;
+					results.push(result);
+				}
+				results.sort((a,b) => (a.textContent > b.textContent) ? 1 : ((b.textContent > a.textContent) ? -1 : 0))
+				document.getElementById("results").replaceChildren(...results);
+			}
+
+			function onRouteResult(id, label) {
+				route_id = id;
+				document.getElementById("routeInput").value = label;
+				setSrcSearch();
+			}
+
+			async function setSrcSearch() {
+				src_id = dst_id = null;
+				document.getElementById("routeInput").style.display = "";
+				document.getElementById("srcInput").style.display = "";
+				document.getElementById("dstInput").style.display = "none";
+				document.getElementById("srcInput").focus();
+				document.getElementById("dstInput").value = "";
+				document.getElementById("results").replaceChildren();
+				onInput("");
+
+				let res = await (await fetch("/api/stops/" + route_id)).json();
+
+				let results = [];
+				for (let i = 0; i < res.length; i++) {
+					let result = document.createElement("a");
+					result.className = "result";
+					let label = res[i].name + " - " + (res[i].dir ? "Inbound" : "Outbound");
+					result.href = "javascript:onSrcResult(\"" + res[i].id + "\", \"" + label + "\", \"" + res[i].dir +"\");";
+					result.textContent = " " + label;
+					results.push(result);
+				}
+				results.sort((a,b) => (a.textContent > b.textContent) ? 1 : ((b.textContent > a.textContent) ? -1 : 0))
+				document.getElementById("results").replaceChildren(...results);
+			}
+
+			function onSrcResult(id, label, dir) {
+				src_id = id;
+				src_dir = dir;
+				document.getElementById("srcInput").value = label;
+				setDstSearch();
+			}
+
+			async function setDstSearch() {
+				dst_id = null;
+				document.getElementById("routeInput").style.display = "";
+				document.getElementById("srcInput").style.display = "";
+				document.getElementById("dstInput").style.display = "";
+				document.getElementById("dstInput").focus();
+				document.getElementById("results").replaceChildren();
+				onInput("");
+
+				let res = await (await fetch("/api/stops/" + route_id + "/" + src_id)).json();
+
+				let results = [];
+				for (let i = 0; i < res.length; i++) {
+					let result = document.createElement("a");
+					result.className = "result";
+					let label = res[i].name;
+					result.href = "javascript:onDstResult(\"" + res[i].id + "\", \"" + label + "\");";
+					result.textContent = " " + label;
+					results.push(result);
+				}
+				results.sort((a,b) => (a.textContent > b.textContent) ? 1 : ((b.textContent > a.textContent) ? -1 : 0))
+				document.getElementById("results").replaceChildren(...results);
+			}
+
+			function onDstResult(id, label) {
+				dst_id = id;
+				document.getElementById("dstInput").value = label;
+				setRouteInfo();
+			}
+
+			async function setRouteInfo() {
+				document.getElementById("routeInput").style.display = "";
+				document.getElementById("srcInput").style.display = "";
+				document.getElementById("dstInput").style.display = "";
+				onInput("");
+
+				let results = [];
+
+				let res = await (await fetch("/api/info/" + route_id + "?s=" + src_id + "&d=" + dst_id + "&r=" + src_dir)).json();
+				if (res.agency != "") {
+					let agency_info = document.createElement("p");
+					agency_info.textContent = "Serviced by " + res.agency;
+					results.push(agency_info);
+					let trips_info = document.createElement("p");
+					trips_info.textContent = "Trips today: " + res.trips;
+					if (res.next) {
+						trips_info.textContent += ", next due: " + res.next[0];
+						if (res.next[1] == null) {
+						} else if (res.next[1] <= 0) {
+							trips_info.textContent += " (On time)";
+						} else {
+							trips_info.textContent += " ( " + res.next[1] + "s late)";
+						}
+					}
+					results.push(trips_info);
+				}
+
+				let link = document.createElement("a");
+				link.href = "/" + route_id + "?s=" + src_id + "&d=" + dst_id + "&r=" + src_dir;
+				link.textContent = "View Route";
+				results.push(link);
+
+				document.getElementById("results").replaceChildren(...results);
+			}
+
+			onRouteInput();
+		</script>
+	</body>
+</html>

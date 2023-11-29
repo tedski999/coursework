@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unbustle</title>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+		<style>
+			#map { height: 600px; }
+		</style>
+	</head>
+
+	<body>
+		<h1>Unbustle</h1>
+		<a href="javascript:history.back()">Back</a>
+		<p>{{route.short}} ({{#if dir}}Inbound{{else}}Outbound{{/if}}): {{route.long}}</p>
+		<p>From {{src.name}} to {{dst.name}}</p>
+		<p>Trip #{{trip.id}} - "{{trip.sign}}"</p>
+		{{#if trip.vehicle}}<p>Vehicle #{{lookup trip.vehicle 0}}: ({{lookup trip.vehicle 1}}, {{lookup trip.vehicle 2}})<p>{{/if}}
+		{{#each stops as |stop|}}
+		<li>
+			<b>
+			{{#if (eq stop.id ../src.id)}}<b>{{/if}}{{#if (eq stop.id ../dst.id)}}<b>{{/if}}
+			{{stop.time}}
+			{{#if ../trip.vehicle}}
+				{{#if stop.delay includeZero=true}}
+					{{#if stop.delay}}, ~ {{stop.delay}}s{{else}}, on time{{/if}}
+				{{else}}
+					, ∅
+				{{/if}}
+			{{/if}}
+			:</b> {{stop.name}}
+			{{#if (eq stop.id ../src.id)}} - Start</b>{{/if}}{{#if (eq stop.id ../dst.id)}} - End</b>{{/if}}
+		</li>
+		{{/each}}
+
+		<br/>
+		<div id="map"></div>
+
+		<p>Share location:</p>
+		{{#if trip.vehicle}}
+		<button id="btn" onclick="toggleLocationSharing()">Enable Location Sharing</button>
+		{{else}}
+		<p>No vehicles currently servicing this trip</p>
+		{{/if}}
+
+		<p>Send a notification if delays exceed limit:</p>
+		<input placeholder="Contact details" type="text" id="notif_txt" />
+		<input placeholder="Max delay in seconds" type="number" min="30" max="32000" id="notif_num" />
+		<button id="notif_btn" onclick="postSubscription()">Subscribe</button>
+
+		<script type="text/javascript">
+			var map = L.map("map").setView([0, 0], 1);
+			L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+
+			let user;
+			let interval;
+
+			function toggleLocationSharing() {
+				if (document.getElementById("btn").innerHTML != "Enable Location Sharing") {
+					disableLocationSharing();
+				} else {
+					enableLocationSharing();
+				}
+			}
+
+			function enableLocationSharing() {
+				if (navigator.geolocation) {
+					document.getElementById("btn").innerHTML = "Disable Location Sharing";
+					getPosition();
+				} else {
+					alert("Geolocation is not supported by this browser");
+				}
+			}
+
+			function disableLocationSharing() {
+				document.getElementById("btn").innerHTML = "Enable Location Sharing";
+				if (interval) clearTimeout(interval);
+				if (user) user.remove();
+			}
+
+			function getPosition() {
+				navigator.geolocation.getCurrentPosition(sendData, showError, { enableHighAccuracy: true, timeout: 60000, maximumAge: 0 });
+				if (interval) clearTimeout(interval);
+				interval = setTimeout(getPosition, 5000);
+			}
+
+			function sendData(position) {
+				if (user) user.remove();
+				user = L.circle([position.coords.latitude, position.coords.longitude], {radius: 40, color: "green"}).addTo(map);
+				user.bindPopup("User location");
+				headers = { "Content-Type": "application/json" }
+				body = JSON.stringify([ position.coords.latitude, position.coords.longitude ])
+				fetch("/api/user/{{trip.id}}/{{lookup trip.vehicle 0}}", { method: "POST", body: body, headers: headers })
+			}
+
+			function showError(error) {
+				disableLocationSharing();
+				alert(JSON.stringify(error, null, 2));
+			}
+
+			function postSubscription() {
+				let user_id = document.getElementById("notif_txt").value;
+				let limit = document.getElementById("notif_num").value;
+				fetch("/api/user/{{trip.id}}/" + user_id + "/" + limit, { method: "POST" });
+			}
+
+			let path;
+			path = L.polyline([{{#each shape as |p|}}[{{lookup p 0}}, {{lookup p 1}}],{{/each}}], {color: "red"}).addTo(map);
+			map.fitBounds(path.getBounds());
+
+			let circle;
+			{{#each stops as |s|}}
+			circle = L.circle([{{s.lat}}, {{s.lon}}], {radius: 20, color: "red"}).addTo(map);
+			circle.bindPopup("{{s.name}}");
+			{{/each}}
+
+			{{#if trip.vehicle}}
+			let vehicle = L.circle([{{lookup trip.vehicle 1}}, {{lookup trip.vehicle 2}}], {radius: 40, color: "blue"}).addTo(map);
+			vehicle.bindPopup("Vehicle {{lookup trip.vehicle 0}}");
+			{{/if}}
+
+			var src = L.marker([{{src.lat}}, {{src.lon}}]).addTo(map); src.bindPopup("{{src.name}}");
+			var dst = L.marker([{{dst.lat}}, {{dst.lon}}]).addTo(map); dst.bindPopup("{{dst.name}}");
+		</script>
+	</body>
+</html>
