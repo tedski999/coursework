@@ -22,7 +22,7 @@ def assignmentTopo():
     s1 = net.addSwitch('s1')
 
     info('*** Creating links\n')
-    net.addLink(h1, s1)
+    net.addLink(h1, s1, cls=TCLink, bw=250)
     net.addLink(h2, s1)
     net.addLink(h3, s1)
     net.addLink(h4, s1)
