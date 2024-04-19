@@ -1,0 +1,69 @@
+\documentclass[a4paper,oneside,12pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=2.54cm,bottom=2.54cm,left=2.54cm,right=2.54cm,headheight=16pt]{geometry}
+\usepackage{amsmath}
+\usepackage[pdftex]{graphicx}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{hyperxmp}
+\usepackage[format=plain, font=it]{caption}
+\usepackage{sfmath}
+\usepackage[parfill]{parskip}
+\usepackage{setspace}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{chngcntr}
+\usepackage[backend=biber, style=numeric-comp, sorting=none]{biblatex}
+\usepackage[autostyle=true]{csquotes}
+\usepackage{xurl}
+\usepackage{blindtext}
+
+\addbibresource{references.bib}
+
+\setlength{\marginparwidth}{2cm}
+\pagestyle{plain}
+\counterwithin{figure}{section}
+\renewcommand{\familydefault}{\sfdefault}
+
+\title{CS7NS5 Security and Privacy\\AS2 Security or privacy incident}
+\author{Ted Johnson\\School of Computer Science and Statistics\\Trinity College Dublin}
+\date{19 April 2024}
+\hypersetup{
+	pdftitle=AS2 Security or privacy incident,
+	pdfauthor=Ted Johnson,
+	pdfsubject=CS7NS5 Security and Privacy
+	linkcolor=black,
+	citecolor=blue,
+	filecolor=blue,
+	urlcolor=blue
+}
+\urlstyle{same}
+
+\begin{document}
+
+\maketitle
+\onehalfspacing
+\raggedright
+
+\section*{On The Threat of Supply Chain Attacks}
+
+In only the last couple of weeks, there has been a number of major security and privacy incident revelations. Of particular note have been the OS command injection vulnerability found in GlobalProtect firewall devices, the GoFetch side-channel attack against Apple M1 CPUs, and the interception and decryption of SSL traffic orchestrated by Facebook against users of competitor services though Project Ghostbusters~\cite{CVE-2024-3400, gofetch, 369872}. We have also seen a use-after-free bug in Linux kernel exploited to perform privilege escalation with CVE-2024-1086 as well as a key recovery leak on the PuTTY SSH and Telnet client~\cite{CVE-2024-1086, CVE-2024-31497}. However, <xz utils was big>
+
+On the <andreas notices performance effect in latest release, investigation and discovery>.
+\cite{CVE-2024-3094}
+\cite{LWN-freund}
+\cite{LWN-967180}
+
+<this was the result of a long and elaborate scheme executed through an identify to install a backdoor in the project>. <history of the attack>
+
+<effect of the backdoor (dependencies aka a supply chain attack)>
+
+<countermeasures and the benefit of the many eyes in open source software - caught early before entering production systems>
+
+\printbibliography
+
+\end{document}

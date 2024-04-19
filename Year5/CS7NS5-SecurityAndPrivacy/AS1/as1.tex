@@ -5,11 +5,10 @@
 \usepackage[english]{babel}
 \usepackage[a4paper,top=2.54cm,bottom=2.54cm,left=2.54cm,right=2.54cm,headheight=16pt]{geometry}
 \usepackage{amsmath}
-\usepackage[autostyle=true]{csquotes}
 \usepackage[pdftex]{graphicx}
 \usepackage[colorlinks=true, allcolors=black]{hyperref}
 \usepackage{hyperxmp}
-\usepackage{caption}
+\usepackage[format=plain, font=it]{caption}
 \usepackage{sfmath}
 \usepackage[parfill]{parskip}
 \usepackage{setspace}
@@ -17,20 +16,31 @@
 \usepackage{booktabs}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{listings}
+\usepackage{chngcntr}
 \usepackage[backend=biber, style=numeric-comp, sorting=none]{biblatex}
+\usepackage[autostyle=true]{csquotes}
 \usepackage{xurl}
+\usepackage{blindtext}
 
 \addbibresource{references.bib}
 
 \setlength{\marginparwidth}{2cm}
 \pagestyle{plain}
+\counterwithin{figure}{section}
 \renewcommand{\familydefault}{\sfdefault}
 
 \title{CS7NS5 Security and Privacy\\AS1 Security and privacy considerations}
 \author{Ted Johnson\\School of Computer Science and Statistics\\Trinity College Dublin}
-\date{10 April 2024}
-\hypersetup{pdftitle=AS1 Security and privacy considerations, pdfauthor=Ted Johnson, pdfsubject=CS7NS5 Security and Privacy}
+\date{19 April 2024}
+\hypersetup{
+	pdftitle=AS1 Security and privacy considerations,
+	pdfauthor=Ted Johnson,
+	pdfsubject=CS7NS5 Security and Privacy
+	linkcolor=black,
+	citecolor=blue,
+	filecolor=blue,
+	urlcolor=blue
+}
 \urlstyle{same}
 
 \begin{document}
@@ -44,9 +54,9 @@ In this report, I present the security and privacy considerations I have made wi
 
 \subsection*{Project overview}
 
-The title of my research topic is ``A distributed deployment model for Encrypted Client Hello''. Encrypted Client Hello (ECH) is a proposed extension to the Transport Layer Security protocol version 1.3 (TLS 1.3) which has begun to see implementation and adoption on the Internet~\cite{tsiatsikas2022measuring, CF-ECH}. ECH seeks to allow encryption of the ClientHello message, which can contain potentially sensitive information such as the Service Name Indication (SNI) and Application-Layer Protocol Negotiation (ALPN) extensions. This is partially achieved through serving many private domains behind a common provider to form an anonymity set that conceals the true domain requested by the client.
+The title of my research topic is ``A distributed deployment model for Encrypted Client Hello''. Encrypted Client Hello (ECH) is a proposed extension to the Transport Layer Security protocol version 1.3 (TLS 1.3) which has begun to see implementation and adoption on the Internet~\cite{tsiatsikas2022measuring, CF-ECH}. ECH seeks to allow encryption of the ClientHello message, which can contain potentially sensitive information such as the Service Name Indication (SNI) and Application-Layer Protocol Negotiation (ALPN) extensions. This is partially achieved through serving many private domains behind a common ECH-service provider to form an anonymity set that conceals the true domain requested by the client.
 
-Mark Nottingham has previously cautioned against the introduction of centralisation through Internet standards~\cite{rfc9518}. Of particular relevance to ECH is his highlight of the adverse effect centralisation can have on infrastructure resilience and service availability through reliance on a single provider. This is especially detrimental to ECH where the effectiveness of its anonymity set grows with the number of private domains served by a single provider. Nottingham also writes on susceptibility of centralisation to stifle innovation and induce an unhealthy monoculture which may result in less overall technological progress and robustness of the ECH protocol.
+Mark Nottingham has previously cautioned against the introduction of centralisation through Internet standards~\cite{rfc9518}. Of particular relevance to ECH is his highlight of the adverse effect centralisation can have on infrastructure resilience and service availability through reliance on a single entity. This is especially detrimental to ECH where the effectiveness of its anonymity set grows with the number of private domains served by a single ECH-service provider. Nottingham also writes on susceptibility of centralisation to stifle ``permissionless'' innovation and induce an unhealthy monoculture which may result in less overall technological progress and robustness of the ECH protocol.
 
 Additionally, allowing entirely independent servers to co-operate from across the Internet to provide ECH support for each other enables several distinct organisations and entities to work together to offer improved user privacy for all without the requirement for co-located servers nor the dependence of any on the availability on another. Consider here global networks of whistleblower services, investigative journalists and human rights non-profit organisations who share an interest in protecting the confidentiality of their members and users from persecution and retaliation.
 
