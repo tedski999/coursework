@@ -49,20 +49,15 @@
 \onehalfspacing
 \raggedright
 
-\section*{On The Threat of Supply Chain Attacks}
+\section*{A Short Case Study on Supply Chain Attacks}
 
-In only the last couple of weeks, there has been a number of major security and privacy incident revelations. Of particular note have been the OS command injection vulnerability found in GlobalProtect firewall devices, the GoFetch side-channel attack against Apple M1 CPUs, and the interception and decryption of SSL traffic orchestrated by Facebook against users of competitor services though Project Ghostbusters~\cite{CVE-2024-3400, gofetch, 369872}. We have also seen a use-after-free bug in Linux kernel exploited to perform privilege escalation with CVE-2024-1086 as well as a key recovery leak on the PuTTY SSH and Telnet client~\cite{CVE-2024-1086, CVE-2024-31497}. However, <xz utils was big>
+In only the last couple of weeks, there has been a number of major security and privacy incident revelations. Of particular note have been the OS command injection vulnerability found in GlobalProtect, the GoFetch side-channel attack against Apple M1 CPUs, and the eavesdropping of SSL traffic orchestrated by Facebook against users of competitor services though Project Ghostbusters~\cite{CVE-2024-3400, gofetch, 369872}. We have also seen a use-after-free bug in Linux kernel exploited to perform privilege escalation with CVE-2024-1086 as well as a key recovery leak on the PuTTY SSH and Telnet client~\cite{CVE-2024-1086, CVE-2024-31497}. However, I believe the discovery of a backdoor installed within the XZ Utils project is the most significant recent incident in the field and provides a valuable example of how supply chain attacks pose a serious risk to the security of digital systems and organisations~\cite{CVE-2024-3094}.
 
-On the <andreas notices performance effect in latest release, investigation and discovery>.
-\cite{CVE-2024-3094}
-\cite{LWN-freund}
-\cite{LWN-967180}
+In March 2024, the software developer Andres Freund observed a measurable decrease in the performance of OpenSSH login connections under certain circumstances. During investigation, he was able to isolate the cause to be with the lzma data compression library of XZ Utils, which is commonly patched into OpenSSH by Linux distributions that use systemd. After analysis of the open source software, Freund discovered malicious code had been inserted into the project to allow for the bypass of the OpenSSH authentication mechanisms. He reported these findings to Debian and the distros@openwall mailing list on the 28\textsuperscript{th} of March, where the exploit was quickly confirmed and subsequently urgent security advisories were published by the following day~\cite{freund-email, LWN-967180}.
 
-<this was the result of a long and elaborate scheme executed through an identify to install a backdoor in the project>. <history of the attack>
+This exploit was the result of an elaborate scheme executed over a number of years by an unknown individual or organisation identifying themselves as Jia Tan. Beginning in late 2021, Tan becomes a frequent contributor to XZ Utils, submitting several legitimate patches through the xz-devel mailing list. Pressured by emails demanding an increase in productivity likely originating from false personas operated by the same threat actor, the sole project maintainer Lasse Collin is eventually convinced to grant Tan maintainership status with direct commit permission by the end of 2022~\cite{collin-email}. Having now gained enough trust from Collin and control over the project, Tan is able to subtlety adjust the codebase across a series of innocuous changes to accommodate the planned vulnerability, which is finally installed on the 23\textsuperscript{rd} of February 2024 as a mechanism to inject malicious code concealed inside two binary testing files into the OpenSSH \verb|sshd| process~\cite{commit-cf44e4b}. This backdoor substitutes the OpenSSH \verb|RSA_public_decrypt| function with a version that allows for an attacker in possession of a specific private key to circumvent SSH authentication and thus gain root access to all compromised systems remotely.
 
-<effect of the backdoor (dependencies aka a supply chain attack)>
-
-<countermeasures and the benefit of the many eyes in open source software - caught early before entering production systems>
+As a smaller project regularly depended on by the ubiquitously used OpenSSH, the covert insertion of this exploit into XZ Utils is a prime example of a supply chain attack, and had the potential to affect hundreds of millions of devices, including many highly critical and sensitive targets. Thankfully, in this case Freund was able to detect and expose this backdoor before it had seen widespread deployment amongst production systems through a new stable Linux distribution release. This event has highlighted both the inherent but often neglected risk introduced to digital infrastructure through software dependencies as well as the importance to security for anyone to be able to freely audit the software they use by following an open source development model.
 
 \printbibliography
 
