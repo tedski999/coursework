@@ -1,10 +1,14 @@
+
+TLS, HTTPS, ECH ADOPTION:
+
 @inproceedings{tsiatsikas2022measuring,
 	title={Measuring the adoption of TLS encrypted client hello extension and its forebear in the wild},
 	author={Tsiatsikas, Zisis and Karopoulos, Georgios and Kambourakis, Georgios},
 	booktitle={European Symposium on Research in Computer Security},
 	pages={177--190},
 	year={2022},
-	organization={Springer}
+	organization={Springer},
+	doi={10.1007/978-3-031-25460-4_10}
 }
 
 @online{CF-ECH,
@@ -12,8 +16,88 @@
 	author={Achiel van der Mandele, Alessandro Ghedini, Christopher Wood and Rushil Mehra},
 	year=2023,
 	month=Sep,
-	url={https://web.archive.org/web/20240324023814/https://blog.cloudflare.com/announcing-encrypted-client-hello},
+	url={https://blog.cloudflare.com/announcing-encrypted-client-hello},
 	urldate={2024-03-24},
+}
+
+@online{LE-HTTPS,
+	title={Percentage of Web Pages Loaded by Firefox Using HTTPS},
+	author={Let's Encrypt Stats},
+	url={https://letsencrypt.org/stats/#percent-pageloads},
+	urldate={2024-04-01},
+}
+
+@inproceedings{chan2018monitoring,
+	title={Monitoring TLS adoption using backbone and edge traffic},
+	author={Chan, Chia-ling and Fontugne, Romain and Cho, Kenjiro and Goto, Shigeki},
+	booktitle={IEEE INFOCOM 2018-IEEE Conference on Computer Communications Workshops (INFOCOM WKSHPS)},
+	pages={208--213},
+	year={2018},
+	organization={IEEE},
+	doi={10.1109/INFCOMW.2018.8406957}
+}
+
+@inproceedings{lee2021tls,
+	title={TLS 1.3 in practice: How TLS 1.3 contributes to the internet},
+	author={Lee, Hyunwoo and Kim, Doowon and Kwon, Yonghwi},
+	booktitle={Proceedings of the Web Conference 2021},
+	pages={70--79},
+	year={2021},
+	doi={10.1145/3442381.3450057}
+}
+
+@article{holz2019era,
+	title={The era of TLS 1.3: Measuring deployment and use with active and passive methods},
+	author={Holz, Ralph and Amann, Johanna and Razaghpanah, Abbas and Vallina-Rodriguez, Narseo},
+	journal={ACM SIGCOMM Computer Communication Review},
+	volume=50,
+	issue=3,
+	year={2019},
+	month=aug,
+	pages={3--15},
+	pagetotal=56,
+	doi={10.48550/arXiv.1907.12762}
+}
+
+@article{garcia2021large,
+	title={Large scale measurement on the adoption of encrypted DNS},
+	author={Sebastián García and Karel Hynek and Dmtrii Vekshin and Tomáš Čejka and Armin Wasicek},
+	journal={arXiv e-prints},
+	year={2021},
+	month=jul,
+	doi={10.48550/arXiv.2107.04436}
+}
+
+REQUEST FOR COMMENTS:
+
+@techreport{ietf-tls-esni-18,
+	number={draft-ietf-tls-esni-18},
+	type={Internet-Draft},
+	institution={Internet Engineering Task Force},
+	publisher={Internet Engineering Task Force},
+	note={Work in Progress},
+	url={https://datatracker.ietf.org/doc/draft-ietf-tls-esni/18/},
+	author={Eric Rescorla and Kazuho Oku and Nick Sullivan and Christopher A. Wood},
+	title={{TLS Encrypted Client Hello}},
+	pagetotal=51,
+	year=2024,
+	month=mar,
+	day=4
+}
+
+@misc{rfc2136,
+	series={Request for Comments},
+	number=2136,
+	howpublished={RFC 2136},
+	publisher={RFC Editor},
+	doi={10.17487/RFC2136},
+	url={https://www.rfc-editor.org/info/rfc2136},
+	author={Paul A. Vixie and Dr. Susan Thomson and Yakov Rekhter and Jim Bound},
+	title={{Dynamic Updates in the Domain Name System (DNS UPDATE)}},
+	pagetotal=26,
+	year=1997,
+	month=apr,
+	day=1
 }
 
 @misc{rfc9518,
@@ -30,10 +114,348 @@
 	month=dec,
 }
 
-https://datatracker.ietf.org/doc/html/rfc8467      Padding Policies for Extension Mechanisms for DNS (EDNS(0))
+@misc{rfc6973,
+	series={Request for Comments},
+	number=6973,
+	howpublished={RFC 6973},
+	publisher={RFC Editor},
+	doi={10.17487/RFC6973},
+	url={https://www.rfc-editor.org/info/rfc6973},
+	author={Alissa Cooper and Hannes Tschofenig and Dr. Bernard D. Aboba and Jon Peterson and John Morris and Marit Hansen and Rhys Smith},
+	title={{Privacy Considerations for Internet Protocols}},
+	pagetotal=36,
+	year=2013,
+	month=jul
+}
 
-https://ieeexplore.ieee.org/document/6135854 Issues and future directions in traffic classification
+@misc{rfc7858,
+	series={Request for Comments},
+	number=7858,
+	howpublished={RFC 7858},
+	publisher={RFC Editor},
+	doi={10.17487/RFC7858},
+	url={https://www.rfc-editor.org/info/rfc7858},
+	author={Zi Hu and Liang Zhu and John Heidemann and Allison Mankin and Duane Wessels and Paul E. Hoffman},
+	title={{Specification for DNS over Transport Layer Security (TLS)}},
+	pagetotal=19,
+	year=2016,
+	month=may
+}
 
-https://dl.acm.org/doi/10.1145/3570726 attacking doh ech
+@misc{rfc7626,
+	series={Request for Comments},
+	number=7626,
+	howpublished={RFC 7626},
+	publisher={RFC Editor},
+	doi={10.17487/RFC7626},
+	url={https://www.rfc-editor.org/info/rfc7626},
+	author={Stéphane Bortzmeyer},
+	title={{DNS Privacy Considerations}},
+	pagetotal=17,
+	year=2015,
+	month=aug
+}
 
-https://www.rfc-editor.org/rfc/rfc8744 esni issues (DoS)
+@misc{rfc8484,
+	series={Request for Comments},
+	number=8484,
+	howpublished={RFC 8484},
+	publisher={RFC Editor},
+	doi={10.17487/RFC8484},
+	url={https://www.rfc-editor.org/info/rfc8484},
+	author={Paul E. Hoffman and Patrick McManus},
+	title={{DNS Queries over HTTPS (DoH)}},
+	pagetotal=21,
+	year=2018,
+	month=oct
+}
+
+@misc{rfc1034,
+	series={Request for Comments},
+	number=1034,
+	howpublished={RFC 1034},
+	publisher={RFC Editor},
+	doi={10.17487/RFC1034},
+	url={https://www.rfc-editor.org/info/rfc1034},
+	author={Paul Mockapetris},
+	title={{Domain names - concepts and facilities}},
+	pagetotal=55,
+	year=1987,
+	month=nov
+}
+
+@misc{rfc1035,
+	series={Request for Comments},
+	number=1035,
+	howpublished={RFC 1035},
+	publisher={RFC Editor},
+	doi={10.17487/RFC1035},
+	url={https://www.rfc-editor.org/info/rfc1035},
+	author={Paul Mockapetris},
+	title={{Domain names - implementation and specification}},
+	pagetotal=55,
+	year=1987,
+	month=nov
+}
+
+@misc{rfc9460,
+	series={Request for Comments},
+	number=9460,
+	howpublished={RFC 9460},
+	publisher={RFC Editor},
+	doi={10.17487/RFC9460},
+	url={https://www.rfc-editor.org/info/rfc9460},
+	author={Benjamin M. Schwartz and Mike Bishop and Erik Nygren},
+	title={{Service Binding and Parameter Specification via the DNS (SVCB and HTTPS Resource Records)}},
+	pagetotal=47,
+	year=2023,
+	month=nov
+}
+
+@misc{rfc8446,
+	series={Request for Comments},
+	number=8446,
+	howpublished={RFC 8446},
+	publisher={RFC Editor},
+	doi={10.17487/RFC8446},
+	url={https://www.rfc-editor.org/info/rfc8446},
+	author={Eric Rescorla},
+	title={{The Transport Layer Security (TLS) Protocol Version 1.3}},
+	pagetotal=160,
+	year=2018,
+	month=aug
+}
+
+@misc{rfc8996,
+	series={Request for Comments},
+	number=8996,
+	howpublished={RFC 8996},
+	publisher={RFC Editor},
+	doi={10.17487/RFC8996},
+	url={https://www.rfc-editor.org/info/rfc8996},
+	author={Kathleen Moriarty and Stephen Farrell},
+	title={{Deprecating TLS 1.0 and TLS 1.1}},
+	pagetotal=18,
+	year=2021,
+	month=mar
+}
+
+@misc{rfc4158,
+	series={Request for Comments},
+	number=4158,
+	howpublished={RFC 4158},
+	publisher={RFC Editor},
+	doi={10.17487/RFC4158},
+	url={https://www.rfc-editor.org/info/rfc4158},
+	author={Peter Hesse and Matt Cooper and Yuriy A. Dzambasow and Susan Joseph and Richard Nicholas},
+	title={{Internet X.509 Public Key Infrastructure: Certification Path Building}},
+	pagetotal=81,
+	year=2005,
+	month=sep,
+}
+
+@misc{rfc8555,
+	series={Request for Comments},
+	number=8555,
+	howpublished={RFC 8555},
+	publisher={RFC Editor},
+	doi={10.17487/RFC8555},
+	url={https://www.rfc-editor.org/info/rfc8555},
+	author={Richard Barnes and Jacob Hoffman-Andrews and Daniel McCarney and James Kasten},
+	title={{Automatic Certificate Management Environment (ACME)}},
+	pagetotal=95,
+	year=2019,
+	month=mar
+}
+
+@misc{rfc2246,
+	series={Request for Comments},
+	number=2246,
+	howpublished={RFC 2246},
+	publisher={RFC Editor},
+	doi={10.17487/RFC2246},
+	url={https://www.rfc-editor.org/info/rfc2246},
+	author={Christopher Allen and Tim Dierks},
+	title={{The TLS Protocol Version 1.0}},
+	pagetotal=80,
+	year=1999,
+	month=jan
+}
+
+@misc{rfc7258,
+	series={Request for Comments},
+	number=7258,
+	howpublished={RFC 7258},
+	publisher={RFC Editor},
+	doi={10.17487/RFC7258},
+	url={https://www.rfc-editor.org/info/rfc7258},
+	author={Stephen Farrell and Hannes Tschofenig},
+	title={{Pervasive Monitoring Is an Attack}},
+	pagetotal=6,
+	year=2014,
+	month=may
+}
+
+@misc{rfc9180,
+	series={Request for Comments},
+	number=9180,
+	howpublished={RFC 9180},
+	publisher={RFC Editor},
+	doi={10.17487/RFC9180},
+	url={https://www.rfc-editor.org/info/rfc9180},
+	author={Richard Barnes and Karthikeyan Bhargavan and Benjamin Lipp and Christopher A. Wood},
+	title={{Hybrid Public Key Encryption}},
+	pagetotal=107,
+	year=2022,
+	month=feb
+}
+
+ECH SECURITY AND ATTACKS:
+
+@inproceedings{bhargavan2022symbolic,
+	title={A symbolic analysis of privacy for TLS 1.3 with Encrypted Client Hello},
+	author={Bhargavan, Karthikeyan and Cheval, Vincent and Wood, Christopher},
+	booktitle={Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security},
+	pages={365--379},
+	year={2022},
+	doi={10.1145/3548606.3559360}
+}
+
+@article{trevisan2023attacking,
+	title={Attacking DoH and ECH: Does Server Name Encryption Protect Users’ Privacy?},
+	author={Trevisan, Martino and Soro, Francesca and Mellia, Marco and Drago, Idilio and Morla, Ricardo},
+	journal={ACM Transactions on Internet Technology},
+	volume={23},
+	number={1},
+	pages={1--22},
+	year={2023},
+	publisher={ACM New York, NY},
+	doi={10.1145/3570726}
+}
+
+TRAFFIC PADDING:
+
+@inproceedings{back2001traffic,
+	title={Traffic analysis attacks and trade-offs in anonymity providing systems},
+	author={Back, Adam and M{\"o}ller, Ulf and Stiglic, Anton},
+	booktitle={International Workshop on Information Hiding},
+	pages={245--257},
+	year={2001},
+	organization={Springer},
+	doi={10.1007/3-540-45496-9_18}
+}
+
+@article{defabbia2011analyzing,
+	title={Analyzing the effectiveness of passive correlation attacks on the tor anonymity network},
+	author={DeFabbia-Kane, Samuel Padraic},
+	year={2011},
+	doi={10.14418/wes01.1.1636}
+}
+
+@inproceedings{levine2004timing,
+	title={Timing attacks in low-latency mix systems},
+	author={Levine, Brian N and Reiter, Michael K and Wang, Chenxi and Wright, Matthew},
+	booktitle={Financial Cryptography: 8th International Conference, FC 2004, Key West, FL, USA, February 9-12, 2004. Revised Papers 8},
+	pages={251--265},
+	year={2004},
+	organization={Springer},
+	doi={10.1007/978-3-540-27809-2_25}
+}
+
+@inproceedings{fu2003effectiveness,
+	title={On effectiveness of link padding for statistical traffic analysis attacks},
+	author={Fu, Xinwen and Graham, Bryan and Bettati, Riccardo and Zhao, Wei},
+	booktitle={23rd International Conference on Distributed Computing Systems, 2003. Proceedings.},
+	pages={340--347},
+	year={2003},
+	organization={IEEE},
+	doi={10.1109/ICDCS.2003.1203483}
+}
+
+@inproceedings{fu2003analytical,
+	title={Analytical and empirical analysis of countermeasures to traffic analysis attacks},
+	author={Fu, Xinwen and Graham, Bryan and Bettati, Riccardo and Zhao, Wei and Xuan, Dong},
+	booktitle={2003 International Conference on Parallel Processing, 2003. Proceedings.},
+	pages={483--492},
+	year={2003},
+	organization={IEEE},
+	doi={10.1109/ICPP.2003.1240613}
+}
+
+@article{yu2012predicted,
+	title={Predicted packet padding for anonymous web browsing against traffic analysis attacks},
+	author={Yu, Shui and Zhao, Guofeng and Dou, Wanchun and James, Simon},
+	journal={IEEE Transactions on Information Forensics and Security},
+	volume={7},
+	number={4},
+	pages={1381--1393},
+	year={2012},
+	publisher={IEEE},
+	doi={10.1109/TIFS.2012.2197392}
+}
+
+@inproceedings{wright2009traffic,
+	title={Traffic Morphing: An Efficient Defense Against Statistical Traffic Analysis.},
+	author={Wright, Charles V and Coull, Scott E and Monrose, Fabian},
+	booktitle={NDSS},
+	volume={9},
+	year={2009}
+}
+
+TECHNOLOGY:
+
+@article{nathan1berkeley,
+	title={BERKELEY INTERNET NAME DOMAIN (BIND)},
+	author={Nathan, Shelena Soosay and Mohan, Sanjaav Selan and Harudas, Adelin Rose and Nisar, Kashif},
+	journal={International Journal on Cybernetics \& Informatics},
+	volume={1},
+	pages={1--10},
+	year=2012,
+	month=feb
+}
+
+@inproceedings{donenfeld2017wireguard,
+	title={WireGuard: Next Generation Kernel Network Tunnel.},
+	author={Donenfeld, Jason A},
+	booktitle={NDSS},
+	pages={1--12},
+	year={2017},
+	doi={10.14722/ndss.2017.23160}
+}
+
+
+@article{reese2008nginx,
+	title={Nginx: the high-performance web server and reverse proxy},
+	author={Reese, Will},
+	journal={Linux Journal},
+	volume={2008},
+	number={173},
+	pages={2},
+	year={2008},
+	publisher={Belltown Media Houston, TX}
+}
+
+@misc{almesberger1999linux,
+	title={Linux Network Traffic Control - Implementation Overview},
+	author={Almesberger, Werner},
+	year={1999},
+	month=apr
+}
+
+@inproceedings{hemminger2005network,
+	title={Network emulation with NetEm},
+	author={Hemminger, Stephen},
+	booktitle={Linux conf au},
+	volume={5},
+	year={2005},
+	month=apr
+}
+
+@inproceedings{bellard2005qemu,
+	title={QEMU, a fast and portable dynamic translator.},
+	author={Bellard, Fabrice},
+	booktitle={USENIX annual technical conference, FREENIX Track},
+	volume={41},
+	number={46},
+	year={2005},
+}
